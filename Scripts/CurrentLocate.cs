@@ -10,7 +10,7 @@ public class CurrentLocate
 
     public CurrentLocate()
     {
-        locateType = ForceTravel.TravelType.Camp;
+        //locateType = ForceTravel.TravelType.Camp;
     }
 
     public ForceTravel.TravelType GetTypeLocate()

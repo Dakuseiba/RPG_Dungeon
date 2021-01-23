@@ -280,7 +280,7 @@ public class TravelSelect_Panel : MonoBehaviour
     {
         if(selectedGroup.type != ForceTravel.TravelType.None)
         {
-            var mapPoint = MapPointList.IdPoints(selectedGroup.id, idPoint);
+            var mapPoint = PointList.IdPoints(selectedGroup.id, idPoint);
             int time = mapPoint.Time;
             T_time.text = "Czas dotarcia: " + TravelTimeController.SetTime(time);
             if(Travel != null)

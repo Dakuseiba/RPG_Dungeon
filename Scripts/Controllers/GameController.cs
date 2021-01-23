@@ -65,8 +65,8 @@ public class GameController : MonoBehaviour
         if (StaticValues.LumberjackData == null)
             StaticValues.LumberjackData = LumberjackData;
 
-        if (StaticValues.currentLocate.GetTypeLocate() == ForceTravel.TravelType.None)
-            StaticValues.currentLocate.SetLocate(ForceTravel.TravelType.Camp);
+        /*if (StaticValues.currentLocate.GetTypeLocate() == ForceTravel.TravelType.None)
+            StaticValues.currentLocate.SetLocate(ForceTravel.TravelType.Camp);*/
 
         StaticValues.InvMagazine.Capacity();
         CitiesController.SetUpgrades();
@@ -121,7 +121,7 @@ public class GameController : MonoBehaviour
         }
         if(Input.GetKeyDown(KeyCode.DownArrow))
         {
-            var result = MapPointList.IdPoints(1, 7);
+            var result = PointList.IdPoints(1, 7);
             foreach(var point in result.betweenPoints)
             {
                 Debug.Log(point.startId + " " + point.endId + " " + point.Time);

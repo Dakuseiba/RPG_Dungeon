@@ -15,7 +15,7 @@ public class ForceTravel
     public int tempTime;
     public List<int> regions = new List<int>();
     public List<int> checkpoints = new List<int>();
-    public MapPointList.PointList pointList;
+    public PointList pointList;
 
     int limitAmbush;
 
@@ -77,7 +77,7 @@ public class ForceTravel
         Ambush
     }
 
-    public void SetTime(MapPointList.PointList point)
+    public void SetTime(PointList point)
     {
         timeTravel = point.Time;
         tempTime = point.Time;
