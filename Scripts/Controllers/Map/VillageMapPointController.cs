@@ -14,7 +14,7 @@ public class VillageMapPointController : MapPointController
     private void OnEnable()
     {
         MapPoint.typePoint = PointType.Village;
-        MapPoint.namePoint = StaticValues.Cities[id].Name;
+        //MapPoint.namePoint = StaticValues.Cities[id].Name;
     }
 
     public override void OpenWindow()

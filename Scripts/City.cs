@@ -14,7 +14,6 @@ public class City
     public List<ICamp.Type_Camp> TypeUpgrade = new List<ICamp.Type_Camp>();
     public int RoomCost;
     public int HealCost;
-    public string NameScene;
     public Trust trust;
     public int trustPoints;
 
@@ -23,7 +22,6 @@ public class City
         Name = city.Name;
         RoomCost = city.costRoom;
         HealCost = city.costHeal;
-        NameScene = city.nameScene;
     }
 
     public void CreateMercenary(int amount)

@@ -39,6 +39,7 @@ public class MapPointEditorWindow : EditorWindow
         }
     }
 
+    Vector2 scrollList;
     void PointsList()
     {
         GUILayout.BeginVertical("box", GUILayout.ExpandHeight(true), GUILayout.Width(400f));
@@ -49,6 +50,8 @@ public class MapPointEditorWindow : EditorWindow
         if (GUILayout.Button("Collect")) option = 3;
         if (GUILayout.Button("Field")) option = 4;
         GUILayout.EndHorizontal();
+        GUILayout.BeginVertical();
+        scrollList = EditorGUILayout.BeginScrollView(scrollList, GUILayout.Height(350f));
         for(int i=0;i<my.MapPoints.Count;i++)
         {
             var point = my.MapPoints[i];
@@ -89,6 +92,8 @@ public class MapPointEditorWindow : EditorWindow
                 GUILayout.EndHorizontal();
             }
         }
+        EditorGUILayout.EndScrollView();
+        GUILayout.EndVertical();
         GUILayout.EndVertical();
     }
 
@@ -102,6 +107,7 @@ public class MapPointEditorWindow : EditorWindow
                 GiveRegion(my.MapPoints[i].GetComponent<MapPointController>());
             }
         }
+        SetIdCamps();
     }
 
     void GiveRegion(MapPointController point)
@@ -110,6 +116,20 @@ public class MapPointEditorWindow : EditorWindow
         point.MapPoint.idRegion = regions.regions.FindIndex(x => x == point.GetComponentInParent<Region>().gameObject);
     }
 
+    void SetIdCamps()
+    {
+        int x = 1;
+        foreach(var point in my.MapPoints)
+        {
+            if(point.TryGetComponent(out CampMapPointController camp))
+            {
+                camp.id = x;
+                x++;
+            }
+        }
+    }
+
+    Vector2 scrollGUI;
     void PointGUI()
     {
         GUILayout.BeginVertical("box");
@@ -120,20 +140,67 @@ public class MapPointEditorWindow : EditorWindow
             GUILayout.Label("ID: " + point.MapPoint.idPoint);
             GUILayout.Label("Region ID: " + point.MapPoint.idRegion);
             GUILayout.Label("Type: " + point.MapPoint.typePoint);
-            NeighborSystem();
+            GUILayout.BeginVertical();
+            scrollGUI = EditorGUILayout.BeginScrollView(scrollGUI, GUILayout.Height(350f));
+            switch(point.MapPoint.typePoint)
+            {
+                case PointType.Camp:
+                    PointCampGUI((CampMapPointController)point);
+                    NeighborSystem();
+                    break;
+                case PointType.Collect:
+                    break;
+                case PointType.Field:
+                    NeighborSystem();
+                    break;
+                case PointType.Village:
+                    PointVillageGUI((VillageMapPointController)point);
+                    NeighborSystem();
+                    break;
+            }
+            EditorGUILayout.EndScrollView();
+            GUILayout.EndVertical();
         }
         GUILayout.EndVertical();
     }
 
 
-    void PointVillageGUI()
+    void PointVillageGUI(VillageMapPointController point)
     {
+        CityDataBase cityDataBase = (CityDataBase)AssetDatabase.LoadAssetAtPath("Assets/DataBase/Data_Cities.asset", typeof(CityDataBase));
+        GUILayout.BeginVertical("box");
+        GUILayout.Label("Village");
+        point.id = EditorGUILayout.IntField("ID Village:", point.id);
+        GUILayout.Label("ID: 0-" + (cityDataBase.Cities.Count - 1));
 
+        foreach(var otherPoint in my.MapPoints)
+        {
+            if(otherPoint.TryGetComponent(out VillageMapPointController village))
+            {
+                if (village.id == point.id && point.MapPoint.idPoint != village.MapPoint.idPoint)
+                {
+                    point.id = -1;
+                    break;
+                }
+            }
+        }
+        if (point.id > cityDataBase.Cities.Count - 1) point.id = -1;
+        if(point.id >= 0)
+        {
+            point.MapPoint.namePoint = cityDataBase.Cities[point.id].Name;
+            GUILayout.Label("Village Name:" + point.MapPoint.namePoint);
+        }
+        GUILayout.EndVertical();
     }
 
-    void PointCampGUI()
+    void PointCampGUI(CampMapPointController point)
     {
-
+        GUILayout.BeginVertical("box");
+        GUILayout.Label("Camp");
+        point.MapPoint.namePoint = "Obóz";
+        GUILayout.Label("" + point.MapPoint.namePoint);
+        GUILayout.Label("Camp id: " + point.id);
+        GUILayout.EndVertical();
     }
 
     void PointFieldGUI()
@@ -145,10 +212,27 @@ public class MapPointEditorWindow : EditorWindow
     {
 
     }
+
+    Vector2 scrollNeighbor;
     void NeighborSystem()
     {
-        GUILayout.Label("Roads:");
         var point = selectedObj.GetComponent<MapPointController>().MapPoint;
+        GUILayout.Label("Roads count: " + point.NeighborPointID.Count);
+        GUILayout.BeginHorizontal();
+        if(GUILayout.Button("+"))
+        {
+            point.NeighborPointID.Add(new NeighborPoint());
+        }
+        if(GUILayout.Button("-"))
+        {
+            if(point.NeighborPointID.Count > 0)
+            {
+                point.NeighborPointID.RemoveAt(point.NeighborPointID.Count - 1);
+            }
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.BeginVertical();
+        scrollNeighbor = EditorGUILayout.BeginScrollView(scrollNeighbor, GUILayout.Height(150f));
         for(int i=0;i<point.NeighborPointID.Count;i++)
         {
             GUILayout.BeginVertical("box");
@@ -163,12 +247,12 @@ public class MapPointEditorWindow : EditorWindow
                 GUILayout.EndHorizontal();
                 point.NeighborPointID[i].time = (int)(time * 60);
                 GUILayout.Label("" + point.NeighborPointID[i].time);
-                GUILayout.EndVertical();
             }
             else
             {
                 EditorGUILayout.HelpBox("Brak ID", MessageType.Error);
             }
+            GUILayout.EndVertical();
             if (!CheckPointID(point.NeighborPointID[i].ID, point.idPoint))
                 point.NeighborPointID[i].ID = -1;
             if (point.NeighborPointID[i].time < 1) point.NeighborPointID[i].time = 1;
@@ -196,6 +280,8 @@ public class MapPointEditorWindow : EditorWindow
             }
             GUILayout.EndVertical();            
         }
+        EditorGUILayout.EndScrollView();
+        GUILayout.EndVertical();
     }
 
     bool CheckPointID(int id, int pointID)

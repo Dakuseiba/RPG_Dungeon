@@ -242,7 +242,7 @@ public class TravelSelect_Panel : MonoBehaviour
         switch(TravelType)
         {
             case ForceTravel.TravelType.Camp:
-                if(StaticValues.Camp.UnitMax - StaticValues.Team.Count < StaticValues.Max_Units_in_Mission)
+                if(StaticValues.Camp.UnitMax - StaticValues.Team.Count < StaticValues.Max_Units_in_Mission && StaticValues.currentLocate.GetTypeLocate() != ForceTravel.TravelType.Camp)
                 {
                     for (int i = 0; i < Slots.Length; i++)
                     {

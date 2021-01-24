@@ -47,7 +47,7 @@ public class PointList
                 PointList newList = pointList[pointList.Count - 1];
                 newList.AddPoints(startedIdPoint, point.ID, point.time);
                 PreviousID.Add(startedIdPoint);
-                newList = IdPoints(point.ID, destinyIdPoint, newList, PreviousID);
+                pointList[pointList.Count-1] = IdPoints(point.ID, destinyIdPoint, newList, PreviousID);
             }
         }
         int minID = 0;
@@ -58,7 +58,12 @@ public class PointList
                 if (pointList[minID].Time == -1 || pointList[i].Time < pointList[minID].Time) minID = i;
             }
         }
-        Debug.Log("MapPointList: " + pointList.Count + " " + minID);
+        /*Debug.Log("MapPointList: " + pointList[minID].Time);
+        Debug.Log("Count: " + pointList[minID].betweenPoints.Count);
+        foreach (var between in pointList[minID].betweenPoints)
+        {
+            Debug.Log("Between: " + between.startId + " " + between.endId + " " + between.Time);
+        };*/
         return pointList[minID];
     }
     static PointList IdPoints(int startedIdPoint, int destinyIdPoint, PointList list, List<int> PreviousID)
@@ -66,6 +71,7 @@ public class PointList
         List<PointList> pointList = new List<PointList>();
         var points = StaticValues.points[startedIdPoint].MapPoint.NeighborPointID;
         var wanted = StaticValues.points[destinyIdPoint].MapPoint.idPoint;
+        List<PointList> FindedDestinyList = new List<PointList>();
         foreach (var point in points)
         {
             bool isExist = false;
@@ -89,14 +95,25 @@ public class PointList
                     newList = IdPoints(point.ID, destinyIdPoint, newList, PreviousID);
                     if (newList.betweenPoints[newList.betweenPoints.Count - 1].endId == wanted)
                     {
+                        FindedDestinyList.Add(new PointList());
+                        var newPoints = FindedDestinyList[FindedDestinyList.Count - 1];
                         foreach (var newPoint in newList.betweenPoints)
                         {
-                            list.AddPoints(newPoint.startId, newPoint.endId, newPoint.Time);
+                            newPoints.AddPoints(newPoint.startId, newPoint.endId, newPoint.Time);
                         }
-                        return list;
                     }
                 }
             }
+        }
+        if(FindedDestinyList.Count>0)
+        {
+            int minID = 0;
+            for(int i=0;i<FindedDestinyList.Count;i++)
+            {
+                //Debug.Log(i+". " + FindedDestinyList[i].Time);
+                if (FindedDestinyList[minID].Time > FindedDestinyList[i].Time) minID = i;
+            }
+            return FindedDestinyList[minID];
         }
         list.Time = -1;
         return list;

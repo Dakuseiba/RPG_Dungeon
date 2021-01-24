@@ -11,6 +11,5 @@ public class CityDataBase : ScriptableObject
         public string Name;
         public int costRoom;
         public int costHeal;
-        public string nameScene;
     }
 }
