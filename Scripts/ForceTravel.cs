@@ -19,6 +19,8 @@ public class ForceTravel
 
     int limitAmbush;
 
+
+
     public enum TravelType
     {
         None,
@@ -54,18 +56,6 @@ public class ForceTravel
                 }
             }
         }
-        //if(timeTravel <= limitAmbush * TravelTimeController.time - TravelTimeController.time / 2)
-        //{
-            /*limitAmbush--;
-            string tekst = "Regions: ";
-            for(int i=0;i<regions.Count;i++)
-            {
-                tekst += i + ".(" + regions[i] + ") ";
-            }
-            int rate = StaticValues.regions[regions[timeTravel / TravelTimeController.time]].myRegion.BanditAmbush_rate;
-            var rand = Random.Range(1, 101);
-            if (rand <= rate) return TravelEvent.Ambush;*/
-        //}
         return TravelEvent.None;
     }
 
@@ -89,6 +79,7 @@ public class ForceTravel
             sum += betweenPoint.Time;
             checkpoints.Add(sum - (betweenPoint.Time / 2));
         }
+        pointList = point;
     }
 
     TravelEvent DeployCharacters()

@@ -18,7 +18,12 @@ public class MapPointEditorWindow : EditorWindow
 
     private void OnGUI()
     {
+        GUILayout.BeginHorizontal();
         Save();
+        GUILayout.FlexibleSpace();
+        UpdateRoutes();
+        ResetRoutes();
+        GUILayout.EndHorizontal();
         if(my!=null)
         {
             AutoUpdate();
@@ -36,6 +41,22 @@ public class MapPointEditorWindow : EditorWindow
         {
             EditorUtility.SetDirty(my);
             AssetDatabase.SaveAssets();
+        }
+    }
+
+    void ResetRoutes()
+    {
+        if(GUILayout.Button("Delete Routes",GUILayout.Width(100)))
+        {
+            my.Routes.Delete_Routes();
+        }
+    }
+
+    void UpdateRoutes()
+    {
+        if (GUILayout.Button("Update Routes",GUILayout.Width(100)))
+        {
+            my.Routes.Update_Routes();
         }
     }
 
@@ -141,7 +162,7 @@ public class MapPointEditorWindow : EditorWindow
             GUILayout.Label("Region ID: " + point.MapPoint.idRegion);
             GUILayout.Label("Type: " + point.MapPoint.typePoint);
             GUILayout.BeginVertical();
-            scrollGUI = EditorGUILayout.BeginScrollView(scrollGUI, GUILayout.Height(350f));
+            scrollGUI = EditorGUILayout.BeginScrollView(scrollGUI, GUILayout.Height(400f));
             switch(point.MapPoint.typePoint)
             {
                 case PointType.Camp:
@@ -149,8 +170,10 @@ public class MapPointEditorWindow : EditorWindow
                     NeighborSystem();
                     break;
                 case PointType.Collect:
+                    PointCollectGUI();
                     break;
                 case PointType.Field:
+                    PointFieldGUI();
                     NeighborSystem();
                     break;
                 case PointType.Village:
@@ -232,11 +255,12 @@ public class MapPointEditorWindow : EditorWindow
         }
         GUILayout.EndHorizontal();
         GUILayout.BeginVertical();
-        scrollNeighbor = EditorGUILayout.BeginScrollView(scrollNeighbor, GUILayout.Height(150f));
+        scrollNeighbor = EditorGUILayout.BeginScrollView(scrollNeighbor, GUILayout.Height(250f));
         for(int i=0;i<point.NeighborPointID.Count;i++)
         {
             GUILayout.BeginVertical("box");
             point.NeighborPointID[i].ID = EditorGUILayout.IntField("ID:", point.NeighborPointID[i].ID);
+            GUILayout.Label("Route ID: " + point.NeighborPointID[i].RouteID);
             GUILayout.BeginVertical("box");
             if(point.NeighborPointID[i].ID >= 0)
             {

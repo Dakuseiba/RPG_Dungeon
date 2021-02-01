@@ -13,6 +13,10 @@ public class MapPointEditor : Editor
         {
             MapPointEditorWindow.Open((MapPointList)target);
         }
+        if(GUILayout.Button("Update Routes"))
+        {
+            ((MapPointList)target).Routes.Update_Routes();
+        }
         base.OnInspectorGUI();
     }
 }

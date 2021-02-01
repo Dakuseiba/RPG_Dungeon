@@ -17,11 +17,13 @@ public class NeighborPoint
 {
     public int ID;
     public int time;
+    public int RouteID;
 
     public NeighborPoint()
     {
         ID = -1;    //-1 brak
         time = 60;  //domyślnie czas w grze 1h
+        RouteID = -1;
     }
     public NeighborPoint(int id)
     {

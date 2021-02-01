@@ -55,7 +55,7 @@ public class TravelSelect_Panel : MonoBehaviour
         CreateTravel();
         ViewSlots();
         Search();
-        CalculateTime();
+        //CalculateTime();
         TeamPanel.SetActive(true);
     }
 
@@ -218,14 +218,8 @@ public class TravelSelect_Panel : MonoBehaviour
 
     void SetTravelBack()
     {
-        switch (TravelType)
-        {
-            case ForceTravel.TravelType.Camp:
-            case ForceTravel.TravelType.Village:
-                Travel.typeBack = selectedGroup.type;
-                Travel.idBack = selectedGroup.id;
-                break;
-        }
+        Travel.typeBack = selectedGroup.type;
+        Travel.idBack = selectedGroup.id;
     }
 
     void ActiveGroup(GameObject obj)
@@ -330,7 +324,7 @@ public class TravelSelect_Panel : MonoBehaviour
                 ((FieldMapPointController)concreteField).SetSending();
                 break;
             case ForceTravel.TravelType.Camp:
-                if(((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == 0 && !StaticValues.Camp.campIsMoved)
+                if(StaticValues.currentLocate.GetIDCamp() == 0 && !StaticValues.Camp.campIsMoved)
                 {
                     StaticValues.currentLocate.SetCampID(StaticValues.points[idPoint].MapPoint.idPoint);
                 }

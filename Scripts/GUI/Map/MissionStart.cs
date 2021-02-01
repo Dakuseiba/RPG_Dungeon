@@ -39,7 +39,8 @@ public class MissionStart : MonoBehaviour
                 ForceTravel newTravel = new ForceTravel();
                 newTravel.characters = travel.characters;
                 newTravel.typeSend = ForceTravel.TravelType.Back_Mission;
-                newTravel.SetTime(travel.pointList);
+                var mapPoint = PointList.IdPoints(travel.idSend, travel.idBack);
+                newTravel.SetTime(mapPoint);
                 newTravel.Send();
                 break;
         }

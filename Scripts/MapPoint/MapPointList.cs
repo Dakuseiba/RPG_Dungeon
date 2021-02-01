@@ -5,4 +5,6 @@ using UnityEngine;
 public class MapPointList : MonoBehaviour
 {
     public List<GameObject> MapPoints;
+
+    public ControllRoute Routes;
 }

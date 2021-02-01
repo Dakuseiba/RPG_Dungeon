@@ -11,9 +11,9 @@ public class PointList
         betweenPoints = new List<BetweenPoint>();
         Time = 0;
     }
-    public void AddPoints(int start, int end, int time)
+    public void AddPoints(int start, int end, int time, int routeID)
     {
-        betweenPoints.Add(new BetweenPoint(start, end, time));
+        betweenPoints.Add(new BetweenPoint(start, end, time, routeID));
         Time += time;
     }
     public void ReversePoints()
@@ -38,14 +38,14 @@ public class PointList
             if (wanted == point.ID)
             {
                 PointList result = new PointList();
-                result.AddPoints(startedIdPoint, point.ID, point.time);
+                result.AddPoints(startedIdPoint, point.ID, point.time, point.RouteID);
                 return result;
             }
             else
             {
                 pointList.Add(new PointList());
                 PointList newList = pointList[pointList.Count - 1];
-                newList.AddPoints(startedIdPoint, point.ID, point.time);
+                newList.AddPoints(startedIdPoint, point.ID, point.time, point.RouteID);
                 PreviousID.Add(startedIdPoint);
                 pointList[pointList.Count-1] = IdPoints(point.ID, destinyIdPoint, newList, PreviousID);
             }
@@ -58,12 +58,6 @@ public class PointList
                 if (pointList[minID].Time == -1 || pointList[i].Time < pointList[minID].Time) minID = i;
             }
         }
-        /*Debug.Log("MapPointList: " + pointList[minID].Time);
-        Debug.Log("Count: " + pointList[minID].betweenPoints.Count);
-        foreach (var between in pointList[minID].betweenPoints)
-        {
-            Debug.Log("Between: " + between.startId + " " + between.endId + " " + between.Time);
-        };*/
         return pointList[minID];
     }
     static PointList IdPoints(int startedIdPoint, int destinyIdPoint, PointList list, List<int> PreviousID)
@@ -83,14 +77,14 @@ public class PointList
             {
                 if (wanted == point.ID)
                 {
-                    list.AddPoints(startedIdPoint, point.ID, point.time);
+                    list.AddPoints(startedIdPoint, point.ID, point.time, point.RouteID);
                     return list;
                 }
                 else
                 {
                     pointList.Add(new PointList());
                     var newList = pointList[pointList.Count - 1];
-                    newList.AddPoints(startedIdPoint, point.ID, point.time);
+                    newList.AddPoints(startedIdPoint, point.ID, point.time, point.RouteID);
                     PreviousID.Add(startedIdPoint);
                     newList = IdPoints(point.ID, destinyIdPoint, newList, PreviousID);
                     if (newList.betweenPoints[newList.betweenPoints.Count - 1].endId == wanted)
@@ -99,7 +93,7 @@ public class PointList
                         var newPoints = FindedDestinyList[FindedDestinyList.Count - 1];
                         foreach (var newPoint in newList.betweenPoints)
                         {
-                            newPoints.AddPoints(newPoint.startId, newPoint.endId, newPoint.Time);
+                            newPoints.AddPoints(newPoint.startId, newPoint.endId, newPoint.Time, newPoint.RouteID);
                         }
                     }
                 }
@@ -124,10 +118,13 @@ public class BetweenPoint
     public int startId;
     public int endId;
     public int Time;
-    public BetweenPoint(int id1, int id2, int time)
+    public int RouteID;
+
+    public BetweenPoint(int id1, int id2, int time, int routeID)
     {
         startId = id1;
         endId = id2;
         Time = time;
+        RouteID = routeID;
     }
 }

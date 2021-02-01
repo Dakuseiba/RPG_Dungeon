@@ -6,6 +6,8 @@ public class Travel_Panel : MonoBehaviour
 {
     public GameObject Prefab_Travel;
     public GameObject Destiny;
+    public GameObject Travel_Icon;
+    public Transform PointPlaceHolder;
 
     List<GameObject> Slots = new List<GameObject>();
 
@@ -35,7 +37,8 @@ public class Travel_Panel : MonoBehaviour
     void Create(int id)
     {
         var obj = Instantiate(Prefab_Travel, Destiny.transform);
-        obj.GetComponent<TravelSlot>().SetSlot(id);
+        var icon = Instantiate(Travel_Icon, PointPlaceHolder.transform);
+        obj.GetComponent<TravelSlot>().SetSlot(id, icon);
         Slots.Add(obj);
     }
 

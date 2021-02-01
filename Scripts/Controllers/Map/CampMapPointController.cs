@@ -33,7 +33,7 @@ public class CampMapPointController : MapPointController
             Destroy(buttons[2].transform.parent.gameObject));
         #endregion
         #region Move Camp
-        if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id!=0 && ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id != id)
+        if (StaticValues.currentLocate.GetIDCamp()!=0 && ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id != id)
         {
             buttons[3].onClick.AddListener(() => 
             GetComponentInParent<MapScript>().squadSelect.GetComponent<TravelSelect_Panel>().SetData(this)
@@ -45,7 +45,8 @@ public class CampMapPointController : MapPointController
         }
         #endregion
         #region Sending
-        if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == 0)
+        Debug.Log("CAMP ID: " + StaticValues.currentLocate.GetIDCamp());
+        if (StaticValues.currentLocate.GetIDCamp() == 0)
             buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Załóż obóz";
         else
             buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Wyślij";
@@ -53,7 +54,7 @@ public class CampMapPointController : MapPointController
         {
             if(StaticValues.Cities.FindAll(x=>x.Team_in_city.Count > 0).Count > 0 
                 && 
-                (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == 0 || ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
+                (StaticValues.currentLocate.GetIDCamp() == 0 || ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
                 && StaticValues.Team.Count < StaticValues.Camp.UnitMax)
                 buttons[0].interactable = true;
         }

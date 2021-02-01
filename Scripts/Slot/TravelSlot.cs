@@ -12,6 +12,8 @@ public class TravelSlot : MonoBehaviour
     public TextMeshProUGUI T_Time;
     public Image fillBar;
 
+    public GameObject Travel_Icon;
+
     public int idTravel;
 
     public void FillBar()
@@ -24,11 +26,13 @@ public class TravelSlot : MonoBehaviour
         int time = StaticValues.TeamTravels[idTravel].timeTravel;
 
         T_Time.text = TravelTimeController.SetTime(time);
+        Update_Icon();
         FillBar();
     }
 
-    public void SetSlot(int id)
+    public void SetSlot(int id, GameObject travelIcon)
     {
+        Travel_Icon = travelIcon;
         idTravel = id;
         ForceTravel travel = StaticValues.TeamTravels[idTravel];
         switch(travel.typeSend)
@@ -77,5 +81,53 @@ public class TravelSlot : MonoBehaviour
                 return "Misja";
         }
         return "";
+    }
+
+    void Update_Icon()
+    {
+        ForceTravel travel = StaticValues.TeamTravels[idTravel];
+        int currentTime = travel.tempTime - travel.timeTravel;
+
+        BetweenPoint points = null;
+        int ptime = 0;
+        int time = 0;
+        foreach (var point in travel.pointList.betweenPoints)
+        {
+            time += point.Time;
+            if (time >= currentTime)
+            {
+                points = point;
+                time = currentTime - ptime;
+                break;
+            }
+            ptime = time;
+        }
+        if(points!=null)
+        {
+            var componentRoute = GetComponentInParent<MapScript>().GetComponentInChildren<ControllRoute>();
+            var route = componentRoute.Routes[points.RouteID].GetComponent<Route>();
+            float ftime = (float)time / (float)points.Time;
+            Vector2 iconPosition;
+            if(points.startId == route.pointId1)
+            {
+                iconPosition = Mathf.Pow(1 - ftime, 3) * route.GetPoint(0).position +
+                    3 * Mathf.Pow(1 - ftime, 2) * ftime * route.GetPoint(1).position +
+                    3 * (1 - ftime) * Mathf.Pow(ftime, 2) * route.GetPoint(2).position +
+                    Mathf.Pow(ftime, 3) * route.GetPoint(3).position;
+            }
+            else
+            {
+                iconPosition = Mathf.Pow(1 - ftime, 3) * route.GetPoint(3).position +
+                    3 * Mathf.Pow(1 - ftime, 2) * ftime * route.GetPoint(2).position +
+                    3 * (1 - ftime) * Mathf.Pow(ftime, 2) * route.GetPoint(1).position +
+                    Mathf.Pow(ftime, 3) * route.GetPoint(0).position;
+            }
+            Travel_Icon.transform.position = iconPosition;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(Travel_Icon);
     }
 }

@@ -12,6 +12,10 @@ public class Route : MonoBehaviour
     float sizeSphere = 1f;
     [SerializeField]
     int amountSphere = 100;
+    
+    public int ID;
+    public int pointId1;
+    public int pointId2;
     Vector2 gizmosPosition;
     bool canUse;
     private void OnDrawGizmos()
@@ -47,5 +51,29 @@ public class Route : MonoBehaviour
                 new Vector2(controlPoints[3].position.x, controlPoints[3].position.y));
         }
 
+    }
+
+    /// <summary>
+    /// 0 - First point;
+    /// 1 - First curve;
+    /// 2 - Second curve;
+    /// 3 - Last point
+    /// </summary>
+    /// <param name="x"></param>
+    public Transform GetPoint(int x)
+    {
+        switch (x)
+        {
+            case 0:
+                return controlPoints[x];
+            case 1:
+                return controlPoints[x];
+            case 2:
+                return controlPoints[x];
+            case 3:
+                return controlPoints[x];
+            default:
+                return null;
+        }
     }
 }
