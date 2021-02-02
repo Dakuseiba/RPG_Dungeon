@@ -58,7 +58,6 @@ public class HUBSceneManager : MonoBehaviour
                 StaticValues.currentLocate.SetLocate(ForceTravel.TravelType.Camp);
                 break;
         }
-        //StaticValues.currentLocate.SetRegionID(idRegion);
         LoadScene();
     }
 }

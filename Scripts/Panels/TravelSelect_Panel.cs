@@ -236,7 +236,8 @@ public class TravelSelect_Panel : MonoBehaviour
         switch(TravelType)
         {
             case ForceTravel.TravelType.Camp:
-                if(StaticValues.Camp.UnitMax - StaticValues.Team.Count < StaticValues.Max_Units_in_Mission && StaticValues.currentLocate.GetTypeLocate() != ForceTravel.TravelType.Camp)
+                int teamCount = StaticValues.Camp.TeamInCamp();
+                if (StaticValues.Camp.UnitMax - teamCount < StaticValues.Max_Units_in_Mission && StaticValues.currentLocate.GetTypeLocate() != ForceTravel.TravelType.Camp)
                 {
                     for (int i = 0; i < Slots.Length; i++)
                     {
@@ -335,14 +336,14 @@ public class TravelSelect_Panel : MonoBehaviour
         switch(Travel.typeBack)
         {
             case ForceTravel.TravelType.Camp:
-                if (StaticValues.Team.Count == 0 && !StaticValues.Camp.campIsMoved)
+                if (StaticValues.Team.Count == 0 && !StaticValues.Camp.campIsMoved && Travel.typeSend != ForceTravel.TravelType.Go_Mission)
                 {
                     StaticValues.currentLocate.SetCampID(0);
                     StaticValues.currentLocate.SetLocate(ForceTravel.TravelType.None);
                 }
                 break;
             case ForceTravel.TravelType.Village:
-                if (StaticValues.Cities[selectedGroup.id].Team_in_city.Count == 0)
+                if (StaticValues.Cities[((VillageMapPointController)StaticValues.points[selectedGroup.id]).id].Team_in_city.Count == 0)
                 {
                     StaticValues.currentLocate.SetLocate(ForceTravel.TravelType.None, 0);
                 }

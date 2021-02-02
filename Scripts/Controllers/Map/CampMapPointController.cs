@@ -33,52 +33,54 @@ public class CampMapPointController : MapPointController
             Destroy(buttons[2].transform.parent.gameObject));
         #endregion
         #region Move Camp
-        if (StaticValues.currentLocate.GetIDCamp()!=0 && ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id != id)
+        if(StaticValues.points[StaticValues.currentLocate.GetIDCamp()].MapPoint.typePoint == PointType.Camp && StaticValues.currentLocate.GetIDCamp() != MapPoint.idPoint)
         {
-            buttons[3].onClick.AddListener(() => 
-            GetComponentInParent<MapScript>().squadSelect.GetComponent<TravelSelect_Panel>().SetData(this)
-            );
-            if (StaticValues.Team.FindAll(x => x.CharacterStatus == CharacterStatus.ready).Count == StaticValues.Team.FindAll(x => x.CharacterStatus != CharacterStatus.traveling).Count
+            buttons[3].onClick.AddListener(() =>
+            GetComponentInParent<MapScript>().squadSelect.GetComponent<TravelSelect_Panel>().SetData(this));
+            if(StaticValues.Team.FindAll(x=>x.CharacterStatus == CharacterStatus.ready).Count == StaticValues.Team.Count
                 &&
-                StaticValues.TeamTravels.FindAll(x => x.typeSend == ForceTravel.TravelType.Camp).Count == 0)
+                StaticValues.TeamTravels.FindAll(x => x.typeSend == ForceTravel.TravelType.Camp).Count == 0
+                &&
+                StaticValues.TeamTravels.FindAll(x=>(x.typeSend == ForceTravel.TravelType.Go_Mission || x.typeSend == ForceTravel.TravelType.Back_Mission) && x.typeBack == ForceTravel.TravelType.Camp).Count == 0)
+            {
                 buttons[3].interactable = true;
+            }
         }
         #endregion
         #region Sending
-        Debug.Log("CAMP ID: " + StaticValues.currentLocate.GetIDCamp());
-        if (StaticValues.currentLocate.GetIDCamp() == 0)
-            buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Załóż obóz";
+        if(StaticValues.points[StaticValues.currentLocate.GetIDCamp()].MapPoint.typePoint != PointType.Camp)
+        { buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Załóż obóz"; }
         else
-            buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Wyślij";
+        { buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Wyślij"; }
+
         if(!StaticValues.Camp.campIsMoved)
         {
+            int teamCount = StaticValues.Camp.TeamInCamp();
             if(StaticValues.Cities.FindAll(x=>x.Team_in_city.Count > 0).Count > 0 
                 && 
-                (StaticValues.currentLocate.GetIDCamp() == 0 || ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
-                && StaticValues.Team.Count < StaticValues.Camp.UnitMax)
+                StaticValues.currentLocate.GetIDCamp() == MapPoint.idPoint
+                && 
+                teamCount < StaticValues.Camp.UnitMax)
                 buttons[0].interactable = true;
         }
         buttons[0].onClick.AddListener(() =>
         GetComponentInParent<MapScript>().squadSelect.GetComponent<TravelSelect_Panel>().SetData(this, ForceTravel.TravelType.Camp));
         #endregion
         #region Show Camp
-        if (StaticValues.Team.FindAll(x=>x.CharacterStatus != CharacterStatus.traveling).Count > 0)
+        switch (StaticValues.currentLocate.GetTypeLocate())
         {
-            switch (StaticValues.currentLocate.GetTypeLocate())
-            {
-                case ForceTravel.TravelType.Camp:
-                    if(((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
-                        buttons[1].interactable = false;
-                    break;
-                case ForceTravel.TravelType.Village:
-                    if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
-                        buttons[1].interactable = true;
-                    break;
-                case ForceTravel.TravelType.None:
-                    if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id && !StaticValues.Camp.campIsMoved)
-                        buttons[1].interactable = true;
-                    break;
-            }
+            case ForceTravel.TravelType.Camp:
+                if(((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
+                    buttons[1].interactable = false;
+                break;
+            case ForceTravel.TravelType.Village:
+                if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
+                    buttons[1].interactable = true;
+                break;
+            case ForceTravel.TravelType.None:
+                if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id && !StaticValues.Camp.campIsMoved)
+                    buttons[1].interactable = true;
+                break;
         }
         buttons[1].onClick.AddListener(() => LoadScene());
         #endregion

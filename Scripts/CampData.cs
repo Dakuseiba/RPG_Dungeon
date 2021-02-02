@@ -191,8 +191,20 @@ public class CampData
 
     public bool IsFullTeamInCamp()
     {
-        if (StaticValues.Team.Count + StaticValues.TeamTravels.FindAll(x => x.typeSend == ForceTravel.TravelType.Camp).Count > StaticValues.Camp.UnitMax)
+        int teamCount = TeamInCamp();
+
+        if (teamCount > StaticValues.Camp.UnitMax)
             return true;
         return false;
+    }
+
+    public int TeamInCamp()
+    {
+        int teamCount = StaticValues.Team.Count;
+        foreach (var travel in StaticValues.TeamTravels.FindAll(x => ((x.typeSend == ForceTravel.TravelType.Go_Mission || x.typeSend == ForceTravel.TravelType.Back_Mission) && x.typeBack == ForceTravel.TravelType.Camp)||x.typeSend == ForceTravel.TravelType.Camp))
+        {
+            teamCount += travel.characters.Count;
+        }
+        return teamCount;
     }
 }

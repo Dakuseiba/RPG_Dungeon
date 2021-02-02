@@ -110,9 +110,23 @@ public class ForceTravel
                 returnValue = TravelEvent.Mission;
                 break;
             case TravelType.Back_Mission:
-                foreach(var character in characters)
+                
+                switch (typeBack)
                 {
-                    character.CharacterStatus = CharacterStatus.ready;
+                    case TravelType.Camp:
+                        foreach (var character in characters)
+                        {
+                            character.CharacterStatus = CharacterStatus.ready;
+                            StaticValues.Team.Add(character);
+                        }
+                        break;
+                    case TravelType.Village:
+                        foreach (var character in characters)
+                        {
+                            character.CharacterStatus = CharacterStatus.ready;
+                            StaticValues.Cities[((VillageMapPointController)StaticValues.points[idBack]).id].Team_in_city.Add(character);
+                        }
+                        break;
                 }
                 returnValue = TravelEvent.EndTravel;
                 break;
@@ -142,7 +156,7 @@ public class ForceTravel
 
     public bool Send()
     {
-        if(characters.Count>0)
+        if(characters.Count > 0)
         {
             limitAmbush = 1;
             StaticValues.TeamTravels.Add(this);
@@ -150,7 +164,14 @@ public class ForceTravel
             {
                 character.CharacterStatus = CharacterStatus.traveling;
             }
-            RemoveCharacters();
+            switch(typeSend)
+            {
+                case TravelType.Back_Mission:
+                    break;
+                default:
+                    RemoveCharacters();
+                    break;
+            }
             StaticValues.Camp.Calculate_DayliCost();
             return true;
         }
