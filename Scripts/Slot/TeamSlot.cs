@@ -159,7 +159,6 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 else BFunction.GetComponent<Button>().interactable = true;
 
                 BFunction.GetComponent<Button>().onClick.AddListener(() => GetComponentInParent<TeamPanel>().ButtonRecruit(index));
-                BFunction.GetComponent<Button>().onClick.AddListener(() => StaticValues.Camp.Knowledge.AddToKnowledge(Character));
                 break;
             case PanelTeamType.Recruit_City:
                 Character = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Mercenaries[index];
@@ -179,7 +178,6 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 else BFunction.GetComponent<Button>().interactable = true;
 
                 BFunction.GetComponent<Button>().onClick.AddListener(() => GetComponentInParent<TeamPanel>().ButtonRecruit(index));
-                BFunction.GetComponent<Button>().onClick.AddListener(() => StaticValues.Camp.Knowledge.AddToKnowledge(Character));
                 break;
             case PanelTeamType.Team:
                 switch(StaticValues.currentLocate.GetTypeLocate())
@@ -298,64 +296,6 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         SetBasic(Character);
     }
 
-    /*public void SlotSet(int _index, ForceTravel.TravelType travelType, int idCity, bool isSend, bool isExist)
-    {
-        Characters character = null;
-        index = _index;
-
-        switch (travelType)
-        {
-            case ForceTravel.TravelType.Camp:
-                character = StaticValues.Team[index];
-                break;
-            case ForceTravel.TravelType.Village:
-                character = StaticValues.Cities[idCity].Team_in_city[index];
-                break;
-        }
-
-        BFunction.GetComponent<Button>().onClick.RemoveAllListeners();
-        ObjState.SetActive(false);
-        if (isExist) 
-        {
-            ButtonText.text = "Anuluj";
-            BFunction.SetActive(true);
-            BImage.SetActive(true);
-            BFunction.GetComponent<Button>().onClick.AddListener(() =>
-                GetComponentInParent<ForceSendWindow>().RemoveTravel(character, isSend));
-        }
-        else
-        {
-            ButtonText.text = "Wyślij";
-            BFunction.SetActive(true);
-            BImage.SetActive(false);
-            if (isSend)
-            {
-                BFunction.GetComponent<Button>().onClick.AddListener(() =>
-                    GetComponentInParent<ForceSendWindow>().AddTravel(character, isSend));
-            }
-            else
-            {
-                BFunction.GetComponent<Button>().onClick.AddListener(() =>
-                    GetComponentInParent<ForceSendWindow>().AddTravel(character, isSend));
-            }
-        }
-            
-        Cost.SetActive(false);
-
-        if(character!=null)
-        switch (character.Actor.Type)
-        {
-            case CharType.Mercenary:
-                CostInTime.SetActive(true);
-                CostInTime.GetComponent<TextMeshProUGUI>().text = "Utrzymanie: " + ((ChMercenary)character).GetDayCost();
-                break;
-            default:
-                CostInTime.SetActive(false);
-                break;
-            }
-        ShowStatus(character);
-        SetBasic(character);
-    }*/
     void SetBasic(Characters Character)
     {
         IconClass.sprite = StaticValues.Classes.Classes[Character.Actor.Class].Icon;

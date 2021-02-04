@@ -12,17 +12,15 @@ public class RecruiterPanel : MonoBehaviour
     public Slider Amount_Slide;
     public TextMeshProUGUI Amount_Current;
     public TextMeshProUGUI Cost_Send;
-    public TextMeshProUGUI Summary_rate;
     public Button Button_Send;
     public Button Button_Main_Send;
     public Button Button_Cancel;
 
     int MaxAmount = 0;
     #region Cost
-    int cost_class = 0;
-    int cost_race = 0;
-    int cost_trait = 0;
+    int cost_add = 0;
     int cost_amount = 100;
+    int cost_rate = 25;
     #endregion
 
     private void OnEnable()
@@ -75,7 +73,7 @@ public class RecruiterPanel : MonoBehaviour
 
     void CostUpdate()
     {
-        int cost = cost_amount + cost_class + cost_race + cost_trait;
+        int cost = (cost_amount + cost_add) * (int)Amount_Slide.value;
         Cost_Send.text = "" + cost;
         if (cost > StaticValues.Money)
         {
@@ -87,7 +85,7 @@ public class RecruiterPanel : MonoBehaviour
     public void Slider_OnChangeValue()
     {
         Amount_Current.text = "" + Amount_Slide.value;
-        cost_amount = (int)(100 * Amount_Slide.value);
+        //cost_amount = (int)(100 * Amount_Slide.value);
         CostUpdate();
     }
 
@@ -103,56 +101,33 @@ public class RecruiterPanel : MonoBehaviour
                 case 0:
                     id = StaticValues.Camp.Knowledge.Classes[Dropdowns[0].value - 1];
                     Rates[index].GetComponent<TextMeshProUGUI>().text += ""+CalculateRate_Class(id);
-                    cost_class = (int)(100 * ((100 - CalculateRate_Class(id)) % 10));
+                    cost_add = (int)(cost_rate * ((100 - CalculateRate_Class(id)) % 10));
+                    Dropdowns[1].value = 0;
+                    Dropdowns[2].value = 0;
                     break;
                 case 1:
                     id = StaticValues.Camp.Knowledge.Races[Dropdowns[1].value - 1];
-                    if(Dropdowns[0].value != 0)
-                    {
-                        List<int> Required = StaticValues.Classes.Classes[StaticValues.Camp.Knowledge.Classes[Dropdowns[0].value - 1]].RaceRequired_ID;
-                        if(Required != null && Required.Count > 0)
-                        {
-                            bool isExist = false;
-                            for (int i = 0; i < Required.Count; i++)
-                            {
-                                if(Required[i] == id)
-                                {
-                                    isExist = true;
-                                    break;
-                                }
-                            }
-                            if (!isExist)
-                            {
-                                Dropdowns[0].value = 0;
-                                Dropdown_OnChangeValue(0);
-                            }
-                        }
-                    }
                     Rates[index].GetComponent<TextMeshProUGUI>().text += "" + CalculateRate_Race(id);
-                    cost_race = (int)(100 * ((100 - CalculateRate_Race(id)) % 10));
+                    cost_add = (int)(cost_rate * ((100 - CalculateRate_Race(id)) % 10));
+                    Dropdowns[0].value = 0;
+                    Dropdowns[2].value = 0;
                     break;
                 case 2:
                     id = StaticValues.Camp.Knowledge.Traits[Dropdowns[2].value - 1];
                     Rates[index].GetComponent<TextMeshProUGUI>().text += "" + CalculateRate_Trait(id);
-                    cost_trait = (int)(100 * ((100 - CalculateRate_Trait(id)) % 10));
+                    cost_add = (int)(cost_rate * ((100 - CalculateRate_Trait(id)) % 10));
+                    Dropdowns[0].value = 0;
+                    Dropdowns[1].value = 0;
                     break;
             }
             Rates[index].GetComponent<TextMeshProUGUI>().text += "%";
         }
         else
         {
-            Rates[index].SetActive(false); 
-            switch (index)
+            Rates[index].SetActive(false);
+            if(Dropdowns[0].value == 0 && Dropdowns[1].value == 0 && Dropdowns[2].value == 0)
             {
-                case 0:
-                    cost_class = 0;
-                    break;
-                case 1:
-                    cost_race = 0;
-                    break;
-                case 2:
-                    cost_trait = 0;
-                    break;
+                cost_add = 0;
             }
         }
         CostUpdate();
@@ -210,7 +185,7 @@ public class RecruiterPanel : MonoBehaviour
             counter += StaticValues.Races.Races[i].randomRate;
         }
 
-        float result = (float)System.Math.Round((float)id_rate / counter * 100,2); //(((float)id_rate / (float)counter) * 100) - (((float)id_rate / (float)counter) * 100) % 0.01f;
+        float result = (float)System.Math.Round((float)id_rate / counter * 100, 2); //(((float)id_rate / (float)counter) * 100) - (((float)id_rate / (float)counter) * 100) % 0.01f;
         return result;
     }
     float CalculateRate_Trait(int id)
@@ -223,14 +198,14 @@ public class RecruiterPanel : MonoBehaviour
             if(StaticValues.Traits.Traits[i].canAddToKnowledge) counter += StaticValues.Traits.Traits[i].randomRate;
         }
 
-        float result = (float)System.Math.Round((float)id_rate / counter * 100,2);  //(((float)id_rate / (float)counter) * 100) - (((float)id_rate / (float)counter) * 100) % 0.01f;
+        float result = (float)System.Math.Round((float)id_rate / counter * 100, 2);  //(((float)id_rate / (float)counter) * 100) - (((float)id_rate / (float)counter) * 100) % 0.01f;
         Debug.Log(result);
         return result;
     }
 
     public void SendRecruiter()
     {
-        StaticValues.Money -= (cost_amount+cost_class+cost_race+cost_trait);
+        StaticValues.Money -= (cost_amount+cost_add);
 
         if (Dropdowns[0].value != 0) StaticValues.Camp.RecruiterSettings.ID_Class = StaticValues.Camp.Knowledge.Classes[Dropdowns[0].value - 1];
         else StaticValues.Camp.RecruiterSettings.ID_Class = -1;
@@ -254,5 +229,10 @@ public class RecruiterPanel : MonoBehaviour
         StaticValues.Camp.RecruiterSettings.Recruiter_is_Send = false;
         GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
         UpdatePanel();
+    }
+
+    public void WindowRecruit(GameObject obj)
+    {
+        obj.SetActive(!obj.activeSelf);
     }
 }

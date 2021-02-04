@@ -471,11 +471,13 @@ public class TeamPanel : MonoBehaviour
         {
             StaticValues.Money -= ((ChMercenary)Select).Cost;
         }
-        switch(TeamSelect.Type)
+        StaticValues.Camp.Knowledge.AddToKnowledge(Select);
+        switch (TeamSelect.Type)
         {
             case PanelTeamType.Recruit_Camp:
                 StaticValues.Team.Add(Select);
                 StaticValues.Camp.RecruiterSettings.recruitChar.RemoveAt(TeamSelect.Select);
+                GetComponentInChildren<RecruiterPanel>().UpdatePanel();
                 break;
             case PanelTeamType.Recruit_City:
                 StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Team_in_city.Add(Select);
@@ -493,15 +495,18 @@ public class TeamPanel : MonoBehaviour
         {
             case PanelTeamType.Recruit_Camp:
                 character = StaticValues.Camp.RecruiterSettings.recruitChar[index];
+                StaticValues.Camp.Knowledge.AddToKnowledge(character);
                 if (character.Actor.Type == CharType.Mercenary)
                 {
                     StaticValues.Money -= ((ChMercenary)character).Cost;
                 }
                 StaticValues.Team.Add(character);
                 StaticValues.Camp.RecruiterSettings.recruitChar.RemoveAt(index);
+                GetComponentInChildren<RecruiterPanel>().UpdatePanel();
                 break;
             case PanelTeamType.Recruit_City:
                 character = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Mercenaries[index];
+                StaticValues.Camp.Knowledge.AddToKnowledge(character);
                 if (character.Actor.Type == CharType.Mercenary)
                 {
                     StaticValues.Money -= ((ChMercenary)character).Cost;
