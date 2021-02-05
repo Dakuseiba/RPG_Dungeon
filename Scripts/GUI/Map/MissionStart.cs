@@ -12,13 +12,12 @@ public class MissionStart : MonoBehaviour
     public Button B_Start;
     public Button B_Save;
 
-    ForceTravel travel;
-    ForceTravel.TravelEvent travelEvent;
+    Mission mission;
+
     public void SetPanel(ForceTravel _travel, ForceTravel.TravelEvent type)
     {
-        travel = _travel;
-        travelEvent = type;
-        switch(travelEvent)
+        mission = new Mission(_travel, type);
+        switch(mission.travelEvent)
         {
             case ForceTravel.TravelEvent.Ambush:
                 T_MissionName.text = "Zasadzka!";
@@ -31,23 +30,26 @@ public class MissionStart : MonoBehaviour
 
     public void ButtonStart()
     {
-        switch(travelEvent)
+        StaticValues.mission = new Mission(mission);
+        StaticValues.headSceneManager.ChangeScene("Mission");
+        //Later move to new function
+        /*switch (mission.travelEvent)
         {
             case ForceTravel.TravelEvent.Ambush:
                 break;
             case ForceTravel.TravelEvent.Mission:
                 ForceTravel newTravel = new ForceTravel();
-                newTravel.characters = travel.characters;
+                newTravel.characters = mission.travel.characters;
                 newTravel.typeSend = ForceTravel.TravelType.Back_Mission;
-                newTravel.typeBack = travel.typeBack;
-                newTravel.idBack = travel.idBack;
-                var mapPoint = PointList.IdPoints(travel.idSend, travel.idBack);
+                newTravel.typeBack = mission.travel.typeBack;
+                newTravel.idBack = mission.travel.idBack;
+                var mapPoint = PointList.IdPoints(mission.travel.idSend, mission.travel.idBack);
                 newTravel.SetTime(mapPoint);
                 newTravel.Send();
                 break;
         }
-        travel = null;
+        mission.travel = null;
         GetComponentInParent<MapScript>().GetComponentInChildren<Travel_Panel>().UpdatePanel();
-        gameObject.SetActive(false);
+        gameObject.SetActive(false);*/
     }
 }

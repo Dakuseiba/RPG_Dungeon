@@ -46,11 +46,14 @@ public class PointList
                 PointList newRoute = new PointList();
                 newRoute.AddPoints(startedIdPoint, point.ID, point.time, point.RouteID);
                 var nextRoute = IdPoints(point.ID, destinyIdPoint, previous);
-                foreach(var route in nextRoute.betweenPoints)
+                if(nextRoute != null)
                 {
-                    newRoute.AddPoints(route.startId, route.endId, route.Time, route.RouteID);
+                    foreach (var route in nextRoute.betweenPoints)
+                    {
+                        newRoute.AddPoints(route.startId, route.endId, route.Time, route.RouteID);
+                    }
+                    allRoute.Add(newRoute);
                 }
-                allRoute.Add(newRoute);
             }
         }
         if (allRoute.Count > 0)
@@ -73,6 +76,7 @@ public class PointList
     {
         List<PointList> allRoute = new List<PointList>();
         var started = StaticValues.points[startedIdPoint].MapPoint;
+
         foreach(var point in started.NeighborPointID)
         {
             bool isExist = false;

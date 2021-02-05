@@ -11,24 +11,6 @@ public class GUIControll : MonoBehaviour
 
     private void Start()
     {
-        switch (GUIEnabled.Type)
-        {
-            case Class_GUI.GUI_Type.HUB:
-                switch (StaticValues.currentLocate.GetTypeLocate())
-                {
-                    case ForceTravel.TravelType.Camp:
-                        GUIEnabled.Hub.Camp_Head.SetActive(true);
-                        GUIEnabled.Hub.Camp.SetActive(false);
-                        GUIEnabled.Hub.City.SetActive(false);
-                        break;
-                    case ForceTravel.TravelType.Village:
-                        GUIEnabled.Hub.Camp_Head.SetActive(false);
-                        GUIEnabled.Hub.Camp.SetActive(false);
-                        GUIEnabled.Hub.City.SetActive(true);
-                        break;
-                }
-                break;
-        }
     }
 
     public void LoadScene()
@@ -36,6 +18,10 @@ public class GUIControll : MonoBehaviour
         switch (GUIEnabled.Type)
         {
             case Class_GUI.GUI_Type.HUB:
+                GUIEnabled.gui_hub.SetActive(true);
+                GUIEnabled.gui_battle.SetActive(false);
+                GUIEnabled.gui_mission.SetActive(false);
+                GUIEnabled.gui_menu.SetActive(false);
                 switch (StaticValues.currentLocate.GetTypeLocate())
                 {
                     case ForceTravel.TravelType.Camp:
@@ -50,7 +36,24 @@ public class GUIControll : MonoBehaviour
                         break;
                 }
                 break;
+            case Class_GUI.GUI_Type.Battle:
+                GUIEnabled.gui_hub.SetActive(false);
+                GUIEnabled.gui_battle.SetActive(true);
+                GUIEnabled.gui_mission.SetActive(true);
+                GUIEnabled.gui_menu.SetActive(false);
+                break;
+            case Class_GUI.GUI_Type.Mission:
+                GUIEnabled.gui_hub.SetActive(false);
+                GUIEnabled.gui_battle.SetActive(true);
+                GUIEnabled.gui_mission.SetActive(false);
+                GUIEnabled.gui_menu.SetActive(false);
+                break;
         }
+    }
+    public void LoadScene(Class_GUI.GUI_Type type)
+    {
+        GUIEnabled.Type = type;
+        LoadScene();
     }
 
     [System.Serializable]

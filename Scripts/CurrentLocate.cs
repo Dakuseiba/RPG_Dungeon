@@ -35,7 +35,15 @@ public class CurrentLocate
     public void SetLocate(ForceTravel.TravelType locate, int id)
     {
         locateType = locate;
-        idVillage = id;
+        switch(locate)
+        {
+            case ForceTravel.TravelType.Camp:
+                idCamp = id;
+                break;
+            case ForceTravel.TravelType.Village:
+                idVillage = id;
+                break;
+        }
     }
 
     public void SetCampID(int id)

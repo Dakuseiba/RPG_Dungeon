@@ -5,7 +5,7 @@ using UnityEngine;
 public class Class_GUI
 {
     public GameObject gui_hub;
-    public GameObject gui_explore;
+    public GameObject gui_mission;
     public GameObject gui_battle;
     public GameObject gui_menu;
     public GameObject Split;
@@ -24,7 +24,7 @@ public class Class_GUI
         [Space]
         public GameObject[] Panels;
     }
-    public class Explore
+    public class Mission
     {
 
     }
@@ -40,7 +40,7 @@ public class Class_GUI
     {
         None,
         HUB,
-        Explore,
+        Mission,
         Battle,
         Menu
     }

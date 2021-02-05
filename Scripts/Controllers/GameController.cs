@@ -22,7 +22,6 @@ public class GameController : MonoBehaviour
     public CityDataBase CitiesData;
 
     GameObject currentCanvas;
-    // Start is called before the first frame update
     void Start()
     {
         if (StaticValues.States == null)
@@ -65,11 +64,10 @@ public class GameController : MonoBehaviour
         if (StaticValues.LumberjackData == null)
             StaticValues.LumberjackData = LumberjackData;
 
-        /*if (StaticValues.currentLocate.GetTypeLocate() == ForceTravel.TravelType.None)
-            StaticValues.currentLocate.SetLocate(ForceTravel.TravelType.Camp);*/
-
         StaticValues.InvMagazine.Capacity();
         CitiesController.SetUpgrades();
+
+        SceneManager.LoadScene("HUB", LoadSceneMode.Additive);
     }
     private void Awake()
     {
@@ -84,17 +82,10 @@ public class GameController : MonoBehaviour
         currentCanvas.GetComponent<GUIControll>().GUIEnabled.Type = Class_GUI.GUI_Type.HUB;
 
         StaticValues.Camp.upgrades.Recruit = 1;
-        testMagazine = StaticValues.InvMagazine;
-        //StaticValues.points = points;
     }
-    public Magazine testMagazine;
-    public List<City> CitySup;
-    public List<ForceTravel> test;
-    public List<MapPointController> points;
+
     void Update()
     {
-        test = StaticValues.TeamTravels;
-        CitySup = StaticValues.Cities;
         #region Test
         if (Input.GetKeyDown(KeyCode.C) && StaticValues.Team.Count < StaticValues.Camp.UnitMax)
         {
@@ -143,7 +134,6 @@ public class GameController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             bool isExist = false;
-            //SceneManager.LoadScene("Camp");
             for (int i = 0; i < StaticValues.Recipe.Count; i++)
             {
                 if (StaticValues.Recipe[i] == StaticValues.Items.Recipes[0])
@@ -166,6 +156,7 @@ public class GameController : MonoBehaviour
             SetCampID();
         }
         #endregion
+        
         FixItemInfo(currentCanvas.GetComponent<GUIControll>().ItemInfoWindow);
 
         switch (currentCanvas.GetComponent<GUIControll>().GUIEnabled.Type)
@@ -240,7 +231,6 @@ public class GameController : MonoBehaviour
     public void UpgradeField()
     {
         ICamp.UpgradeCamp(ICamp.Type_Camp.FieldHospital);
-        //SceneManager.LoadScene("Camp");
     }
 
     [ContextMenu("Hit Team")]
@@ -277,7 +267,7 @@ public class GameController : MonoBehaviour
     [ContextMenu("Set camp id")]
     public void SetCampID()
     {
-        StaticValues.currentLocate.SetCampID(2);
+        FindObjectOfType<HUBSceneManager>().SetScene(PointType.Camp, 2);
     }
     [ContextMenu("Update dailycost")]
     public void DailyCost()
@@ -323,6 +313,17 @@ public class GameController : MonoBehaviour
             Panel.Money.text = "" + StaticValues.Money;
             Panel.Fees.text = "" + StaticValues.DayliCost;
         }
+    }
+
+    [ContextMenu("Remove HUB")]
+    void RemoveSceneAdditive()
+    {
+        SceneManager.UnloadSceneAsync("HUB");
+    }
+    [ContextMenu("Test")]
+    void test()
+    {
+        StaticValues.headSceneManager.ChangeScene("Battle");
     }
 }
 

@@ -40,6 +40,10 @@ public class StaticValues
     public static CurrentLocate currentLocate = new CurrentLocate();
     public static List<Region> regions;
     public static List<MapPointController> points;
+
+    public static HeadSceneManager headSceneManager = new HeadSceneManager();
+    public static Mission mission;
+
     public static void SortTravel()
     {
         for(int i=0;i<TeamTravels.Count;i++)

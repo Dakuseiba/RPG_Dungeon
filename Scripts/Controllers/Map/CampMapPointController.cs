@@ -49,20 +49,32 @@ public class CampMapPointController : MapPointController
         #endregion
         #region Sending
         if(StaticValues.points[StaticValues.currentLocate.GetIDCamp()].MapPoint.typePoint != PointType.Camp)
-        { buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Załóż obóz"; }
-        else
-        { buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Wyślij"; }
-
-        if(!StaticValues.Camp.campIsMoved)
-        {
-            int teamCount = StaticValues.Camp.TeamInCamp();
-            if(StaticValues.Cities.FindAll(x=>x.Team_in_city.Count > 0).Count > 0 
-                && 
-                StaticValues.currentLocate.GetIDCamp() == MapPoint.idPoint
-                && 
-                teamCount < StaticValues.Camp.UnitMax)
-                buttons[0].interactable = true;
+        { 
+            buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Załóż obóz"; 
+            if (!StaticValues.Camp.campIsMoved)
+            {
+                int teamCount = StaticValues.Camp.TeamInCamp();
+                if (StaticValues.Cities.FindAll(x => x.Team_in_city.Count > 0).Count > 0
+                    &&
+                    teamCount < StaticValues.Camp.UnitMax)
+                    buttons[0].interactable = true;
+            }
         }
+        else
+        { 
+            buttons[0].GetComponentInChildren<TextMeshProUGUI>().text = "Wyślij";
+            if (!StaticValues.Camp.campIsMoved)
+            {
+                int teamCount = StaticValues.Camp.TeamInCamp();
+                if (StaticValues.Cities.FindAll(x => x.Team_in_city.Count > 0).Count > 0
+                    &&
+                    StaticValues.currentLocate.GetIDCamp() == MapPoint.idPoint
+                    &&
+                    teamCount < StaticValues.Camp.UnitMax)
+                    buttons[0].interactable = true;
+            }
+        }
+
         buttons[0].onClick.AddListener(() =>
         GetComponentInParent<MapScript>().squadSelect.GetComponent<TravelSelect_Panel>().SetData(this, ForceTravel.TravelType.Camp));
         #endregion
@@ -74,11 +86,11 @@ public class CampMapPointController : MapPointController
                     buttons[1].interactable = false;
                 break;
             case ForceTravel.TravelType.Village:
-                if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
+                if (StaticValues.points[StaticValues.currentLocate.GetIDCamp()].MapPoint.typePoint == PointType.Camp && ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id)
                     buttons[1].interactable = true;
                 break;
             case ForceTravel.TravelType.None:
-                if (((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id && !StaticValues.Camp.campIsMoved)
+                if (StaticValues.points[StaticValues.currentLocate.GetIDCamp()].MapPoint.typePoint == PointType.Camp && ((CampMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDCamp()]).id == id && !StaticValues.Camp.campIsMoved)
                     buttons[1].interactable = true;
                 break;
         }
