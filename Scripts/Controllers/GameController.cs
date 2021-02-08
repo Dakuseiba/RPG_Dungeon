@@ -66,7 +66,7 @@ public class GameController : MonoBehaviour
 
         StaticValues.InvMagazine.Capacity();
         CitiesController.SetUpgrades();
-
+        FindObjectOfType<Camera>().gameObject.SetActive(false);
         SceneManager.LoadScene("HUB", LoadSceneMode.Additive);
     }
     private void Awake()

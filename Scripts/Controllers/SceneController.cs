@@ -7,6 +7,6 @@ public class SceneController : MonoBehaviour
     public Class_GUI.GUI_Type type;
     void Start()
     {
-        FindObjectOfType<GUIControll>().LoadScene(type);
+        FindObjectOfType<GUIControll>()?.LoadScene(type);
     }
 }
