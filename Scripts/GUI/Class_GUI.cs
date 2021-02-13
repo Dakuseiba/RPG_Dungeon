@@ -41,7 +41,6 @@ public class Class_GUI
         None,
         HUB,
         Mission,
-        Battle,
         Menu
     }
 }

@@ -36,16 +36,10 @@ public class GUIControll : MonoBehaviour
                         break;
                 }
                 break;
-            case Class_GUI.GUI_Type.Battle:
-                GUIEnabled.gui_hub.SetActive(false);
-                GUIEnabled.gui_battle.SetActive(true);
-                GUIEnabled.gui_mission.SetActive(true);
-                GUIEnabled.gui_menu.SetActive(false);
-                break;
             case Class_GUI.GUI_Type.Mission:
                 GUIEnabled.gui_hub.SetActive(false);
                 GUIEnabled.gui_battle.SetActive(true);
-                GUIEnabled.gui_mission.SetActive(false);
+                GUIEnabled.gui_mission.SetActive(true);
                 GUIEnabled.gui_menu.SetActive(false);
                 break;
         }

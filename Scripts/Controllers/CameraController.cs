@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
     public Vector3 zoomAmount;
 
     [Header("Border for Camera")]
-    [SerializeField]BorderCamera borderCamera;
+    [SerializeField]BorderCamera borderCamera = new BorderCamera();
 
     float speed;
     float RotX;
@@ -102,12 +102,21 @@ public class CameraController : MonoBehaviour
         {
             if (Input.GetAxis("Mouse Y") > 0f)
             {
-                RotX += -speedRotationMouse;
+                RotX += -speedRotationMouse * Input.GetAxis("Mouse Y");
             }
             if (Input.GetAxis("Mouse Y") < 0f)
             {
-                RotX += speedRotationMouse;
+                RotX += speedRotationMouse * -Input.GetAxis("Mouse Y");
             }
+            if(Input.GetAxis("Mouse X") > 0f)
+            {
+                RotY += -speedRotationMouse * -Input.GetAxis("Mouse X");
+            }
+            if(Input.GetAxis("Mouse X") < 0f)
+            {
+                RotY += -speedRotationMouse * -Input.GetAxis("Mouse X");
+            }
+            
             RotX = Mathf.Clamp(RotX, minAngle, maxAngle);
         }
         

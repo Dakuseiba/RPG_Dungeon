@@ -66,8 +66,8 @@ public class GameController : MonoBehaviour
 
         StaticValues.InvMagazine.Capacity();
         CitiesController.SetUpgrades();
-        FindObjectOfType<Camera>().gameObject.SetActive(false);
-        SceneManager.LoadScene("HUB", LoadSceneMode.Additive);
+        //FindObjectOfType<Camera>().gameObject.SetActive(false);
+        //SceneManager.LoadScene("HUB", LoadSceneMode.Additive);
     }
     private void Awake()
     {
@@ -163,6 +163,9 @@ public class GameController : MonoBehaviour
         {
             case Class_GUI.GUI_Type.HUB:
                 CountPanel_Update();
+                break;
+            case Class_GUI.GUI_Type.Mission:
+                //FindObjectOfType<MissionController>()?.gameObject;
                 break;
         }
         if (currentCanvas.GetComponent<GUIControll>().GUIEnabled.Split.activeSelf)
