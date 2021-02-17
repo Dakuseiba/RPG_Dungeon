@@ -5,13 +5,13 @@ using UnityEngine.AI;
 
 public class MissionController : MonoBehaviour
 {
-    public List<GameObject> Characters;
-    public LineRenderer lineRender;
-    Vector3 target = new Vector3();
-    NavMeshAgent agent;
+    public static List<GameObject> Characters;
+    public static int Index;
+    MissionMachine missionMachine;
 
     private void Start()
     {
+        missionMachine = new MissionMachine();
         Characters = new List<GameObject>();
         var players = GameObject.FindGameObjectsWithTag("Player");
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -24,41 +24,11 @@ public class MissionController : MonoBehaviour
         {
             Characters.Add(enemy);
         }
-        agent = Characters[0].GetComponent<NavMeshAgent>();
+        missionMachine.ChangeState(new IMS_CharControll());
     }
 
     private void Update()
     {
-        UpdateTarget();
-        CharacterMove();
-    }
-    void PathRender(bool hasPath)
-    {
-        if(hasPath)
-        {
-            lineRender.positionCount = agent.path.corners.Length;
-            lineRender.SetPositions(agent.path.corners);
-            lineRender.enabled = true;
-        }
-        else
-        {
-            lineRender.enabled = false;
-        }
-    }
-
-    void UpdateTarget()
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if(Physics.Raycast(ray,out hit))
-        {
-            target= hit.point;
-        }
-    }
-
-    void CharacterMove()
-    {
-        agent.SetDestination(target);
-        PathRender(agent.hasPath);
+        missionMachine.ExecuteStateLogic();
     }
 }
