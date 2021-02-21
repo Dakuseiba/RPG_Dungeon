@@ -31,6 +31,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]BorderCamera borderCamera = new BorderCamera();
 
     float speed;
+    float RotSpeed;
     float RotX;
     float RotY;
 
@@ -67,10 +68,12 @@ public class CameraController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = fastSpeed;
+            RotSpeed = speedRotationMouse;
         }
         else
         {
             speed = normalSpeed;
+            RotSpeed = speedRotationButton;
         }
         if (Input.GetKey(KeyCode.W))
         {
@@ -90,11 +93,11 @@ public class CameraController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.Q))
         { 
-            RotY += -speedRotationButton;
+            RotY += -RotSpeed;
         }
         if (Input.GetKey(KeyCode.E))
         {
-            RotY += speedRotationButton;
+            RotY += RotSpeed;
         }
         if (Input.GetMouseButtonDown(2)) { Cursor.lockState = CursorLockMode.Locked; }
         if (Input.GetMouseButtonUp(2)) { Cursor.lockState = CursorLockMode.None; }

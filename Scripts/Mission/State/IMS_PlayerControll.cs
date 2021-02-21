@@ -28,13 +28,13 @@ class IMS_PlayerControll : IMissionState
         colorPositive = new Color(0f, 0.15f, 1f);
         colorNegative = new Color(1f, 0f, 0f);
         isEndTurn = false;
-
-        points = 2;
-        moveRange = 10f;
-
         target = new Vector3();
         lineRender = GameObject.FindObjectOfType<LineRenderer>();
         agent = MissionController.Characters[MissionController.Index].GetComponent<NavMeshAgent>();
+
+        points = agent.GetComponent<HolderDataCharacter>().character.character.currentStats.Battle.actionPoint;
+        moveRange = agent.GetComponent<HolderDataCharacter>().character.character.currentStats.Battle.move;
+
         agent.enabled = true;
         agent.isStopped = true;
     }
@@ -60,16 +60,21 @@ class IMS_PlayerControll : IMissionState
     {
         if (hasPath)
         {
-            if (points >= cost)
+            #region Color
+            if (agent.isStopped)
             {
-                lineRender.startColor = colorPositive;
-                lineRender.endColor = colorPositive;
+                if (points >= cost)
+                {
+                    lineRender.startColor = colorPositive;
+                    lineRender.endColor = colorPositive;
+                }
+                else
+                {
+                    lineRender.startColor = colorNegative;
+                    lineRender.endColor = colorNegative;
+                }
             }
-            else
-            {
-                lineRender.startColor = colorNegative;
-                lineRender.endColor = colorNegative;
-            }
+            #endregion
             lineRender.positionCount = agent.path.corners.Length;
             lineRender.SetPositions(agent.path.corners);
             lineRender.enabled = true;

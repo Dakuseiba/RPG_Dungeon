@@ -12,7 +12,11 @@ class IMS_NextCharacter : IMissionState
     {
         MissionController.Characters[MissionController.Index].GetComponent<NavMeshObstacle>().enabled = true;
         MissionController.Index++;
-        if (MissionController.Index >= MissionController.Characters.Count) MissionController.Index = 0;
+        if (MissionController.Index >= MissionController.Characters.Count)
+        {
+            MissionController.Characters = new List<GameObject>(MissionController.SecondTurn);
+            MissionController.Index = 0;
+        }
         MissionController.Characters[MissionController.Index].GetComponent<NavMeshObstacle>().enabled = false;
     }
 
