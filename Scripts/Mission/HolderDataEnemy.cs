@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class HolderDataEnemy : MonoBehaviour
 {
-    public int iniciative;
+    public LifeStats lifeStats;
+    public Battle_Stats battle;
 }

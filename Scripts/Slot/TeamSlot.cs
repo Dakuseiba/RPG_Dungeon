@@ -231,7 +231,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 BFunction.SetActive(true);
                 BImage.SetActive(false);
 
-                int cost = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].HealCost * (int)Character.HealthStatus;
+                int cost = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].HealCost * (int)Character.lifeStats.HealthStatus;
 
                 Cost.GetComponent<TextMeshProUGUI>().text = "Koszt: " + cost;
 
@@ -304,8 +304,8 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         T_Last.text = Character.Actor.LastName;
         T_Nick.text = Character.Actor.Nickname;
         T_Level.text = "Poziom " + Character.Level;
-        HpBar.fillAmount = (float)Character.HP / (float)Character.MaxHP;
-        MpBar.fillAmount = (float)Character.MP / (float)Character.MaxMP;
+        HpBar.fillAmount = (float)Character.lifeStats.HP / (float)Character.lifeStats.MaxHP;
+        MpBar.fillAmount = (float)Character.lifeStats.MP / (float)Character.lifeStats.MaxMP;
         ExpBar.fillAmount = (float)Character.CurrentExp / (float)Character.MaxExp; 
         if (Character.pointAbility > 0 || Character.pointSkills > 0 || Character.pointStats > 0) LevelUp.SetActive(true);
         else LevelUp.SetActive(false);
@@ -337,7 +337,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     void HealthState(Characters Character)
     {
-        switch (Character.HealthStatus)
+        switch (Character.lifeStats.HealthStatus)
         {
             case HealthStatus.Healthy:
                 break;
@@ -358,9 +358,9 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     void HospitalHeal(Characters Character, int cost)
     {
         StaticValues.Money -= cost;
-        Character.HP = Character.MaxHP;
-        Character.MP = Character.MaxMP;
-        Character.Wound = 0;
+        Character.lifeStats.HP = Character.lifeStats.MaxHP;
+        Character.lifeStats.MP = Character.lifeStats.MaxMP;
+        Character.lifeStats.Wound = 0;
         Character.CheckHealthStatus();
         GetComponentInParent<TeamSelect>().ShowList();
     }

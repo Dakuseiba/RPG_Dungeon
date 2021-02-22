@@ -43,18 +43,18 @@ public class ClockGame : MonoBehaviour
         {
             StaticValues.Team[i].timeToRegenHP++;
             StaticValues.Team[i].timeToRegenMP++;
-            if(StaticValues.Team[i].Wound > 0)
+            if(StaticValues.Team[i].lifeStats.Wound > 0)
             {
                 if (StaticValues.Camp.MedicSettings.Team.Exists(x => x == i))
                 {
                     if ((StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Camp.MedicSettings.Heal * StaticValues.Camp.upgrades.FieldHospital) / 60f >= 1)
                     {
-                        StaticValues.Team[i].HP += (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Camp.MedicSettings.Heal / 60f);
-                        StaticValues.Team[i].Wound -= (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Camp.MedicSettings.Heal / 60f);
+                        StaticValues.Team[i].lifeStats.HP += (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Camp.MedicSettings.Heal / 60f);
+                        StaticValues.Team[i].lifeStats.Wound -= (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Camp.MedicSettings.Heal / 60f);
                         StaticValues.Team[i].timeToRegenHP = 0;
-                        if (StaticValues.Team[i].Wound <= 0)
+                        if (StaticValues.Team[i].lifeStats.Wound <= 0)
                         {
-                            StaticValues.Team[i].Wound = 0;
+                            StaticValues.Team[i].lifeStats.Wound = 0;
                             StaticValues.Camp.MedicSettings.Team.Remove(StaticValues.Camp.MedicSettings.Team[i]);
                             StaticValues.Team[i].CharacterStatus = CharacterStatus.ready;
                             SendNotification(TypeNotification.team_healing, i);
@@ -65,30 +65,30 @@ public class ClockGame : MonoBehaviour
                 {
                     if (StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Team[i].currentStats.Other.regen_cHP / 60f >= 1)
                     {
-                        StaticValues.Team[i].HP += (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Team[i].currentStats.Other.regen_cHP / 60f);
-                        StaticValues.Team[i].Wound -= (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Team[i].currentStats.Other.regen_cHP / 60f);
+                        StaticValues.Team[i].lifeStats.HP += (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Team[i].currentStats.Other.regen_cHP / 60f);
+                        StaticValues.Team[i].lifeStats.Wound -= (int)(StaticValues.Team[i].timeToRegenHP * (float)StaticValues.Team[i].currentStats.Other.regen_cHP / 60f);
                         StaticValues.Team[i].timeToRegenHP = 0;
-                        if (StaticValues.Team[i].Wound <= 0) 
+                        if (StaticValues.Team[i].lifeStats.Wound <= 0) 
                         { 
-                            StaticValues.Team[i].Wound = 0;
+                            StaticValues.Team[i].lifeStats.Wound = 0;
                             SendNotification(TypeNotification.team_healing, i);
                         }
                     }
                 }
                 StaticValues.Team[i].CheckHealthStatus();
-                if (StaticValues.Team[i].HP > StaticValues.Team[i].MaxHP) StaticValues.Team[i].HP = StaticValues.Team[i].MaxHP;
+                if (StaticValues.Team[i].lifeStats.HP > StaticValues.Team[i].lifeStats.MaxHP) StaticValues.Team[i].lifeStats.HP = StaticValues.Team[i].lifeStats.MaxHP;
             }
             
-            if(StaticValues.Team[i].MP < StaticValues.Team[i].MaxMP)
+            if(StaticValues.Team[i].lifeStats.MP < StaticValues.Team[i].lifeStats.MaxMP)
             {
                 if (StaticValues.Team[i].timeToRegenMP * (float)StaticValues.Team[i].currentStats.Other.regen_cMP / 60f >= 1)
                 {
-                    StaticValues.Team[i].MP += (int)(StaticValues.Team[i].timeToRegenMP * (float)StaticValues.Team[i].currentStats.Other.regen_cMP / 60f);
+                    StaticValues.Team[i].lifeStats.MP += (int)(StaticValues.Team[i].timeToRegenMP * (float)StaticValues.Team[i].currentStats.Other.regen_cMP / 60f);
                     StaticValues.Team[i].timeToRegenMP = 0;
                 }
-                if (StaticValues.Team[i].MP >= StaticValues.Team[i].MaxMP)
+                if (StaticValues.Team[i].lifeStats.MP >= StaticValues.Team[i].lifeStats.MaxMP)
                 {
-                    StaticValues.Team[i].MP = StaticValues.Team[i].MaxMP;
+                    StaticValues.Team[i].lifeStats.MP = StaticValues.Team[i].lifeStats.MaxMP;
                 }
             }
 
@@ -99,33 +99,33 @@ public class ClockGame : MonoBehaviour
             {
                 village.Team_in_city[i].timeToRegenHP++;
                 village.Team_in_city[i].timeToRegenMP++; 
-                if (village.Team_in_city[i].Wound > 0)
+                if (village.Team_in_city[i].lifeStats.Wound > 0)
                 {
                     if (village.Team_in_city[i].timeToRegenHP * (float)village.Team_in_city[i].currentStats.Other.regen_cHP / 60f >= 1)
                     {
-                        village.Team_in_city[i].HP += (int)(village.Team_in_city[i].timeToRegenHP * (float)village.Team_in_city[i].currentStats.Other.regen_cHP / 60f);
-                        village.Team_in_city[i].Wound -= (int)(village.Team_in_city[i].timeToRegenHP * (float)village.Team_in_city[i].currentStats.Other.regen_cHP / 60f);
+                        village.Team_in_city[i].lifeStats.HP += (int)(village.Team_in_city[i].timeToRegenHP * (float)village.Team_in_city[i].currentStats.Other.regen_cHP / 60f);
+                        village.Team_in_city[i].lifeStats.Wound -= (int)(village.Team_in_city[i].timeToRegenHP * (float)village.Team_in_city[i].currentStats.Other.regen_cHP / 60f);
                         village.Team_in_city[i].timeToRegenHP = 0;
-                        if (village.Team_in_city[i].Wound <= 0)
+                        if (village.Team_in_city[i].lifeStats.Wound <= 0)
                         {
-                            village.Team_in_city[i].Wound = 0;
+                            village.Team_in_city[i].lifeStats.Wound = 0;
                             SendNotification(TypeNotification.team_healing, i);
                         }
                     }
                     village.Team_in_city[i].CheckHealthStatus();
-                    if (village.Team_in_city[i].HP > village.Team_in_city[i].MaxHP) village.Team_in_city[i].HP = village.Team_in_city[i].MaxHP;
+                    if (village.Team_in_city[i].lifeStats.HP > village.Team_in_city[i].lifeStats.MaxHP) village.Team_in_city[i].lifeStats.HP = village.Team_in_city[i].lifeStats.MaxHP;
                 }
 
-                if (village.Team_in_city[i].MP < village.Team_in_city[i].MaxMP)
+                if (village.Team_in_city[i].lifeStats.MP < village.Team_in_city[i].lifeStats.MaxMP)
                 {
                     if (village.Team_in_city[i].timeToRegenMP * (float)village.Team_in_city[i].currentStats.Other.regen_cMP / 60f >= 1)
                     {
-                        village.Team_in_city[i].MP += (int)(village.Team_in_city[i].timeToRegenMP * (float)village.Team_in_city[i].currentStats.Other.regen_cMP / 60f);
+                        village.Team_in_city[i].lifeStats.MP += (int)(village.Team_in_city[i].timeToRegenMP * (float)village.Team_in_city[i].currentStats.Other.regen_cMP / 60f);
                         village.Team_in_city[i].timeToRegenMP = 0;
                     }
-                    if (village.Team_in_city[i].MP >= village.Team_in_city[i].MaxMP)
+                    if (village.Team_in_city[i].lifeStats.MP >= village.Team_in_city[i].lifeStats.MaxMP)
                     {
-                        village.Team_in_city[i].MP = village.Team_in_city[i].MaxMP;
+                        village.Team_in_city[i].lifeStats.MP = village.Team_in_city[i].lifeStats.MaxMP;
                     }
                 }
             }

@@ -243,8 +243,8 @@ public class GameController : MonoBehaviour
         {
             if(Member.CharacterStatus != CharacterStatus.healing)
             {
-                Member.HP -= 20;
-                Member.Wound += 20;
+                Member.lifeStats.HP -= 20;
+                Member.lifeStats.Wound += 20;
             }
         }
     }
@@ -256,7 +256,7 @@ public class GameController : MonoBehaviour
         {
             if (Member.CharacterStatus == CharacterStatus.ready)
             {
-                Member.HP += 2;
+                Member.lifeStats.HP += 2;
             }
         }
     }

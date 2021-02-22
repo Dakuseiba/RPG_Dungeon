@@ -8,17 +8,9 @@ public class Characters
     
     public bool Awaknes;
 
-    #region życie i mana
-    public int MaxHP=0;
-    public int HP=0;
-    public int MaxMP=0;
-    public int MP=0;
-    
-    public int Wound=0;
-    public CharacterStatus CharacterStatus;
-    public HealthStatus HealthStatus;
-    #endregion
+    public LifeStats lifeStats = new LifeStats();
 
+    public CharacterStatus CharacterStatus;
     public int currentStress;
 
     public Stats Stats = new Stats();
@@ -313,12 +305,12 @@ public class Characters
 
     void Calculate_HpMp()
     {
-        int differenceHP = currentStats.Other.hp - MaxHP;
-        MaxHP += differenceHP;
-        HP += differenceHP;
-        int differenceMP = currentStats.Other.mp - MaxMP;
-        MaxMP += differenceMP;
-        MP += differenceMP;
+        int differenceHP = currentStats.Other.hp - lifeStats.MaxHP;
+        lifeStats.MaxHP += differenceHP;
+        lifeStats.HP += differenceHP;
+        int differenceMP = currentStats.Other.mp - lifeStats.MaxMP;
+        lifeStats.MaxMP += differenceMP;
+        lifeStats.MP += differenceMP;
     }
     void CalculateWeaponDmg(Item item, int index)
     {
@@ -536,12 +528,12 @@ public class Characters
 
     public void CheckHealthStatus()
     {
-        if (Wound == 0) HealthStatus = HealthStatus.Healthy;
+        if (lifeStats.Wound == 0) lifeStats.HealthStatus = HealthStatus.Healthy;
         else
         {
-            HealthStatus = HealthStatus.Wounded;
-            if ((float)Wound / (float)MaxHP > 0.45f) HealthStatus = HealthStatus.Very_Wounded;
-            if ((float)Wound / (float)MaxHP > 0.80f) HealthStatus = HealthStatus.Critical;
+            lifeStats.HealthStatus = HealthStatus.Wounded;
+            if ((float)lifeStats.Wound / (float)lifeStats.MaxHP > 0.45f) lifeStats.HealthStatus = HealthStatus.Very_Wounded;
+            if ((float)lifeStats.Wound / (float)lifeStats.MaxHP > 0.80f) lifeStats.HealthStatus = HealthStatus.Critical;
         }
     }
 
@@ -549,8 +541,8 @@ public class Characters
     {
         string result;
         float leczenie;
-        if(CharacterStatus == CharacterStatus.healing) leczenie = (float)Wound / (StaticValues.Camp.MedicSettings.Heal * StaticValues.Camp.upgrades.FieldHospital);
-        else leczenie = (float)Wound / currentStats.Other.regen_cHP;
+        if(CharacterStatus == CharacterStatus.healing) leczenie = (float)lifeStats.Wound / (StaticValues.Camp.MedicSettings.Heal * StaticValues.Camp.upgrades.FieldHospital);
+        else leczenie = (float)lifeStats.Wound / currentStats.Other.regen_cHP;
 
         if ((int)(leczenie / 24) > 1) result = "" + (int)(leczenie / 24) + " dni";
         else
@@ -561,14 +553,14 @@ public class Characters
             switch(CharacterStatus)
             {
                 case CharacterStatus.healing:
-                    while(time*(float)StaticValues.Camp.MedicSettings.Heal*StaticValues.Camp.upgrades.FieldHospital/60f < Wound)
+                    while(time*(float)StaticValues.Camp.MedicSettings.Heal*StaticValues.Camp.upgrades.FieldHospital/60f < lifeStats.Wound)
                     {
                         time++;
                     }
                     result = "" + (time-timeToRegenHP) + " minut";
                     break;
                 default:
-                    while (time * (float)currentStats.Other.regen_cHP / 60f < Wound)
+                    while (time * (float)currentStats.Other.regen_cHP / 60f < lifeStats.Wound)
                     {
                         time++;
                     }
@@ -577,6 +569,10 @@ public class Characters
             }
         }
         return result;
+    }
+    public void TakeDmg()
+    {
+
     }
     #endregion
 }

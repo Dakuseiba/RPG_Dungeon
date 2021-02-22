@@ -6,3 +6,4 @@ public class HolderDataCharacter : MonoBehaviour
 {
     public DataCharacters character;
 }
+

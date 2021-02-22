@@ -80,7 +80,7 @@ public class SlotLazaret : MonoBehaviour, IDropHandler
         if(eventData.pointerId == -1 && !eventData.pointerDrag.GetComponent<TeamSlot>().empty)
         {
             TeamSlot slot = eventData.pointerDrag.GetComponent<TeamSlot>();
-            if(StaticValues.Team[slot.index - 1].Wound > 0)
+            if(StaticValues.Team[slot.index - 1].lifeStats.Wound > 0)
                 SetSlot(slot.index);
         }
     }

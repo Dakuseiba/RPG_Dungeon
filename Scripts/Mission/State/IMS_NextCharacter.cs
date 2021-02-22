@@ -17,7 +17,6 @@ class IMS_NextCharacter : IMissionState
             MissionController.Characters = new List<GameObject>(MissionController.SecondTurn);
             MissionController.Index = 0;
         }
-        MissionController.Characters[MissionController.Index].GetComponent<NavMeshObstacle>().enabled = false;
     }
 
     public IMissionState Execute()

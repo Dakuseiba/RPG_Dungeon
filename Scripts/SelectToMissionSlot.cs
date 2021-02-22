@@ -95,7 +95,7 @@ public class SelectToMissionSlot : MonoBehaviour, IDropHandler
             T_Nickname.text = character.Actor.Nickname;
             T_Class.text = StaticValues.Classes.Classes[character.Actor.Class].Name;
             Icon.sprite = StaticValues.Classes.Classes[character.Actor.Class].Icon;
-            T_HP.text = "HP: " + character.HP + " / " + character.MaxHP;
+            T_HP.text = "HP: " + character.lifeStats.HP + " / " + character.lifeStats.MaxHP;
             T_Level.text = "Poziom: " + character.Level;
         }
     }

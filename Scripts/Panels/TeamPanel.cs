@@ -145,10 +145,10 @@ public class TeamPanel : MonoBehaviour
                 EquipmentObjects.CharView.SetActive(true);
                 EquipmentObjects.StatsCharacter.SetActive(false);
                 EquipmentObjects.Skills.SetActive(false);
-                EquipmentObjects.HPCount[0].text = Select.HP + " / " + Select.MaxHP;
-                EquipmentObjects.HPBar[0].fillAmount = (float)Select.HP / (float)Select.MaxHP;
-                EquipmentObjects.MPCount[0].text = Select.MP + " / " + Select.MaxMP;
-                EquipmentObjects.MPBar[0].fillAmount = (float)Select.MP / (float)Select.MaxMP;
+                EquipmentObjects.HPCount[0].text = Select.lifeStats.HP + " / " + Select.lifeStats.MaxHP;
+                EquipmentObjects.HPBar[0].fillAmount = (float)Select.lifeStats.HP / (float)Select.lifeStats.MaxHP;
+                EquipmentObjects.MPCount[0].text = Select.lifeStats.MP + " / " + Select.lifeStats.MaxMP;
+                EquipmentObjects.MPBar[0].fillAmount = (float)Select.lifeStats.MP / (float)Select.lifeStats.MaxMP;
                 #region StatsBase
                 SetStatLabel(EquipmentObjects.W1_Stats_Base[0], "" + Select.currentStats.Base.strength, null);
                 SetStatLabel(EquipmentObjects.W1_Stats_Base[1], "" + Select.currentStats.Base.agility, null);
@@ -204,10 +204,10 @@ public class TeamPanel : MonoBehaviour
                 EquipmentObjects.CharView.SetActive(false);
                 EquipmentObjects.StatsCharacter.SetActive(true);
                 EquipmentObjects.Skills.SetActive(false);
-                EquipmentObjects.HPCount[1].text = Select.HP + " / " + Select.MaxHP;
-                EquipmentObjects.HPBar[1].fillAmount = (float)Select.HP / (float)Select.MaxHP;
-                EquipmentObjects.MPCount[1].text = Select.MP + " / " + Select.MaxMP;
-                EquipmentObjects.MPBar[1].fillAmount = (float)Select.MP / (float)Select.MaxMP;
+                EquipmentObjects.HPCount[1].text = Select.lifeStats.HP + " / " + Select.lifeStats.MaxHP;
+                EquipmentObjects.HPBar[1].fillAmount = (float)Select.lifeStats.HP / (float)Select.lifeStats.MaxHP;
+                EquipmentObjects.MPCount[1].text = Select.lifeStats.MP + " / " + Select.lifeStats.MaxMP;
+                EquipmentObjects.MPBar[1].fillAmount = (float)Select.lifeStats.MP / (float)Select.lifeStats.MaxMP;
                 #region StatsBase
                 SetStatLabel(EquipmentObjects.W2_Stats_Base[0], "" + Select.currentStats.Base.strength + "", null, "Siła");
                 SetStatLabel(EquipmentObjects.W2_Stats_Base[1], "" + Select.currentStats.Base.agility + "", null, "Zręczność");

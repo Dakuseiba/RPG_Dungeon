@@ -70,7 +70,7 @@ public class MissionController : MonoBehaviour
         }
         if (obj.GetComponent<HolderDataEnemy>())
         {
-            return obj.GetComponent<HolderDataEnemy>().iniciative;
+            return obj.GetComponent<HolderDataEnemy>().battle.iniciative;
         }
         return 0;
     }
