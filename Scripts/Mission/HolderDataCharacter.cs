@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class HolderDataCharacter : MonoBehaviour
 {
-    public DataCharacters character;
+    [SerializeField]DataCharacters character;
+    public Characters GetCharacter()
+    {
+        return character.character;
+    }
 }
 

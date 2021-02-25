@@ -268,7 +268,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 }
                 break;
         }
-        Character.CheckHealthStatus();
+        Character.lifeStats.CheckHealthStatus();
         ShowStatus(Character);
         this.GetComponent<Button>().enabled = true;
         SetBasic(Character);
@@ -361,7 +361,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         Character.lifeStats.HP = Character.lifeStats.MaxHP;
         Character.lifeStats.MP = Character.lifeStats.MaxMP;
         Character.lifeStats.Wound = 0;
-        Character.CheckHealthStatus();
+        Character.lifeStats.CheckHealthStatus();
         GetComponentInParent<TeamSelect>().ShowList();
     }
 }

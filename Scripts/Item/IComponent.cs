@@ -4,11 +4,11 @@ using UnityEngine;
 
 
 [System.Serializable]
-public class IComponent
+public class IComponent : Item
 {
     public int ID;
     public int amount;
-    public ItemCategory Category;
+    //public ItemCategory Category;
     public IComponent(int _item)
     {
         ID = _item;

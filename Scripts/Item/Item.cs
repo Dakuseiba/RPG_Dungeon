@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 [System.Serializable]
-public class Item
+public abstract class Item
 {
     public string Name;
     public Sprite Icon;

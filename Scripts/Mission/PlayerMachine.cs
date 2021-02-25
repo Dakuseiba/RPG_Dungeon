@@ -56,6 +56,8 @@ public class PlayerMachine
         public Color colorPositive;
         public Color colorNegative;
 
+        public List<GameObject> targets;
+
         public Data()
         {
             colorPositive = new Color(0f, 0.15f, 1f);
@@ -65,8 +67,10 @@ public class PlayerMachine
             lineRender = GameObject.FindObjectOfType<LineRenderer>();
             agent = MissionController.Characters[MissionController.Index].GetComponent<NavMeshAgent>();
 
-            points = agent.GetComponent<HolderDataCharacter>().character.character.currentStats.Battle.actionPoint;
-            character = agent.GetComponent<HolderDataCharacter>().character.character;
+            character = agent.GetComponent<HolderDataCharacter>().GetCharacter();
+            points = character.currentStats.Battle.actionPoint;
+
+            targets = new List<GameObject>();
 
             agent.enabled = true;
             agent.isStopped = true;

@@ -75,7 +75,7 @@ public class ClockGame : MonoBehaviour
                         }
                     }
                 }
-                StaticValues.Team[i].CheckHealthStatus();
+                StaticValues.Team[i].lifeStats.CheckHealthStatus();
                 if (StaticValues.Team[i].lifeStats.HP > StaticValues.Team[i].lifeStats.MaxHP) StaticValues.Team[i].lifeStats.HP = StaticValues.Team[i].lifeStats.MaxHP;
             }
             
@@ -112,7 +112,7 @@ public class ClockGame : MonoBehaviour
                             SendNotification(TypeNotification.team_healing, i);
                         }
                     }
-                    village.Team_in_city[i].CheckHealthStatus();
+                    village.Team_in_city[i].lifeStats.CheckHealthStatus();
                     if (village.Team_in_city[i].lifeStats.HP > village.Team_in_city[i].lifeStats.MaxHP) village.Team_in_city[i].lifeStats.HP = village.Team_in_city[i].lifeStats.MaxHP;
                 }
 

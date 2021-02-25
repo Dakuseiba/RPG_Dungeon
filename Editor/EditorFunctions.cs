@@ -182,7 +182,7 @@ public class EditorFunctions
             if (!isTrue) { current.RemoveAt(i); i--; }
         }
     }
-    public static void CheckList(List<IComponent> current, List<Item> DataList)
+    public static void CheckList(List<IComponent> current, List<IComponent> DataList)
     {
         for (int i = 0; i < current.Count; i++)
         {
@@ -194,7 +194,7 @@ public class EditorFunctions
             if (!isTrue) { current.RemoveAt(i); i--; }
         }
     }
-    public static void CheckList(List<HunterDataBase.ItemGet> current, List<Item> DataList)
+    public static void CheckList(List<HunterDataBase.ItemGet> current, List<IComponent> DataList)
     {
         for (int i = 0; i < current.Count; i++)
         {

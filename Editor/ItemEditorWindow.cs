@@ -110,10 +110,10 @@ public class ItemEditorWindow : EditorWindow
         if (my.Armors == null) my.Armors = new List<IArmor>();
         if (my.Consumes == null) my.Consumes = new List<IConsume>();
         if (my.Throws == null) my.Throws = new List<IThrow>();
-        if (my.Components == null) my.Components = new List<Item>();
+        if (my.Components == null) my.Components = new List<IComponent>();
         if (my.Amunition == null) my.Amunition = new List<IAmmunition>();
         if (my.Recipes == null) my.Recipes = new List<IRecipe>();
-        if (my.KeyItems == null) my.KeyItems = new List<Item>();
+        if (my.KeyItems == null) my.KeyItems = new List<IKey>();
         if (my.Runes == null) my.Runes = new List<IRune>();
         if (my.Accessories == null) my.Accessories = new List<IAccessories>();
     }
@@ -164,7 +164,7 @@ public class ItemEditorWindow : EditorWindow
                     my.Throws.Add(itemThrow);
                     break;
                 case ItemCategory.Component:
-                    Item component = new Item();
+                    IComponent component = new IComponent();
                     component.Category = ItemCategory.Component;
                     my.Components.Add(component);
                     break;
@@ -179,7 +179,7 @@ public class ItemEditorWindow : EditorWindow
                     my.Recipes.Add(recipe);
                     break;
                 case ItemCategory.KeyItem:
-                    Item key = new Item();
+                    IKey key = new IKey();
                     key.Category = ItemCategory.KeyItem;
                     my.KeyItems.Add(key);
                     break;

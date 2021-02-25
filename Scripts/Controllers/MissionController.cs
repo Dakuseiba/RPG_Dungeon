@@ -66,11 +66,11 @@ public class MissionController : MonoBehaviour
     {
         if (obj.GetComponent<HolderDataCharacter>())
         {
-            return obj.GetComponent<HolderDataCharacter>().character.character.currentStats.Battle.iniciative;
+            return obj.GetComponent<HolderDataCharacter>().GetCharacter().currentStats.Battle.iniciative;
         }
         if (obj.GetComponent<HolderDataEnemy>())
         {
-            return obj.GetComponent<HolderDataEnemy>().battle.iniciative;
+            return obj.GetComponent<HolderDataEnemy>().stats.Battle.iniciative;
         }
         return 0;
     }

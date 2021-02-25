@@ -10,7 +10,7 @@ public class DataCharacters : ScriptableObject
     DataCharacters()
     {
         character = new Characters();
-        character.currentStats = new Stats();
+        character.currentStats = new CharacterStats();
         character.currentStats.Base.agility = 10;
         character.currentStats.Base.charisma = 10;
         character.currentStats.Base.intelligence = 10;

@@ -8,10 +8,10 @@ public class ItemDataBase : ScriptableObject
     public List<IArmor> Armors = new List<IArmor>();
     public List<IConsume> Consumes = new List<IConsume>();
     public List<IThrow> Throws = new List<IThrow>();
-    public List<Item> Components = new List<Item>();
+    public List<IComponent> Components = new List<IComponent>();
     public List<IAmmunition> Amunition = new List<IAmmunition>();
     public List<IRecipe> Recipes = new List<IRecipe>();
-    public List<Item> KeyItems = new List<Item>();
+    public List<IKey> KeyItems = new List<IKey>();
     public List<IRune> Runes = new List<IRune>();
     public List<IAccessories> Accessories = new List<IAccessories>();
 }

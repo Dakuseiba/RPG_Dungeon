@@ -14,7 +14,7 @@ public class Characters
     public int currentStress;
 
     public Stats Stats = new Stats();
-    public Stats currentStats = new Stats();
+    public CharacterStats currentStats = new CharacterStats();
     public Precent_Stats Precent_Stats = new Precent_Stats();
 
     public int Level;
@@ -39,7 +39,7 @@ public class Characters
 
     public void UpdateStats()
     {
-        currentStats = new Stats();
+        currentStats = new CharacterStats();
 
         currentStats.Battle.range = StaticValues.Races.Races[Actor.Race].Stats.Battle.range;
         currentStats.Battle.dmg_dice = StaticValues.Races.Races[Actor.Race].Stats.Battle.dmg_dice + StaticValues.Classes.Classes[Actor.Class].Stats.Battle.dmg_dice;
@@ -526,17 +526,6 @@ public class Characters
         UpdateStats();
     }
 
-    public void CheckHealthStatus()
-    {
-        if (lifeStats.Wound == 0) lifeStats.HealthStatus = HealthStatus.Healthy;
-        else
-        {
-            lifeStats.HealthStatus = HealthStatus.Wounded;
-            if ((float)lifeStats.Wound / (float)lifeStats.MaxHP > 0.45f) lifeStats.HealthStatus = HealthStatus.Very_Wounded;
-            if ((float)lifeStats.Wound / (float)lifeStats.MaxHP > 0.80f) lifeStats.HealthStatus = HealthStatus.Critical;
-        }
-    }
-
     public string CalculateHealing()
     {
         string result;
@@ -569,10 +558,6 @@ public class Characters
             }
         }
         return result;
-    }
-    public void TakeDmg()
-    {
-
     }
     #endregion
 }
