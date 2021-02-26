@@ -62,23 +62,34 @@ public class IPS_Functions
         }
     }
 
-    public static void GetDamage(int dmg, HolderDataEnemy enemy)
+    public static IPlayerState GetDamage(int dmg, HolderDataEnemy enemy)
     {
         Debug.Log("Battle: HIT!");
         Debug.Log("Battle: DMG: " + dmg);
         dmg = enemy.stats.ReduceDmg(dmg, Elements.Physical);
         enemy.lifeStats.TakeDmg(dmg);
+        return new IPS_Move();
     }
-    public static void GetMiss()
+    public static IPlayerState GetDamage(int dmg, Characters player)
+    {
+        dmg = player.currentStats.ReduceDmg(dmg, Elements.Physical);
+        player.lifeStats.TakeDmg(dmg);
+        return new IPS_Move();
+    }
+    public static IPlayerState GetMiss()
     {
         Debug.Log("Batlle: MISS!");
+        return new IPS_Move();
     }
-    public static void GetParry()
+    public static IPlayerState GetParry(CharacterStats stats)
     {
         Debug.Log("Battle: PARRY!");
+        if (stats.ContrattackChance()) return new IPS_Contrattack();
+        return new IPS_Move();
     }
-    public static void GetEvade()
+    public static IPlayerState GetEvade()
     {
         Debug.Log("Battle: EVADE!");
+        return new IPS_Move();
     }
 }

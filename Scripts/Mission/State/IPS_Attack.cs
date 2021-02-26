@@ -35,39 +35,38 @@ public class IPS_Attack : IPlayerState
             {
                 if(target.TryGetComponent(out HolderDataEnemy enemy))
                 {
-                    int dmg = Random.Range(data.character.currentStats.Battle.dmg, data.character.currentStats.Battle.dmg+data.character.currentStats.Battle.dmg_dice+1);
-                    if(data.character.currentStats.HitChande())
+                    int dmg = data.character.currentStats.GetDmg();
+                    if(data.character.currentStats.HitChance())
                     {
                         if(enemy.stats.isParry)
                         {
                             if(!enemy.stats.ParryChance())
                             {
-                                IPS_Functions.GetDamage(dmg, enemy);
+                                result = IPS_Functions.GetDamage(dmg, enemy);
                             }
                             else
                             {
-                                IPS_Functions.GetParry();
+                                result = IPS_Functions.GetParry(enemy.stats);
                             }
                         }
                         else
                         {
                             if (!enemy.stats.EvadeChance())
                             {
-                                IPS_Functions.GetDamage(dmg, enemy);
+                                result = IPS_Functions.GetDamage(dmg, enemy);
                             }
                             else
                             {
-                                IPS_Functions.GetEvade();
+                                result = IPS_Functions.GetEvade();
                             }
                         }
                     }
                     else
                     {
-                        IPS_Functions.GetMiss();
+                        result = IPS_Functions.GetMiss();
                     }
                 }
             }
-            result = new IPS_Move();
         }
     }
 }

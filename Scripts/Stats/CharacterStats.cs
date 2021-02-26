@@ -68,19 +68,44 @@ public class CharacterStats : Stats
     public bool EvadeChance()
     {
         int rand = Random.Range(0, 101);
-        if (rand <= Battle.evade) return true;
-        else return false;
+        if (rand <= Battle.evade + LuckBonus()) return true;
+        return false;
     }
     public bool ParryChance()
     {
         int rand = Random.Range(0, 101);
-        if (rand <= Battle.parry) return true;
-        else return false;
+        if (rand <= Battle.parry + LuckBonus()) return true;
+        return false;
     }
-    public bool HitChande()
+    public bool HitChance()
     {
         int rand = Random.Range(0, 101);
-        if (rand <= Battle.accuracy) return true;
+        if (rand <= Battle.accuracy + LuckBonus()) return true;
         return false;
+    }
+    public bool ContrattackChance()
+    {
+        int rand = Random.Range(0, 101);
+        if (rand <= Battle.contrattack + LuckBonus()) return true;
+        return false;
+    }
+
+    public int GetDmg()
+    {
+        int dmg = Random.Range(Battle.dmg, Battle.dmg + Battle.dmg_dice + 1);
+        if (CritChance()) dmg = (int)(dmg*Battle.crit_multiply);
+        return dmg;
+    }
+
+    public bool CritChance()
+    {
+        int rand = Random.Range(0, 101);
+        if (rand <= Battle.crit_chance + LuckBonus()) return true;
+        return false;
+    }
+
+    public int LuckBonus()
+    {
+        return Ability.luck * 1;
     }
 }
