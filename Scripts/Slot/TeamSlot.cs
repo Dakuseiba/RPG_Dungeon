@@ -231,7 +231,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 BFunction.SetActive(true);
                 BImage.SetActive(false);
 
-                int cost = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].HealCost * (int)Character.lifeStats.HealthStatus;
+                int cost = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].HealCost * (int)Character.currentStats.lifeStats.HealthStatus;
 
                 Cost.GetComponent<TextMeshProUGUI>().text = "Koszt: " + cost;
 
@@ -268,7 +268,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 }
                 break;
         }
-        Character.lifeStats.CheckHealthStatus();
+        Character.currentStats.lifeStats.CheckHealthStatus();
         ShowStatus(Character);
         this.GetComponent<Button>().enabled = true;
         SetBasic(Character);
@@ -304,8 +304,8 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
         T_Last.text = Character.Actor.LastName;
         T_Nick.text = Character.Actor.Nickname;
         T_Level.text = "Poziom " + Character.Level;
-        HpBar.fillAmount = (float)Character.lifeStats.HP / (float)Character.lifeStats.MaxHP;
-        MpBar.fillAmount = (float)Character.lifeStats.MP / (float)Character.lifeStats.MaxMP;
+        HpBar.fillAmount = (float)Character.currentStats.lifeStats.HP / (float)Character.currentStats.lifeStats.MaxHP;
+        MpBar.fillAmount = (float)Character.currentStats.lifeStats.MP / (float)Character.currentStats.lifeStats.MaxMP;
         ExpBar.fillAmount = (float)Character.CurrentExp / (float)Character.MaxExp; 
         if (Character.pointAbility > 0 || Character.pointSkills > 0 || Character.pointStats > 0) LevelUp.SetActive(true);
         else LevelUp.SetActive(false);
@@ -337,7 +337,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
 
     void HealthState(Characters Character)
     {
-        switch (Character.lifeStats.HealthStatus)
+        switch (Character.currentStats.lifeStats.HealthStatus)
         {
             case HealthStatus.Healthy:
                 break;
@@ -358,10 +358,10 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
     void HospitalHeal(Characters Character, int cost)
     {
         StaticValues.Money -= cost;
-        Character.lifeStats.HP = Character.lifeStats.MaxHP;
-        Character.lifeStats.MP = Character.lifeStats.MaxMP;
-        Character.lifeStats.Wound = 0;
-        Character.lifeStats.CheckHealthStatus();
+        Character.currentStats.lifeStats.HP = Character.currentStats.lifeStats.MaxHP;
+        Character.currentStats.lifeStats.MP = Character.currentStats.lifeStats.MaxMP;
+        Character.currentStats.lifeStats.Wound = 0;
+        Character.currentStats.lifeStats.CheckHealthStatus();
         GetComponentInParent<TeamSelect>().ShowList();
     }
 }

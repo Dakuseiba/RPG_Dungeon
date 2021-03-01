@@ -8,7 +8,6 @@ public class Characters
     
     public bool Awaknes;
 
-    public LifeStats lifeStats = new LifeStats();
 
     public CharacterStatus CharacterStatus;
     public int currentStress;
@@ -30,16 +29,18 @@ public class Characters
 
     public CharEquip Equipment = new CharEquip();
 
-    public int[] dmg_weapon = new int[2];
     public int timeToRegenHP = 0;
     public int timeToRegenMP = 0;
+
+    int defaultWeapon;
     //Skills
 
     #region Functions
 
     public void UpdateStats()
     {
-        currentStats = new CharacterStats();
+        currentStats.UpdateStats();
+        CheckDefaultWeapon();
 
         currentStats.Battle.range = StaticValues.Races.Races[Actor.Race].Stats.Battle.range;
         currentStats.Battle.dmg_dice = StaticValues.Races.Races[Actor.Race].Stats.Battle.dmg_dice + StaticValues.Classes.Classes[Actor.Class].Stats.Battle.dmg_dice;
@@ -78,8 +79,16 @@ public class Characters
         if (Equipment.Head.Length> 0) CalculateItem(Equipment.Head[0]);
         if (Equipment.Chest.Length > 0) CalculateItem(Equipment.Chest[0]);
         if (Equipment.Pants.Length > 0) CalculateItem(Equipment.Pants[0]);
-        if (Equipment.WeaponsSlot[0].Right.Length> 0) CalculateItem(Equipment.WeaponsSlot[0].Right[0]);
-        if (Equipment.WeaponsSlot[0].Left.Length > 0) CalculateItem(Equipment.WeaponsSlot[0].Left[0]);
+        if (Equipment.WeaponsSlot[0].Right.Length > 0)
+        {
+            currentStats.dmgWeapons[0].SetDice(((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg_dice);
+            CalculateItem(Equipment.WeaponsSlot[0].Right[0]);
+        }
+        if (Equipment.WeaponsSlot[0].Left.Length > 0)
+        {
+            currentStats.dmgWeapons[1].SetDice(((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg_dice);
+            CalculateItem(Equipment.WeaponsSlot[0].Left[0]);
+        }
 
         for(int i=0;i<Equipment.ItemSlots.Items.Count;i++)
         {
@@ -270,8 +279,8 @@ public class Characters
             
             if(Equipment.WeaponsSlot[0].Right.Length > 0 && ((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).WCategory != IWeaponCategory.Shield && Equipment.WeaponsSlot[0].Left.Length > 0 && ((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).WCategory != IWeaponCategory.Shield)
             {
-                dmg_weapon[0] += (int)(dmg_weapon[0] * (0.05f * currentStats.Ability.doubleWeapon));
-                dmg_weapon[1] += (int)(dmg_weapon[1] * (0.05f * currentStats.Ability.doubleWeapon));
+                currentStats.dmgWeapons[0].IncreaseDmg((int)(currentStats.dmgWeapons[0].minDmg * (0.05f * currentStats.Ability.doubleWeapon)));
+                currentStats.dmgWeapons[1].IncreaseDmg((int)(currentStats.dmgWeapons[1].minDmg * (0.05f * currentStats.Ability.doubleWeapon)));
                 currentStats.Battle.evade += 1 * currentStats.Ability.doubleWeapon;
                 currentStats.Battle.parry += 1 * currentStats.Ability.doubleWeapon;
             }
@@ -305,12 +314,12 @@ public class Characters
 
     void Calculate_HpMp()
     {
-        int differenceHP = currentStats.Other.hp - lifeStats.MaxHP;
-        lifeStats.MaxHP += differenceHP;
-        lifeStats.HP += differenceHP;
-        int differenceMP = currentStats.Other.mp - lifeStats.MaxMP;
-        lifeStats.MaxMP += differenceMP;
-        lifeStats.MP += differenceMP;
+        int differenceHP = currentStats.Other.hp - currentStats.lifeStats.MaxHP;
+        currentStats.lifeStats.MaxHP += differenceHP;
+        currentStats.lifeStats.HP += differenceHP;
+        int differenceMP = currentStats.Other.mp - currentStats.lifeStats.MaxMP;
+        currentStats.lifeStats.MaxMP += differenceMP;
+        currentStats.lifeStats.MP += differenceMP;
     }
     void CalculateWeaponDmg(Item item, int index)
     {
@@ -319,14 +328,14 @@ public class Characters
             switch (((IWeapon)item).WCategory)
             {
                 case IWeaponCategory.Staff:
-                    dmg_weapon[index] = ((IWeapon)item).Stats.Battle.dmg +(int)(((IWeapon)item).Stats.Battle.dmg * 0.05f * currentStats.Base.intelligence);
+                    currentStats.dmgWeapons[index].IncreaseDmg((int)(((IWeapon)item).Stats.Battle.dmg * (0.8f * currentStats.Base.intelligence)));
                     switch (((IWeapon)item).WType)
                     {
                         case IWeaponType.One_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index]*(0.05f*currentStats.Ability.one_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f*currentStats.Ability.one_handed)));
                             break;
                         case IWeaponType.Two_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.two_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.two_handed)));
                             break;
                     }
                     break;
@@ -336,42 +345,42 @@ public class Characters
                 case IWeaponCategory.Bow:
                 case IWeaponCategory.Crossbow:
                     currentStats.Battle.accuracy += (int)(0.1f * currentStats.Base.perception);
-                    dmg_weapon[index] = ((IWeapon)item).Stats.Battle.dmg;
-                    dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.distanceWeapon));
+                    currentStats.dmgWeapons[index].IncreaseDmg(((IWeapon)item).Stats.Battle.dmg);
+                    currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.distanceWeapon)));
                     switch (((IWeapon)item).WType)
                     {
                         case IWeaponType.One_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.one_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.one_handed)));
                             break;
                         case IWeaponType.Two_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.two_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.two_handed)));
                             break;
                     }
                     break;
                 case IWeaponCategory.Katana:
-                    dmg_weapon[index] = ((IWeapon)item).Stats.Battle.dmg + (int)(0.8f * currentStats.Base.agility);
+                    currentStats.dmgWeapons[index].IncreaseDmg((int)(((IWeapon)item).Stats.Battle.dmg * (0.8f * currentStats.Base.agility)));
                     switch (((IWeapon)item).WType)
                     {
                         case IWeaponType.One_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.one_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.one_handed)));
                             break;
                         case IWeaponType.Two_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.two_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.two_handed)));
                             break;
                     }
                     break;
                 case IWeaponCategory.Shield:
-                    dmg_weapon[index] = ((IWeapon)item).Stats.Battle.dmg;
+                    currentStats.dmgWeapons[index].IncreaseDmg(((IWeapon)item).Stats.Battle.dmg);
                     break;
                 default:
-                    dmg_weapon[index] = ((IWeapon)item).Stats.Battle.dmg + (int)(0.8f * currentStats.Base.strength);
+                    currentStats.dmgWeapons[index].IncreaseDmg((int)(((IWeapon)item).Stats.Battle.dmg * (0.8f * currentStats.Base.strength)));
                     switch (((IWeapon)item).WType)
                     {
                         case IWeaponType.One_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.one_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.two_handed)));
                             break;
                         case IWeaponType.Two_handed:
-                            dmg_weapon[index] += (int)(dmg_weapon[index] * (0.05f * currentStats.Ability.two_handed));
+                            currentStats.dmgWeapons[index].IncreaseDmg((int)(currentStats.dmgWeapons[index].minDmg * (0.05f * currentStats.Ability.two_handed)));
                             break;
                     }
                     break;
@@ -400,10 +409,11 @@ public class Characters
         currentStats.Battle.armor_magicial +=   (int)(currentStats.Battle.armor_magicial * (float)stat.armor_magicial / 100f);
         currentStats.Battle.armor_phisical +=   (int)(currentStats.Battle.armor_phisical * (float)stat.armor_phisical/ 100f);
         currentStats.Battle.dmg +=              (int)(currentStats.Battle.dmg * (float)stat.dmg / 100f);
-        dmg_weapon[0] +=                        (int)(dmg_weapon[0] * (float)stat.dmg / 100f);
-        dmg_weapon[1] +=                        (int)(dmg_weapon[1] * (float)stat.dmg / 100f);
         currentStats.Battle.iniciative +=       (int)(currentStats.Battle.iniciative * (float)stat.iniciative/ 100f);
         currentStats.Battle.move +=             (int)(currentStats.Battle.move * (float)stat.move / 100f);
+
+        currentStats.dmgWeapons[0].IncreaseDmg((int)(currentStats.dmgWeapons[0].minDmg * (float)stat.dmg / 100f));
+        currentStats.dmgWeapons[1].IncreaseDmg((int)(currentStats.dmgWeapons[1].minDmg * (float)stat.dmg / 100f));
     }
     void PrecentOther(Other_Stats stat)
     {
@@ -530,8 +540,8 @@ public class Characters
     {
         string result;
         float leczenie;
-        if(CharacterStatus == CharacterStatus.healing) leczenie = (float)lifeStats.Wound / (StaticValues.Camp.MedicSettings.Heal * StaticValues.Camp.upgrades.FieldHospital);
-        else leczenie = (float)lifeStats.Wound / currentStats.Other.regen_cHP;
+        if(CharacterStatus == CharacterStatus.healing) leczenie = (float)currentStats.lifeStats.Wound / (StaticValues.Camp.MedicSettings.Heal * StaticValues.Camp.upgrades.FieldHospital);
+        else leczenie = (float)currentStats.lifeStats.Wound / currentStats.Other.regen_cHP;
 
         if ((int)(leczenie / 24) > 1) result = "" + (int)(leczenie / 24) + " dni";
         else
@@ -542,14 +552,14 @@ public class Characters
             switch(CharacterStatus)
             {
                 case CharacterStatus.healing:
-                    while(time*(float)StaticValues.Camp.MedicSettings.Heal*StaticValues.Camp.upgrades.FieldHospital/60f < lifeStats.Wound)
+                    while(time*(float)StaticValues.Camp.MedicSettings.Heal*StaticValues.Camp.upgrades.FieldHospital/60f < currentStats.lifeStats.Wound)
                     {
                         time++;
                     }
                     result = "" + (time-timeToRegenHP) + " minut";
                     break;
                 default:
-                    while (time * (float)currentStats.Other.regen_cHP / 60f < lifeStats.Wound)
+                    while (time * (float)currentStats.Other.regen_cHP / 60f < currentStats.lifeStats.Wound)
                     {
                         time++;
                     }
@@ -558,6 +568,39 @@ public class Characters
             }
         }
         return result;
+    }
+    public void SetDefaultWeapon()
+    {
+        if (Equipment.WeaponsSlot[0].Right.Length > 0) defaultWeapon = 1;
+        else
+        if (Equipment.WeaponsSlot[0].Left.Length > 0) defaultWeapon = 2;
+        else defaultWeapon = 0;
+    }
+    public void SetDefaultWeapon(int index)
+    {
+        defaultWeapon = index;
+    }
+    public int GetDefaultWeapon()
+    {
+        return defaultWeapon;
+    }
+    public void CheckDefaultWeapon()
+    {
+        switch(defaultWeapon)
+        {
+            case 0:
+                if (Equipment.WeaponsSlot[0].Right.Length > 0 || Equipment.WeaponsSlot[0].Left.Length > 0) SetDefaultWeapon();
+                break;
+            case 1:
+                if (Equipment.WeaponsSlot[0].Right.Length == 0) SetDefaultWeapon();
+                break;
+            case 2:
+                if (Equipment.WeaponsSlot[0].Left.Length == 0) SetDefaultWeapon();
+                break;
+            default:
+                SetDefaultWeapon();
+                break;
+        }
     }
     #endregion
 }

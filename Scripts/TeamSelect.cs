@@ -128,10 +128,10 @@ public class TeamSelect : MonoBehaviour
                 break;
             case PanelTeamType.Hospital:
                 var teamCity = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Team_in_city;
-                TeamCount.text = "" + teamCity.FindAll(x => x.lifeStats.HealthStatus != HealthStatus.Healthy).Count;
+                TeamCount.text = "" + teamCity.FindAll(x => x.currentStats.lifeStats.HealthStatus != HealthStatus.Healthy).Count;
                 for (int i = 0; i < StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Team_in_city.Count; i++)
                 {
-                    if(teamCity[i].lifeStats.HealthStatus != HealthStatus.Healthy)
+                    if(teamCity[i].currentStats.lifeStats.HealthStatus != HealthStatus.Healthy)
                     {
                         var obj = Instantiate(SlotTeam, SpawnList.transform);
                         obj.GetComponent<TeamSlot>().SlotSet(i, Type);

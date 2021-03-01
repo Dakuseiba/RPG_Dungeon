@@ -85,83 +85,86 @@ public class GameController : MonoBehaviour
     }
 
     void Update()
-    {
-        #region Test
-        if (Input.GetKeyDown(KeyCode.C) && StaticValues.Team.Count < StaticValues.Camp.UnitMax)
-        {
-            ChMercenary Mercenary = new ChMercenary();
-            Mercenary.CreateRandom();
-            StaticValues.Team.Add(Mercenary);
-            StaticValues.Camp.Calculate_DayliCost();
-        }
-        Team = StaticValues.Team;
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            for (int i = 0; i < StaticValues.Team.Count; i++)
-            {
-                StaticValues.Team[i].GetExp(100);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            if (StaticValues.Team.Count > 0)
-            {
-                Item item = StaticValues.Items.Consumes[0];
-                StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);
-            }
-        }
-        if(Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            var result = PointList.IdPoints(1, 7);
-            foreach(var point in result.betweenPoints)
-            {
-                Debug.Log(point.startId + " " + point.endId + " " + point.Time);
-            }
-            Debug.Log(result.Time);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            if (StaticValues.Team.Count > 0)
-            {
-                var item = new IWeapon(StaticValues.Items.Weapons[0]);
-                StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.Keypad1))
-        {
-            StaticValues.Money += 10;
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            bool isExist = false;
-            for (int i = 0; i < StaticValues.Recipe.Count; i++)
-            {
-                if (StaticValues.Recipe[i] == StaticValues.Items.Recipes[0])
-                {
-                    isExist = true;
-                    break;
-                }
-            }
-            if (!isExist) StaticValues.Recipe.Add(StaticValues.Items.Recipes[0]);
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            for (int j = 0; j < StaticValues.Cities[0].TypeUpgrade.Count; j++)
-            {
-                Debug.Log(j + ". " + StaticValues.Cities[0].TypeUpgrade[j]);
-            }
-        }
-        if(Input.GetKeyDown(KeyCode.Keypad2))
-        {
-            SetCampID();
-        }
-        #endregion
-        
+    {        
         FixItemInfo(currentCanvas.GetComponent<GUIControll>().ItemInfoWindow);
 
         switch (currentCanvas.GetComponent<GUIControll>().GUIEnabled.Type)
         {
             case Class_GUI.GUI_Type.HUB:
+                #region Test
+                if (Input.GetKeyDown(KeyCode.C) && StaticValues.Team.Count < StaticValues.Camp.UnitMax)
+                {
+                    ChMercenary Mercenary = new ChMercenary();
+                    Mercenary.CreateRandom();
+                    StaticValues.Team.Add(Mercenary);
+                    StaticValues.Camp.Calculate_DayliCost();
+                }
+                Team = StaticValues.Team;
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    for (int i = 0; i < StaticValues.Team.Count; i++)
+                    {
+                        StaticValues.Team[i].GetExp(100);
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.I))
+                {
+                    if (StaticValues.Team.Count > 0)
+                    {
+                        Item item = StaticValues.Items.Consumes[0];
+                        StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    var result = PointList.IdPoints(1, 7);
+                    foreach (var point in result.betweenPoints)
+                    {
+                        Debug.Log(point.startId + " " + point.endId + " " + point.Time);
+                    }
+                    Debug.Log(result.Time);
+                }
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    if (StaticValues.Team.Count > 0)
+                    {
+                        var item = new IWeapon(StaticValues.Items.Weapons[0]);
+                        StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Keypad1))
+                {
+                    StaticValues.Money += 10;
+                }
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    bool isExist = false;
+                    for (int i = 0; i < StaticValues.Recipe.Count; i++)
+                    {
+                        if (StaticValues.Recipe[i] == StaticValues.Items.Recipes[0])
+                        {
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist) StaticValues.Recipe.Add(StaticValues.Items.Recipes[0]);
+                }
+                if (Input.GetKeyDown(KeyCode.T))
+                {
+                    for (int j = 0; j < StaticValues.Cities[0].TypeUpgrade.Count; j++)
+                    {
+                        Debug.Log(j + ". " + StaticValues.Cities[0].TypeUpgrade[j]);
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Keypad2))
+                {
+                    SetCampID();
+                }
+                if(Input.GetKeyDown(KeyCode.Keypad9))
+                {
+                    StaticValues.headSceneManager.ChangeScene("Mission");
+                }
+                #endregion
                 CountPanel_Update();
                 break;
             case Class_GUI.GUI_Type.Mission:
@@ -243,8 +246,8 @@ public class GameController : MonoBehaviour
         {
             if(Member.CharacterStatus != CharacterStatus.healing)
             {
-                Member.lifeStats.HP -= 20;
-                Member.lifeStats.Wound += 20;
+                Member.currentStats.lifeStats.HP -= 20;
+                Member.currentStats.lifeStats.Wound += 20;
             }
         }
     }
@@ -256,7 +259,7 @@ public class GameController : MonoBehaviour
         {
             if (Member.CharacterStatus == CharacterStatus.ready)
             {
-                Member.lifeStats.HP += 2;
+                Member.currentStats.lifeStats.HP += 2;
             }
         }
     }

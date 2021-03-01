@@ -32,6 +32,7 @@ class IPS_DefaultAttack : IPlayerState
         result = null;
         endAction = false;
         data.targets = new List<GameObject>();
+        data.IdUseWeapon = data.character.GetDefaultWeapon();
         Destination();
     }
 
@@ -61,7 +62,6 @@ class IPS_DefaultAttack : IPlayerState
                 {
                     if (!data.targets.Contains(hit.transform.gameObject))
                         data.targets.Add(hit.transform.gameObject);
-                    //data.target = hit.point;
                     return null;
                 }
                 else return new IPS_Move();
@@ -73,9 +73,10 @@ class IPS_DefaultAttack : IPlayerState
     void Destination()
     {
         data.agent.SetDestination(data.target);
-        if (data.agent.remainingDistance > data.character.currentStats.Battle.range)
+        float range = data.character.currentStats.GetRange(data.character);
+        if (data.agent.remainingDistance > range)
         {
-            data.agent.SetDestination(LerpByDistance(data.target, data.agent.transform.position, data.character.currentStats.Battle.range));
+            data.agent.SetDestination(LerpByDistance(data.target, data.agent.transform.position, range));
         }
         else
         {

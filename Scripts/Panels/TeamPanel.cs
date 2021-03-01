@@ -145,10 +145,10 @@ public class TeamPanel : MonoBehaviour
                 EquipmentObjects.CharView.SetActive(true);
                 EquipmentObjects.StatsCharacter.SetActive(false);
                 EquipmentObjects.Skills.SetActive(false);
-                EquipmentObjects.HPCount[0].text = Select.lifeStats.HP + " / " + Select.lifeStats.MaxHP;
-                EquipmentObjects.HPBar[0].fillAmount = (float)Select.lifeStats.HP / (float)Select.lifeStats.MaxHP;
-                EquipmentObjects.MPCount[0].text = Select.lifeStats.MP + " / " + Select.lifeStats.MaxMP;
-                EquipmentObjects.MPBar[0].fillAmount = (float)Select.lifeStats.MP / (float)Select.lifeStats.MaxMP;
+                EquipmentObjects.HPCount[0].text = Select.currentStats.lifeStats.HP + " / " + Select.currentStats.lifeStats.MaxHP;
+                EquipmentObjects.HPBar[0].fillAmount = (float)Select.currentStats.lifeStats.HP / (float)Select.currentStats.lifeStats.MaxHP;
+                EquipmentObjects.MPCount[0].text = Select.currentStats.lifeStats.MP + " / " + Select.currentStats.lifeStats.MaxMP;
+                EquipmentObjects.MPBar[0].fillAmount = (float)Select.currentStats.lifeStats.MP / (float)Select.currentStats.lifeStats.MaxMP;
                 #region StatsBase
                 SetStatLabel(EquipmentObjects.W1_Stats_Base[0], "" + Select.currentStats.Base.strength, null);
                 SetStatLabel(EquipmentObjects.W1_Stats_Base[1], "" + Select.currentStats.Base.agility, null);
@@ -167,12 +167,12 @@ public class TeamPanel : MonoBehaviour
                     if (Select.Equipment.WeaponsSlot[0].Right.Length > 0)
                     {
                         IWeapon Weapon = (IWeapon)Select.Equipment.WeaponsSlot[0].Right[0].item;
-                        CreateLabel(EquipmentObjects.W1_Fight, EquipmentObjects.W1_Stats_Fight, "" + Select.dmg_weapon[0] + " - " + (Select.dmg_weapon[0] + Weapon.Stats.Battle.dmg_dice), null);
+                        CreateLabel(EquipmentObjects.W1_Fight, EquipmentObjects.W1_Stats_Fight, "" + Select.currentStats.dmgWeapons[0].minDmg + " - " + Select.currentStats.dmgWeapons[0].maxDmg, null);
                     }
                     if (Select.Equipment.WeaponsSlot[0].Left.Length > 0)
                     {
                         IWeapon Weapon = (IWeapon)Select.Equipment.WeaponsSlot[0].Left[0].item;
-                        CreateLabel(EquipmentObjects.W1_Fight, EquipmentObjects.W1_Stats_Fight, "" + Select.dmg_weapon[1] + " - " + (Select.dmg_weapon[1] + Weapon.Stats.Battle.dmg_dice), null);
+                        CreateLabel(EquipmentObjects.W1_Fight, EquipmentObjects.W1_Stats_Fight, "" + Select.currentStats.dmgWeapons[1].minDmg + " - " + Select.currentStats.dmgWeapons[1].maxDmg, null);
                     }
                 }
                 CreateLabel(EquipmentObjects.W1_Fight, EquipmentObjects.W1_Stats_Fight, "" + Select.currentStats.Battle.accuracy + "%", null);
@@ -204,10 +204,10 @@ public class TeamPanel : MonoBehaviour
                 EquipmentObjects.CharView.SetActive(false);
                 EquipmentObjects.StatsCharacter.SetActive(true);
                 EquipmentObjects.Skills.SetActive(false);
-                EquipmentObjects.HPCount[1].text = Select.lifeStats.HP + " / " + Select.lifeStats.MaxHP;
-                EquipmentObjects.HPBar[1].fillAmount = (float)Select.lifeStats.HP / (float)Select.lifeStats.MaxHP;
-                EquipmentObjects.MPCount[1].text = Select.lifeStats.MP + " / " + Select.lifeStats.MaxMP;
-                EquipmentObjects.MPBar[1].fillAmount = (float)Select.lifeStats.MP / (float)Select.lifeStats.MaxMP;
+                EquipmentObjects.HPCount[1].text = Select.currentStats.lifeStats.HP + " / " + Select.currentStats.lifeStats.MaxHP;
+                EquipmentObjects.HPBar[1].fillAmount = (float)Select.currentStats.lifeStats.HP / (float)Select.currentStats.lifeStats.MaxHP;
+                EquipmentObjects.MPCount[1].text = Select.currentStats.lifeStats.MP + " / " + Select.currentStats.lifeStats.MaxMP;
+                EquipmentObjects.MPBar[1].fillAmount = (float)Select.currentStats.lifeStats.MP / (float)Select.currentStats.lifeStats.MaxMP;
                 #region StatsBase
                 SetStatLabel(EquipmentObjects.W2_Stats_Base[0], "" + Select.currentStats.Base.strength + "", null, "Siła");
                 SetStatLabel(EquipmentObjects.W2_Stats_Base[1], "" + Select.currentStats.Base.agility + "", null, "Zręczność");
@@ -228,14 +228,14 @@ public class TeamPanel : MonoBehaviour
                     if(Select.Equipment.WeaponsSlot[0].Right.Length > 0)
                     {
                         IWeapon Weapon = (IWeapon)Select.Equipment.WeaponsSlot[0].Right[0].item;
-                        CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Select.dmg_weapon[0] + " - " + (Select.dmg_weapon[0] + Weapon.Stats.Battle.dmg_dice), null, "Obrażenia Prawa");
+                        CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Select.currentStats.dmgWeapons[0].minDmg + " - " + Select.currentStats.dmgWeapons[0].maxDmg, null, "Obrażenia Prawa");
                         CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Weapon.Stats.Battle.range + "m", null, "Zasięg Prawa");
                         CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Weapon.Stats.Battle.crit_multiply + "x", null, "Mnożnik kryt.");
                     }
                     if (Select.Equipment.WeaponsSlot[0].Left.Length > 0)
                     {
                         IWeapon Weapon = (IWeapon)Select.Equipment.WeaponsSlot[0].Left[0].item;
-                        CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Select.dmg_weapon[1] + " - " + (Select.dmg_weapon[1] + Weapon.Stats.Battle.dmg_dice), null, "Obrażenia Lewa");
+                        CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Select.currentStats.dmgWeapons[1].minDmg + " - " + Select.currentStats.dmgWeapons[1].maxDmg, null, "Obrażenia Lewa");
                         CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Weapon.Stats.Battle.range + "m", null, "Zasięg Lewa");
                         CreateLabel(EquipmentObjects.W2_Fight, EquipmentObjects.W2_Stats_Fight, "" + Weapon.Stats.Battle.crit_multiply + "x", null, "Mnożnik kryt.");
                     }

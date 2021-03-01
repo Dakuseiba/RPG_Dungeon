@@ -5,10 +5,26 @@ using UnityEngine;
 public class CharacterStats : Stats
 {
     public bool isParry;
-
+    public LifeStats lifeStats;
+    public DmgWeapon[] dmgWeapons;
     public CharacterStats() : base()
     {
+        lifeStats = new LifeStats();
+        dmgWeapons = new DmgWeapon[2];
+    }
+    public void UpdateStats()
+    {
+        Base = new Base_Stats();
+        Battle = new Battle_Stats();
+        Ability = new Ability_Stats();
+        Equipment = new Equipment_Stats();
+        Resistance = new Resistance_Stats();
+        Other = new Other_Stats();
+        AtkState = new List<State_Rate>();
+        ResistState = new List<State_Rate>();
 
+        dmgWeapons[0] = new DmgWeapon();
+        dmgWeapons[1] = new DmgWeapon();
     }
 
     public int ReduceDmg(int takeDmg, Elements element)
@@ -90,10 +106,30 @@ public class CharacterStats : Stats
         return false;
     }
 
-    public int GetDmg()
+    public int GetDmg(Characters character)
     {
-        int dmg = Random.Range(Battle.dmg, Battle.dmg + Battle.dmg_dice + 1);
-        if (CritChance()) dmg = (int)(dmg*Battle.crit_multiply);
+        int dmg = 0;
+        float critMultiply = 0;
+        switch(character.GetDefaultWeapon())
+        {
+            case 1:
+                dmg = Random.Range(((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg, 
+                    ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg +
+                    ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg_dice + 1);
+                critMultiply = ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.crit_multiply;
+                break;
+            case 2:
+                dmg = Random.Range(((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg,
+                    ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg +
+                    ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg_dice + 1);
+                critMultiply = ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.crit_multiply;
+                break;
+            default:
+                dmg = Random.Range(Battle.dmg, Battle.dmg + Battle.dmg_dice + 1);
+                critMultiply = Battle.crit_multiply;
+                break;
+        }
+        if (CritChance()) dmg = (int)(dmg*critMultiply);
         return dmg;
     }
 
@@ -107,5 +143,36 @@ public class CharacterStats : Stats
     public int LuckBonus()
     {
         return Ability.luck * 1;
+    }
+
+    public float GetRange(Characters character)
+    {
+        switch (character.GetDefaultWeapon())
+        {
+            case 0:
+                return character.currentStats.Battle.range;
+            case 1:
+                return ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.range;
+            case 2:
+                return ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.range;
+        }
+        return 0;
+    }
+
+
+    public class DmgWeapon
+    {
+        public int minDmg;
+        public int maxDmg;
+        int dice;
+        public void SetDice(int _dice)
+        {
+            dice = _dice;
+        }
+        public void IncreaseDmg(int dmg)
+        {
+            minDmg += dmg;
+            maxDmg = minDmg + dice;
+        }
     }
 }

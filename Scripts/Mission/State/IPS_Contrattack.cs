@@ -35,7 +35,7 @@ class IPS_Contrattack : IPlayerState
     {
         if(target.TryGetComponent(out HolderDataEnemy enemy))
         {
-            int dmg = enemy.stats.GetDmg();
+            int dmg = enemy.stats.GetDmg(data.character);
             if(enemy.stats.HitChance())
             {
                 if(!data.character.currentStats.EvadeChance())

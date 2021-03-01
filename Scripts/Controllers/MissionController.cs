@@ -9,6 +9,7 @@ public class MissionController : MonoBehaviour
     public static List<GameObject> SecondTurn;
     public static int Index;
     MissionMachine missionMachine;
+
     private void Start()
     {
         missionMachine = new MissionMachine();
@@ -25,8 +26,11 @@ public class MissionController : MonoBehaviour
         List<GameObject> characters = new List<GameObject>();
         var players = GameObject.FindGameObjectsWithTag("Player");
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        int i = 0;
         foreach (var player in players)
         {
+            player.GetComponent<HolderDataCharacter>().character = StaticValues.Team[i];
+            i++;
             characters.Add(player);
         }
         foreach (var enemy in enemies)
