@@ -61,19 +61,10 @@ public class IPS_Functions
             data.lineRender.enabled = false;
         }
     }
-
-    public static IPlayerState GetDamage(int dmg, HolderDataEnemy enemy)
+    public static IPlayerState GetDamage(int dmg, CharacterStats character)
     {
-        Debug.Log("Battle: HIT!");
-        Debug.Log("Battle: DMG: " + dmg);
-        dmg = enemy.stats.ReduceDmg(dmg, Elements.Physical);
-        enemy.stats.lifeStats.TakeDmg(dmg);
-        return new IPS_Move();
-    }
-    public static IPlayerState GetDamage(int dmg, Characters player)
-    {
-        dmg = player.currentStats.ReduceDmg(dmg, Elements.Physical);
-        player.currentStats.lifeStats.TakeDmg(dmg);
+        dmg = character.ReduceDmg(dmg, Elements.Physical);
+        character.lifeStats.TakeDmg(dmg);
         return new IPS_Move();
     }
     public static IPlayerState GetMiss()

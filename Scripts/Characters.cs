@@ -31,8 +31,6 @@ public class Characters
 
     public int timeToRegenHP = 0;
     public int timeToRegenMP = 0;
-
-    int defaultWeapon;
     //Skills
 
     #region Functions
@@ -40,7 +38,6 @@ public class Characters
     public void UpdateStats()
     {
         currentStats.UpdateStats();
-        CheckDefaultWeapon();
 
         currentStats.Battle.range = StaticValues.Races.Races[Actor.Race].Stats.Battle.range;
         currentStats.Battle.dmg_dice = StaticValues.Races.Races[Actor.Race].Stats.Battle.dmg_dice + StaticValues.Classes.Classes[Actor.Class].Stats.Battle.dmg_dice;
@@ -81,12 +78,12 @@ public class Characters
         if (Equipment.Pants.Length > 0) CalculateItem(Equipment.Pants[0]);
         if (Equipment.WeaponsSlot[0].Right.Length > 0)
         {
-            currentStats.dmgWeapons[0].SetDice(((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg_dice);
+            currentStats.dmgWeapons[0].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle);
             CalculateItem(Equipment.WeaponsSlot[0].Right[0]);
         }
         if (Equipment.WeaponsSlot[0].Left.Length > 0)
         {
-            currentStats.dmgWeapons[1].SetDice(((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg_dice);
+            currentStats.dmgWeapons[1].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle);
             CalculateItem(Equipment.WeaponsSlot[0].Left[0]);
         }
 
@@ -568,39 +565,6 @@ public class Characters
             }
         }
         return result;
-    }
-    public void SetDefaultWeapon()
-    {
-        if (Equipment.WeaponsSlot[0].Right.Length > 0) defaultWeapon = 1;
-        else
-        if (Equipment.WeaponsSlot[0].Left.Length > 0) defaultWeapon = 2;
-        else defaultWeapon = 0;
-    }
-    public void SetDefaultWeapon(int index)
-    {
-        defaultWeapon = index;
-    }
-    public int GetDefaultWeapon()
-    {
-        return defaultWeapon;
-    }
-    public void CheckDefaultWeapon()
-    {
-        switch(defaultWeapon)
-        {
-            case 0:
-                if (Equipment.WeaponsSlot[0].Right.Length > 0 || Equipment.WeaponsSlot[0].Left.Length > 0) SetDefaultWeapon();
-                break;
-            case 1:
-                if (Equipment.WeaponsSlot[0].Right.Length == 0) SetDefaultWeapon();
-                break;
-            case 2:
-                if (Equipment.WeaponsSlot[0].Left.Length == 0) SetDefaultWeapon();
-                break;
-            default:
-                SetDefaultWeapon();
-                break;
-        }
     }
     #endregion
 }

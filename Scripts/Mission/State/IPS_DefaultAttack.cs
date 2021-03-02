@@ -32,7 +32,6 @@ class IPS_DefaultAttack : IPlayerState
         result = null;
         endAction = false;
         data.targets = new List<GameObject>();
-        data.IdUseWeapon = data.character.GetDefaultWeapon();
         Destination();
     }
 
@@ -73,7 +72,7 @@ class IPS_DefaultAttack : IPlayerState
     void Destination()
     {
         data.agent.SetDestination(data.target);
-        float range = data.character.currentStats.GetRange(data.character);
+        float range = FindHighRangeInWeapon();
         if (data.agent.remainingDistance > range)
         {
             data.agent.SetDestination(LerpByDistance(data.target, data.agent.transform.position, range));
@@ -95,5 +94,20 @@ class IPS_DefaultAttack : IPlayerState
     void AttackCost()
     {
         data.cost += 1;
+    }
+
+    float FindHighRangeInWeapon()
+    {
+        float range = 0;
+        float w1 = 0;
+        if (data.character.Equipment.WeaponsSlot[0].Right.Length > 0) 
+            w1 = ((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0]?.item).Stats.Battle.range;
+        float w2 = 0;
+        if (data.character.Equipment.WeaponsSlot[0].Left.Length > 0) 
+            w2 = ((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0]?.item).Stats.Battle.range;
+        if (w1 > range) range = w1;
+        if (w2 > range) range = w2;
+        if (w1 == 0 && w2 == 0) range = data.character.currentStats.Battle.range;
+        return range;
     }
 }

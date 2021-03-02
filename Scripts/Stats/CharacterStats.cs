@@ -106,27 +106,23 @@ public class CharacterStats : Stats
         return false;
     }
 
-    public int GetDmg(Characters character)
+    public int GetDmg(int index)
     {
         int dmg = 0;
         float critMultiply = 0;
-        switch(character.GetDefaultWeapon())
+        switch(index)
         {
-            case 1:
-                dmg = Random.Range(((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg, 
-                    ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg +
-                    ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.dmg_dice + 1);
-                critMultiply = ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.crit_multiply;
-                break;
-            case 2:
-                dmg = Random.Range(((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg,
-                    ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg +
-                    ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.dmg_dice + 1);
-                critMultiply = ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.crit_multiply;
-                break;
-            default:
+            case 0:
                 dmg = Random.Range(Battle.dmg, Battle.dmg + Battle.dmg_dice + 1);
                 critMultiply = Battle.crit_multiply;
+                break;
+            case 1:
+                dmg = Random.Range(dmgWeapons[0].minDmg, dmgWeapons[0].maxDmg + 1);
+                critMultiply = dmgWeapons[0].critMultiply;
+                break;
+            case 2:
+                dmg = Random.Range(dmgWeapons[1].minDmg, dmgWeapons[1].maxDmg + 1);
+                critMultiply = dmgWeapons[1].critMultiply;
                 break;
         }
         if (CritChance()) dmg = (int)(dmg*critMultiply);
@@ -145,29 +141,16 @@ public class CharacterStats : Stats
         return Ability.luck * 1;
     }
 
-    public float GetRange(Characters character)
-    {
-        switch (character.GetDefaultWeapon())
-        {
-            case 0:
-                return character.currentStats.Battle.range;
-            case 1:
-                return ((IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.range;
-            case 2:
-                return ((IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.range;
-        }
-        return 0;
-    }
-
-
     public class DmgWeapon
     {
         public int minDmg;
         public int maxDmg;
         int dice;
-        public void SetDice(int _dice)
+        public float critMultiply;
+        public void SetValues(Battle_Stats stats)
         {
-            dice = _dice;
+            dice = stats.dmg_dice;
+            critMultiply = stats.crit_multiply;
         }
         public void IncreaseDmg(int dmg)
         {

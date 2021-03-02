@@ -18,7 +18,7 @@ class IPS_Contrattack : IPlayerState
         data = playerControll;
         target = playerControll.targets[0];
         result = null;
-        Attack();
+        Attacks();
     }
 
     public IPlayerState Execute()
@@ -31,19 +31,62 @@ class IPS_Contrattack : IPlayerState
 
     }
 
-    void Attack()
+    void Attacks()
     {
-        if(target.TryGetComponent(out HolderDataEnemy enemy))
+        if (target.TryGetComponent(out HolderDataEnemy enemy))
         {
-            int dmg = enemy.stats.GetDmg(data.character);
-            if(enemy.stats.HitChance())
+            switch (WeaponInRange(enemy))
             {
-                if(!data.character.currentStats.EvadeChance())
-                {
-                    IPS_Functions.GetDamage(dmg, data.character);
-                }
+                case 0:
+                    Attack(data.character.currentStats, enemy.stats.GetDmg(0));
+                    break;
+                case 1:
+                    Attack(data.character.currentStats, enemy.stats.GetDmg(1));
+                    break;
+                case 2:
+                    Attack(data.character.currentStats, enemy.stats.GetDmg(2));
+                    break;
+                case 3:
+                    Attack(data.character.currentStats, enemy.stats.GetDmg(1));
+                    Attack(data.character.currentStats, enemy.stats.GetDmg(2));
+                    break;
             }
         }
+    }
+    int Attack(CharacterStats character, int dmg)
+    {
         result = new IPS_Move();
+        if (data.character.currentStats.HitChance())
+        {
+            if (character.isParry)
+            {
+                if (character.ParryChance())
+                {
+                    IPS_Functions.GetParry(character);
+                    return 0;
+                }
+            }
+            else
+            {
+                if (character.EvadeChance())
+                {
+                    IPS_Functions.GetEvade();
+                    return 0;
+                }
+            }
+            IPS_Functions.GetDamage(dmg, character);
+        }
+        else
+        {
+            IPS_Functions.GetMiss();
+        }
+        return 0;
+    }
+    int WeaponInRange(HolderDataEnemy target)
+    {
+        int indexWeapon = 0;
+        float range = Vector3.Distance(data.agent.transform.position, target.transform.position);
+        if (target.stats.Battle.range > range) indexWeapon = -1; 
+        return indexWeapon;
     }
 }

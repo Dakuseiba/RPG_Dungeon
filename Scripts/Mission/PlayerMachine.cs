@@ -58,8 +58,6 @@ public class PlayerMachine
 
         public List<GameObject> targets;
 
-        public int IdUseWeapon;
-
         public Data()
         {
             colorPositive = new Color(0f, 0.15f, 1f);
@@ -76,7 +74,6 @@ public class PlayerMachine
 
             agent.enabled = true;
             agent.isStopped = true;
-            IdUseWeapon = character.GetDefaultWeapon();
         }
     }
 }
