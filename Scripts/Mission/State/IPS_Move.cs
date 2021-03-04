@@ -66,7 +66,7 @@ public class IPS_Move : IPlayerState
     {
         data.agent.SetDestination(data.target);
         IPS_Functions.MoveCost(data);
-        IPS_Functions.PathRender(data);
+        IPS_Functions.PathRender(data,false);
         if (data.agent.remainingDistance == 0) data.agent.isStopped = true;
     }
 }

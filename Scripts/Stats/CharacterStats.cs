@@ -4,7 +4,6 @@ using UnityEngine;
 [System.Serializable]
 public class CharacterStats : Stats
 {
-    public bool isParry;
     public LifeStats lifeStats;
     public DmgWeapon[] dmgWeapons;
     public CharacterStats() : base()

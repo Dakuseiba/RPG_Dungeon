@@ -58,21 +58,15 @@ class IPS_Contrattack : IPlayerState
         result = new IPS_Move();
         if (data.character.currentStats.HitChance())
         {
-            if (character.isParry)
+            if (character.ParryChance())
             {
-                if (character.ParryChance())
-                {
-                    IPS_Functions.GetParry(character);
-                    return 0;
-                }
+                IPS_Functions.GetParry(character);
+                return 0;
             }
-            else
+            else if (character.EvadeChance())
             {
-                if (character.EvadeChance())
-                {
-                    IPS_Functions.GetEvade();
-                    return 0;
-                }
+                IPS_Functions.GetEvade();
+                return 0;
             }
             IPS_Functions.GetDamage(dmg, character);
         }

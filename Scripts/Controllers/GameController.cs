@@ -128,8 +128,15 @@ public class GameController : MonoBehaviour
                 {
                     if (StaticValues.Team.Count > 0)
                     {
-                        var item = new IWeapon(StaticValues.Items.Weapons[0]);
-                        StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);
+                        /*var item = new IWeapon(StaticValues.Items.Weapons[0]);
+                        StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);*/
+                        IWeapon item = new IWeapon(StaticValues.Items.Weapons[0]);
+                        StaticValues.InvMagazine.AddItem(item, 1);                       
+                        item = new IWeapon(StaticValues.Items.Weapons[2]);
+                        StaticValues.InvMagazine.AddItem(item, 1);                   
+                        item = new IWeapon(StaticValues.Items.Weapons[3]);
+                        StaticValues.InvMagazine.AddItem(item, 1);
+                        StaticValues.InvMagazine.AddItem(StaticValues.Items.Amunition[0], 100);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Keypad1))

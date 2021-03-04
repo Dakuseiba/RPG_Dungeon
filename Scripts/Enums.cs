@@ -72,7 +72,8 @@ public enum IWeaponCategory
     Shotgun,
     Wand,
     Staff,
-    Shield
+    Shield,
+    Natural
 }
 
 public enum IWeaponType

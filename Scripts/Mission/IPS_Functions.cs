@@ -33,17 +33,28 @@ public class IPS_Functions
     }
 
 
-    public static void PathRender(PlayerMachine.Data data)
+    public static void PathRender(PlayerMachine.Data data, bool attack)
     {
         if (data.agent.hasPath)
         {
             #region Color
+            Color Negative = Color.red;
+            Color Positive = Color.blue;
+            Color Agressive = Color.yellow;
             if (data.agent.isStopped)
             {
                 if (data.points >= data.cost)
                 {
-                    data.lineRender.startColor = data.colorPositive;
-                    data.lineRender.endColor = data.colorPositive;
+                    if(attack)
+                    {
+                        data.lineRender.startColor = Agressive;
+                        data.lineRender.endColor = Agressive;
+                    }
+                    else
+                    {
+                        data.lineRender.startColor = data.colorPositive;
+                        data.lineRender.endColor = data.colorPositive;
+                    }
                 }
                 else
                 {
@@ -84,4 +95,50 @@ public class IPS_Functions
         return new IPS_Move();
     }
 
+    public static bool Weapon(IWeapon weapon)
+    {
+        switch (weapon.WCategory)
+        {
+            case IWeaponCategory.Axe:
+            case IWeaponCategory.Hammer:
+            case IWeaponCategory.Katana:
+            case IWeaponCategory.Shield:
+            case IWeaponCategory.Staff:
+            case IWeaponCategory.Sword:
+                Debug.Log("Meele");
+                return true;
+            case IWeaponCategory.Wand:
+            case IWeaponCategory.Shotgun:
+            case IWeaponCategory.Rifle:
+            case IWeaponCategory.Pistol:
+            case IWeaponCategory.Crossbow:
+            case IWeaponCategory.Bow:
+                Debug.Log("Range");
+                if (weapon.Ammunition.Count == 0) return false;
+                return true;
+        }
+        Debug.Log("Fist");
+        return false;
+    }
+    public static bool isDistanceWeapon(IWeapon weapon)
+    {
+        switch (weapon.WCategory)
+        {
+            case IWeaponCategory.Axe:
+            case IWeaponCategory.Hammer:
+            case IWeaponCategory.Katana:
+            case IWeaponCategory.Shield:
+            case IWeaponCategory.Staff:
+            case IWeaponCategory.Sword:
+                return false;
+            case IWeaponCategory.Wand:
+            case IWeaponCategory.Shotgun:
+            case IWeaponCategory.Rifle:
+            case IWeaponCategory.Pistol:
+            case IWeaponCategory.Crossbow:
+            case IWeaponCategory.Bow:
+                return true;
+        }
+        return false;
+    }
 }
