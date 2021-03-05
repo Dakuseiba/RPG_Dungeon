@@ -20,7 +20,7 @@ public class IMS_PlayerControll : IMissionState
 
     public IMissionState Execute()
     {
-        Debug.Log("PA: " + playerMachine.playerData.points);
+        //Debug.Log("PA: " + playerMachine.playerData.points);
         playerMachine.ExecuteStateLogic();
         Inputs();
         if (playerMachine.playerData.isEndTurn && playerMachine.playerData.agent.isStopped) return new IMS_NextCharacter();

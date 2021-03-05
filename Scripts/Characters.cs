@@ -567,4 +567,33 @@ public class Characters
         return result;
     }
     #endregion
+
+    public IWeaponCategory GetWeaponCategory(int index)
+    {
+        switch(index)
+        {
+            case 1:
+                return ((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).WCategory;
+            case 2:
+                return ((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).WCategory;
+            default:
+                return IWeaponCategory.Natural;
+        }
+    }
+    public void WeaponConsumeAmmo(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                break;
+            case 1:
+                if (((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Ammunition.Count > 0)
+                    ((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Ammunition.Count--;
+                break;
+            case 2:
+                if (((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Ammunition.Count > 0)
+                    ((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Ammunition.Count--;
+                break;
+        }
+    }
 }

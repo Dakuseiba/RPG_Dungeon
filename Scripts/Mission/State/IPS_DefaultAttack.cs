@@ -11,7 +11,6 @@ class IPS_DefaultAttack : IPlayerState
     IPlayerState result;
     bool endAction;
     bool canAttack;
-    bool distanceWeapon;
     Vector3 hitTarget;
     public void Action()
     {
@@ -42,9 +41,17 @@ class IPS_DefaultAttack : IPlayerState
     {
         if (!endAction)
         {
-            Destination();
-            IPS_Functions.PathRender(data,true);
+            WeaponInRange();
             result = Target();
+        }
+        else
+        {
+            if (!data.agent.isStopped)
+            {
+                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Move);
+                if (data.agent.remainingDistance == 0) data.agent.isStopped = true;
+                return null;
+            }
         }
         return result;
     }
@@ -73,56 +80,10 @@ class IPS_DefaultAttack : IPlayerState
         }
         return null;
     }
-
-    void Destination()
-    {
-        data.agent.SetDestination(hitTarget);
-        float range = FindHighRangeInWeapon();
-        RaycastHit hit;
-        canAttack = true;
-        if (Physics.Raycast(data.agent.transform.position, (data.target - data.agent.transform.position).normalized, out hit) && range > 0)
-        {
-            float distance = Vector3.Distance(data.agent.transform.position, data.target);
-            if (data.target == hit.transform.gameObject.transform.position)
-            {
-                if (distance <= range)
-                {
-                    ResetPath();
-                }
-                else
-                {
-                    //data.agent.SetDestination(LerpByDistance(data.target, data.agent.transform.position, range));
-                }
-            }
-            else
-            {
-                if(distanceWeapon)
-                {
-                    canAttack = false;
-                }
-                else
-                {
-                    data.agent.SetDestination(data.target);
-                }
-            }
-        }
-        else
-        {
-            ResetPath();
-            canAttack = false;
-        }
-        IPS_Functions.MoveCost(data);
-        AttackCost();
-    }
     void ResetPath()
     {
         data.agent.ResetPath();
         data.agent.isStopped = true;
-    }
-    public Vector3 LerpByDistance(Vector3 A, Vector3 B, float x)
-    {
-        Vector3 P = x * Vector3.Normalize(B - A) + A;
-        return P;
     }
 
     void AttackCost()
@@ -130,34 +91,129 @@ class IPS_DefaultAttack : IPlayerState
         data.cost += 1;
     }
 
-    float FindHighRangeInWeapon()
+    void WeaponInRange()
     {
-        float range = 0;
-        bool fist = true;
-        float w1 = 0;
-        bool w1distance = false;
-        bool w1canUse = false;
-        if (data.character.Equipment.WeaponsSlot[0].Right.Length > 0)
-        { 
-            w1 = ((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle.range;
-            w1distance = IPS_Functions.isDistanceWeapon((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
-            w1canUse = IPS_Functions.Weapon((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
-            fist = false;
-        }
-        float w2 = 0;
-        bool w2distance = false;
-        bool w2canUse = false;
-        if (data.character.Equipment.WeaponsSlot[0].Left.Length > 0 && IPS_Functions.Weapon((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item))
+        float posDistance = Vector3.Distance(data.target, data.agent.transform.position);
+        Weapons weapons = new Weapons(data.character);
+        float maxRange = weapons.HighRange();
+        bool isMove = false;
+        canAttack = true;
+        RaycastHit hit;
+        if (Physics.Raycast(data.agent.transform.position, (data.target - data.agent.transform.position).normalized, out hit) && maxRange > 0)
         {
-            w2 = ((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle.range;
-            w2distance = IPS_Functions.isDistanceWeapon((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
-            w2canUse = IPS_Functions.Weapon((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
-            fist = false;
+            if(hit.transform.gameObject.transform.position == data.target)
+            {
+                if (maxRange >= posDistance)
+                {
+                    IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
+                    weapons.InRange(data, posDistance);
+                    ResetPath();
+                }
+                else
+                {
+                    weapons.InRange(data, 0f);
+                    isMove = true;
+                }
+            }
         }
-        if (w1 > range) { range = w1; distanceWeapon = w1distance; }
-        if (w2 > range) { range = w2; distanceWeapon = w2distance; }
-        if (w1 == 0 && w2 == 0) range = data.character.currentStats.Battle.range;
-        if (!fist && !w1canUse && !w2canUse) range = 0;
-        return range;
+        if(isMove)
+        {
+            IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Melee);
+            if (weapons.DistanceAttack()) canAttack = false;
+            else data.agent.SetDestination(hitTarget);
+        }
+        IPS_Functions.MoveCost(data);
+        AttackCost();
+    }
+
+    public class Weapon
+    {
+        public float range;
+        /// <summary>
+        ///  0 - none, 1 - meele, 2 = range
+        /// </summary>
+        public int isWeapon;
+        public bool canUse;
+
+        public Weapon(int index, Characters character)
+        {
+            switch(index)
+            {
+                case 0:
+                    range = character.currentStats.Battle.range;
+                    isWeapon = 1;
+                    canUse = true;
+                    break;
+                case 1:
+                    IWeapon w1 = null;
+                    if(character.Equipment.WeaponsSlot[0].Right.Length > 0)
+                        w1 = (IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item;
+                    if (w1 != null)
+                    {
+                        range = w1.Stats.Battle.range;
+                        isWeapon = IPS_Functions.isDistanceWeapon(w1);
+                        canUse = IPS_Functions.Weapon(w1);
+                    }
+                    else
+                    {
+                        range = 0;
+                        isWeapon = 0;
+                        canUse = false;
+                    }
+                    break;
+                case 2:
+                    IWeapon w2 = null;
+                    if(character.Equipment.WeaponsSlot[0].Left.Length > 0)
+                        w2 = (IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item;
+                    if (w2 != null)
+                    {
+                        range = w2.Stats.Battle.range;
+                        isWeapon = IPS_Functions.isDistanceWeapon(w2);
+                        canUse = IPS_Functions.Weapon(w2);
+                    }
+                    else
+                    {
+                        range = 0;
+                        isWeapon = 0;
+                        canUse = false;
+                    }
+                    break;
+            }
+        }
+    }
+    public class Weapons
+    {
+        Weapon fist;
+        Weapon w1;
+        Weapon w2;
+        public Weapons(Characters character)
+        {
+            fist = new Weapon(0, character);
+            w1 = new Weapon(1, character);
+            w2 = new Weapon(2, character);
+            if (w1.isWeapon != 0 || w2.isWeapon != 0) fist.canUse = false;
+        }
+        public float HighRange()
+        {
+            float max = 0;
+            if (w1.range > max && w1.canUse) max = w1.range;
+            if (w2.range > max && w2.canUse) max = w2.range;
+            if (fist.canUse) max = fist.range;
+            return max;
+        }
+        public void InRange(PlayerMachine.Data data, float range)
+        {
+            data.indexWeapon = 0;
+            if (w1.canUse && w1.range >= range) data.indexWeapon += 1;
+            if (w2.canUse && w2.range >= range) data.indexWeapon += 2;
+            if (data.indexWeapon == 0 && (!fist.canUse || fist.range < range)) data.indexWeapon = -1;
+        }
+        public bool DistanceAttack()
+        {
+            bool isDistance = false;
+            if (w1.canUse && w1.isWeapon == 2) isDistance = true;
+            if (w2.canUse && w2.isWeapon == 2) isDistance = true;
+            return isDistance;
+        }
     }
 }

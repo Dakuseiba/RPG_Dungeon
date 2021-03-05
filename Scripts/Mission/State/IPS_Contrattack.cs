@@ -60,7 +60,7 @@ class IPS_Contrattack : IPlayerState
         {
             if (character.ParryChance())
             {
-                IPS_Functions.GetParry(character);
+                //IPS_Functions.GetParry(character);
                 return 0;
             }
             else if (character.EvadeChance())

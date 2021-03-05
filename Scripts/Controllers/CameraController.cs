@@ -122,7 +122,6 @@ public class CameraController : MonoBehaviour
             
             RotX = Mathf.Clamp(RotX, minAngle, maxAngle);
         }
-        
         var rotx = Quaternion.Euler(RotX, RotY, 0);
         var roty = Quaternion.Euler(0, RotY, 0);
 

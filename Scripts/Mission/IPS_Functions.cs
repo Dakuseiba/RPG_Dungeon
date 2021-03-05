@@ -33,47 +33,73 @@ public class IPS_Functions
     }
 
 
-    public static void PathRender(PlayerMachine.Data data, bool attack)
+    public static void PathRender(PlayerMachine.Data data, IPS_Functions.TypeLineRender typeLine)
     {
-        if (data.agent.hasPath)
+        switch(typeLine)
         {
-            #region Color
-            Color Negative = Color.red;
-            Color Positive = Color.blue;
-            Color Agressive = Color.yellow;
-            if (data.agent.isStopped)
-            {
-                if (data.points >= data.cost)
+            case TypeLineRender.Move:
+                if (data.agent.hasPath)
                 {
-                    if(attack)
+                    if (data.agent.isStopped)
                     {
-                        data.lineRender.startColor = Agressive;
-                        data.lineRender.endColor = Agressive;
+                        if (data.points >= data.cost)
+                        {
+                            data.lineRender.startColor = Color.blue;
+                            data.lineRender.endColor = Color.blue;
+                        }
+                        else
+                        {
+                            data.lineRender.startColor = Color.red;
+                            data.lineRender.endColor = Color.red;
+                        }
                     }
-                    else
-                    {
-                        data.lineRender.startColor = data.colorPositive;
-                        data.lineRender.endColor = data.colorPositive;
-                    }
+                    data.lineRender.positionCount = data.agent.path.corners.Length;
+                    data.lineRender.SetPositions(data.agent.path.corners);
+                    data.lineRender.enabled = true;
                 }
                 else
                 {
-                    data.lineRender.startColor = data.colorNegative;
-                    data.lineRender.endColor = data.colorNegative;
+                    data.lineRender.enabled = false;
                 }
-            }
-            #endregion
-            data.lineRender.positionCount = data.agent.path.corners.Length;
-            data.lineRender.SetPositions(data.agent.path.corners);
-            data.lineRender.enabled = true;
-        }
-        else
-        {
-            data.lineRender.enabled = false;
+                break;
+            case TypeLineRender.Attack_Melee:
+                if (data.agent.hasPath)
+                {
+                    if (data.agent.isStopped)
+                    {
+                        if (data.points >= data.cost)
+                        {
+                            data.lineRender.startColor = Color.yellow;
+                            data.lineRender.endColor = Color.yellow;
+                        }
+                        else
+                        {
+                            data.lineRender.startColor = Color.red;
+                            data.lineRender.endColor = Color.red;
+                        }
+                    }
+                    data.lineRender.positionCount = data.agent.path.corners.Length;
+                    data.lineRender.SetPositions(data.agent.path.corners);
+                    data.lineRender.enabled = true;
+                }
+                else
+                {
+                    data.lineRender.enabled = false;
+                }
+                break;
+            case TypeLineRender.Attack_Range:
+                data.lineRender.startColor = Color.white;
+                data.lineRender.endColor = Color.white;
+                data.lineRender.positionCount = 2;
+                data.lineRender.SetPosition(0,data.agent.transform.position);
+                data.lineRender.SetPosition(1,data.target);
+                data.lineRender.enabled = true;
+                break;
         }
     }
     public static IPlayerState GetDamage(int dmg, CharacterStats character)
     {
+        Debug.Log("Battle: HIT!");
         dmg = character.ReduceDmg(dmg, Elements.Physical);
         character.lifeStats.TakeDmg(dmg);
         return new IPS_Move();
@@ -83,10 +109,14 @@ public class IPS_Functions
         Debug.Log("Batlle: MISS!");
         return new IPS_Move();
     }
-    public static IPlayerState GetParry(CharacterStats stats)
+    public static IPlayerState GetParry()
     {
         Debug.Log("Battle: PARRY!");
-        if (stats.ContrattackChance()) return new IPS_Contrattack();
+        return new IPS_Move();
+    }
+    public static IPlayerState GetContrAttack()
+    {
+        Debug.Log("Battle: CONTRATTACK!");
         return new IPS_Move();
     }
     public static IPlayerState GetEvade()
@@ -120,7 +150,7 @@ public class IPS_Functions
         Debug.Log("Fist");
         return false;
     }
-    public static bool isDistanceWeapon(IWeapon weapon)
+    public static int isDistanceWeapon(IWeapon weapon)
     {
         switch (weapon.WCategory)
         {
@@ -130,15 +160,23 @@ public class IPS_Functions
             case IWeaponCategory.Shield:
             case IWeaponCategory.Staff:
             case IWeaponCategory.Sword:
-                return false;
+                return 1;
             case IWeaponCategory.Wand:
             case IWeaponCategory.Shotgun:
             case IWeaponCategory.Rifle:
             case IWeaponCategory.Pistol:
             case IWeaponCategory.Crossbow:
             case IWeaponCategory.Bow:
-                return true;
+                return 2;
         }
-        return false;
+        return 0;
+    }
+
+    public enum TypeLineRender
+    {
+        None,
+        Move,
+        Attack_Melee,
+        Attack_Range
     }
 }
