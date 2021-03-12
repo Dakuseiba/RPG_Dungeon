@@ -48,7 +48,7 @@ class IPS_DefaultAttack : IPlayerState
         {
             if (!data.agent.isStopped)
             {
-                IPS_Functions.PathRender(data);
+                IPS_Functions.PathRender(data, IPS_Functions.PathRenderType.Move);
                 if (data.agent.remainingDistance == 0) data.agent.isStopped = true;
                 return null;
             }
@@ -84,6 +84,7 @@ class IPS_DefaultAttack : IPlayerState
     {
         data.agent.ResetPath();
         data.agent.isStopped = true;
+        data.lineRender.enabled = false;
     }
 
     void AttackCost()
@@ -94,119 +95,103 @@ class IPS_DefaultAttack : IPlayerState
     void WeaponInRange()
     {
         float posDistance = Vector3.Distance(data.target, data.agent.transform.position);
-        Weapons weapons = new Weapons(data.character);
+        IPS_Functions.Weapons weapons = new IPS_Functions.Weapons(data.character);
         float maxRange = weapons.HighRange();
         canAttack = true;
 
-        // 0 - brak akcji, 1 - atak wręcz, 2 - podejście i atak, 3 - atak dystansowy
-        int w0=0;
-        int w1=0;
-        int w2=0;
+        // 0 - brak akcji, 1 - atak, 2 - podejście i atak
+        int[] w = new int[3];
         data.indexWeapon = 0;
         if(weapons.w1 != null && weapons.w1.canUse)
         {
             switch(weapons.w1.isWeapon)
             {
                 case 1:
-                    w1 = NoneRayHit(posDistance, weapons.w1.range);
+                    w[1] = NoneRayHit(posDistance, weapons.w1.range);
                     break;
                 case 2:
                     switch(weapons.w1.missileFlight)
                     {
                         case MissileFlight.curve:
-                            w1 = CurveRayHit(posDistance);
+                            w[1] = CurveRayHit(posDistance, weapons.w1.range);
                             break;
                         case MissileFlight.simply:
-                            w1 = SimplyRayHit(posDistance,weapons.w1.range);
+                            w[1] = SimplyRayHit(posDistance,weapons.w1.range);
                             break;
                     }
                     break;
             }
-            if (w1 > 0) data.indexWeapon += 1;
         }
         if (weapons.w2 != null && weapons.w2.canUse)
         {
+            Debug.Log(weapons.w2.canUse + " " + weapons.w2.isWeapon +" "+ weapons.w2.missileFlight);
             switch (weapons.w2.isWeapon)
             {
                 case 1:
-                    w2 = NoneRayHit(posDistance, weapons.w2.range);
+                    w[2] = NoneRayHit(posDistance, weapons.w2.range);
                     break;
                 case 2:
                     switch (weapons.w2.missileFlight)
                     {
                         case MissileFlight.curve:
-                            w2 = CurveRayHit(posDistance);
+                            w[2] = CurveRayHit(posDistance, weapons.w2.range);
                             break;
                         case MissileFlight.simply:
-                            w2 = SimplyRayHit(posDistance, weapons.w2.range);
+                            w[2] = SimplyRayHit(posDistance, weapons.w2.range);
                             break;
                     }
                     break;
             }
-            if (w2 > 0) data.indexWeapon += 2;
         }
         if (weapons.fist.canUse)
         {
-            w0 = NoneRayHit(posDistance, weapons.fist.range);
-            if (w0 == 0 && data.indexWeapon == 0) data.indexWeapon = -1;
+            w[0] = NoneRayHit(posDistance, weapons.fist.range);
         }
-
-        Debug.Log("w0: " + w0 + " w1: " + w1 + " w2: " + w2);
-
-        #region OLD
-        /*RaycastHit hit;
-        if (Physics.Raycast(data.agent.transform.position, (data.target - data.agent.transform.position).normalized, out hit) && maxRange > 0)
+        switch(w[1])
         {
-            if(hit.transform.gameObject.transform.position == data.target)
-            {
-                if (maxRange >= posDistance)
-                {
-                    //IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
-                    weapons.InRange(data, posDistance);
-                    ResetPath();
-                    switch (data.indexWeapon)
-                    {
-                        case 0:
-                            IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Melee);
-                            break;
-                        case 1:
-                            if (weapons.w1.isWeapon == 2)
-                                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
-                            else data.lineRender.enabled = false;
-                            break;
-                        case 2:
-                            if (weapons.w2.isWeapon == 2)
-                                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
-                            else data.lineRender.enabled = false;
-                            break;
-                        case 3:
-                            if (weapons.w1.isWeapon == 2 || weapons.w2.isWeapon == 2)
-                                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
-                            else data.lineRender.enabled = false;
-                            break;
-                    }
-                }
-                else
-                {
-                    weapons.InRange(data, 0f);
-                    isMove = true;
-                }
-            }
-        }*/
-        #endregion
+            case 0:
+                break;
+            case 1:
+                data.indexWeapon += 1;
+                break;
+            case 2:
+                if(w[2] != 1)
+                    data.indexWeapon += 1;
+                break;
+        }
+        switch(w[2])
+        {
+            case 0:
+                break;
+            case 1:
+                data.indexWeapon += 2;
+                break;
+            case 2:
+                if (w[1] != 1) 
+                    data.indexWeapon += 2;
+                break;
+        }
+        if (w[0] == 0 && data.indexWeapon == 0) data.indexWeapon = -1;
 
-        if(w0 == 1 || w1 == 1 || w2 == 1)
+        Debug.Log("w0: " + w[0] + " w1: " + w[1] + " w2: " + w[2]);
+
+        if(w.Count(x=>x==1) > 0)
         {
             ResetPath();
-            data.lineRender.enabled = false;
+            IPS_Functions.PathRenderAttack(data, weapons);
         }
         else
         {
-            if (w0 == 2 || w1 == 2 || w2 == 2)
+            if (w.Count(x=>x==2) > 0)
             {
-                IPS_Functions.PathRender(data);
+                IPS_Functions.PathRender(data, IPS_Functions.PathRenderType.Move_Attack);
                 if (weapons.DistanceAttack()) canAttack = false;
                 else data.agent.SetDestination(hitTarget);
+            }
+            else
+            {
+                ResetPath();
+                canAttack = false;
             }
         }
         IPS_Functions.MoveCost(data);
@@ -245,114 +230,40 @@ class IPS_DefaultAttack : IPlayerState
         return 0;
     }
 
-    int CurveRayHit(float distance)
+    int CurveRayHit(float distance, float range)
     {
-        return 0;
-    }
+        if (distance > range) return 0;
+        List<Vector3> Vectors = new List<Vector3>();
+        List<Vector3> VectorsRay = new List<Vector3>();
+        Vector3 center = (data.agent.transform.position + data.target) / 2;
 
-    public class Weapon
-    {
-        public float range;
-        /// <summary>
-        ///  0 - none, 1 - meele, 2 = range
-        /// </summary>
-        public int isWeapon;
-        public bool canUse;
-        public MissileFlight missileFlight;
+        center.y = CalculateHeight(center, distance, range);
 
-        public Weapon(int index, Characters character)
+        for (float i = 0; i <= 1; i += 1f / 32)
         {
-            switch(index)
+            Vector3 pos = Mathf.Pow(1 - i, 3) * data.agent.transform.position +
+                    3 * Mathf.Pow(1 - i, 2) * i * center +
+                    3 * (1 - i) * Mathf.Pow(i, 2) * center +
+                    Mathf.Pow(i, 3) * data.target;
+            Vectors.Add(pos);
+        }
+        if (Vectors.Count > 0)
+            VectorsRay.Add(Vectors[0]);
+        for (int i = 0; i < Vectors.Count - 1; i++)
+        {
+            var vec1 = Vectors[i];
+            var vec2 = Vectors[i + 1];
+            if (Physics.Raycast(vec1, (vec2 - vec1).normalized, Vector3.Distance(vec1, vec2), 9))
             {
-                case 0:
-                    range = character.currentStats.Battle.range;
-                    isWeapon = 1;
-                    canUse = true;
-                    missileFlight = MissileFlight.none;
-                    break;
-                case 1:
-                    IWeapon w1 = null;
-                    if(character.Equipment.WeaponsSlot[0].Right.Length > 0)
-                        w1 = (IWeapon)character.Equipment.WeaponsSlot[0].Right[0].item;
-                    if (w1 != null)
-                    {
-                        range = w1.Stats.Battle.range;
-                        isWeapon = IPS_Functions.isDistanceWeapon(w1);
-                        canUse = IPS_Functions.Weapon(w1);
-                        missileFlight = w1.MissileFlight;
-                    }
-                    else
-                    {
-                        range = 0;
-                        isWeapon = 0;
-                        canUse = false;
-                        missileFlight = MissileFlight.none;
-                    }
-                    break;
-                case 2:
-                    IWeapon w2 = null;
-                    if(character.Equipment.WeaponsSlot[0].Left.Length > 0)
-                        w2 = (IWeapon)character.Equipment.WeaponsSlot[0].Left[0].item;
-                    if (w2 != null)
-                    {
-                        range = w2.Stats.Battle.range;
-                        isWeapon = IPS_Functions.isDistanceWeapon(w2);
-                        canUse = IPS_Functions.Weapon(w2);
-                        missileFlight = w2.MissileFlight;
-                        missileFlight = MissileFlight.none;
-                    }
-                    else
-                    {
-                        range = 0;
-                        isWeapon = 0;
-                        canUse = false;
-                    }
-                    break;
+                return 0;
             }
         }
+        return 1;
     }
-    public class Weapons
+    float CalculateHeight(Vector3 center, float distance, float range)
     {
-        public Weapon fist;
-        public Weapon w1;
-        public Weapon w2;
-        public Weapons(Characters character)
-        {
-            fist = new Weapon(0, character);
-            w1 = new Weapon(1, character);
-            w2 = new Weapon(2, character);
-            if (w1.isWeapon != 0 || w2.isWeapon != 0) fist.canUse = false;
-        }
-        public float HighRange()
-        {
-            float max = 0;
-            if (w1.range > max && w1.canUse) 
-            { 
-                max = w1.range;
-            }
-            if (w2.range > max && w2.canUse) 
-            { 
-                max = w2.range;
-            }
-            if (fist.canUse) 
-            { 
-                max = fist.range;
-            }
-            return max;
-        }
-        public void InRange(PlayerMachine.Data data, float range)
-        {
-            data.indexWeapon = 0;
-            if (w1.canUse && w1.range >= range) data.indexWeapon += 1;
-            if (w2.canUse && w2.range >= range) data.indexWeapon += 2;
-            if (data.indexWeapon == 0 && (!fist.canUse || fist.range < range)) data.indexWeapon = -1;
-        }
-        public bool DistanceAttack()
-        {
-            bool isDistance = false;
-            if (w1.canUse && w1.isWeapon == 2) isDistance = true;
-            if (w2.canUse && w2.isWeapon == 2) isDistance = true;
-            return isDistance;
-        }
+        float result = 10 - (Mathf.Abs(range - distance) / 2);
+        if (result > 10) result = 10;
+        return result + center.y;
     }
 }

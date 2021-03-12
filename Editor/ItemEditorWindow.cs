@@ -609,6 +609,7 @@ public class ItemEditorWindow : EditorWindow
                 weapon.MissileFlight = MissileFlight.none;
                 break;
         }
+        GUILayout.Label("MissileFlight: " + weapon.MissileFlight);
         switch(weapon.WCategory)
         {
             case IWeaponCategory.Staff:

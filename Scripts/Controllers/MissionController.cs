@@ -29,8 +29,8 @@ public class MissionController : MonoBehaviour
         int i = 0;
         foreach (var player in players)
         {
-            //player.GetComponent<HolderDataCharacter>().character = StaticValues.Team[i];
-            //i++;
+            player.GetComponent<HolderDataCharacter>().character = StaticValues.Team[i];
+            i++;
             characters.Add(player);
         }
         foreach (var enemy in enemies)

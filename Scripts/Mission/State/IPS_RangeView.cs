@@ -47,7 +47,7 @@ public class IPS_RangeView : IPlayerState
     void DrawRange()
     {
         Vectors = new List<Vector3>();
-        IPS_DefaultAttack.Weapons weapons = new IPS_DefaultAttack.Weapons(data.character);
+        IPS_Functions.Weapons weapons = new IPS_Functions.Weapons(data.character);
         float Range = weapons.HighRange();
         for (float i = 0; i < 2 * Mathf.PI; i += scale)
         {
