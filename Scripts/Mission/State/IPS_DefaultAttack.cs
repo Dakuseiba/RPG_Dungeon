@@ -48,7 +48,7 @@ class IPS_DefaultAttack : IPlayerState
         {
             if (!data.agent.isStopped)
             {
-                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Move);
+                IPS_Functions.PathRender(data);
                 if (data.agent.remainingDistance == 0) data.agent.isStopped = true;
                 return null;
             }
@@ -96,18 +96,95 @@ class IPS_DefaultAttack : IPlayerState
         float posDistance = Vector3.Distance(data.target, data.agent.transform.position);
         Weapons weapons = new Weapons(data.character);
         float maxRange = weapons.HighRange();
-        bool isMove = false;
         canAttack = true;
-        RaycastHit hit;
+
+        // 0 - brak akcji, 1 - atak wręcz, 2 - podejście i atak, 3 - atak dystansowy
+        int w0=0;
+        int w1=0;
+        int w2=0;
+        data.indexWeapon = 0;
+        if(weapons.w1 != null && weapons.w1.canUse)
+        {
+            switch(weapons.w1.isWeapon)
+            {
+                case 1:
+                    w1 = NoneRayHit(posDistance, weapons.w1.range);
+                    break;
+                case 2:
+                    switch(weapons.w1.missileFlight)
+                    {
+                        case MissileFlight.curve:
+                            w1 = CurveRayHit(posDistance);
+                            break;
+                        case MissileFlight.simply:
+                            w1 = SimplyRayHit(posDistance,weapons.w1.range);
+                            break;
+                    }
+                    break;
+            }
+            if (w1 > 0) data.indexWeapon += 1;
+        }
+        if (weapons.w2 != null && weapons.w2.canUse)
+        {
+            switch (weapons.w2.isWeapon)
+            {
+                case 1:
+                    w2 = NoneRayHit(posDistance, weapons.w2.range);
+                    break;
+                case 2:
+                    switch (weapons.w2.missileFlight)
+                    {
+                        case MissileFlight.curve:
+                            w2 = CurveRayHit(posDistance);
+                            break;
+                        case MissileFlight.simply:
+                            w2 = SimplyRayHit(posDistance, weapons.w2.range);
+                            break;
+                    }
+                    break;
+            }
+            if (w2 > 0) data.indexWeapon += 2;
+        }
+        if (weapons.fist.canUse)
+        {
+            w0 = NoneRayHit(posDistance, weapons.fist.range);
+            if (w0 == 0 && data.indexWeapon == 0) data.indexWeapon = -1;
+        }
+
+        Debug.Log("w0: " + w0 + " w1: " + w1 + " w2: " + w2);
+
+        #region OLD
+        /*RaycastHit hit;
         if (Physics.Raycast(data.agent.transform.position, (data.target - data.agent.transform.position).normalized, out hit) && maxRange > 0)
         {
             if(hit.transform.gameObject.transform.position == data.target)
             {
                 if (maxRange >= posDistance)
                 {
-                    IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
+                    //IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
                     weapons.InRange(data, posDistance);
                     ResetPath();
+                    switch (data.indexWeapon)
+                    {
+                        case 0:
+                            IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Melee);
+                            break;
+                        case 1:
+                            if (weapons.w1.isWeapon == 2)
+                                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
+                            else data.lineRender.enabled = false;
+                            break;
+                        case 2:
+                            if (weapons.w2.isWeapon == 2)
+                                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
+                            else data.lineRender.enabled = false;
+                            break;
+                        case 3:
+                            if (weapons.w1.isWeapon == 2 || weapons.w2.isWeapon == 2)
+                                IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Range);
+                            else data.lineRender.enabled = false;
+                            break;
+                    }
                 }
                 else
                 {
@@ -115,15 +192,62 @@ class IPS_DefaultAttack : IPlayerState
                     isMove = true;
                 }
             }
-        }
-        if(isMove)
+        }*/
+        #endregion
+
+        if(w0 == 1 || w1 == 1 || w2 == 1)
         {
-            IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Attack_Melee);
-            if (weapons.DistanceAttack()) canAttack = false;
-            else data.agent.SetDestination(hitTarget);
+            ResetPath();
+            data.lineRender.enabled = false;
+        }
+        else
+        {
+            if (w0 == 2 || w1 == 2 || w2 == 2)
+            {
+                IPS_Functions.PathRender(data);
+                if (weapons.DistanceAttack()) canAttack = false;
+                else data.agent.SetDestination(hitTarget);
+            }
         }
         IPS_Functions.MoveCost(data);
         AttackCost();
+    }
+
+    int NoneRayHit(float distance, float range)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(data.agent.transform.position, (data.target - data.agent.transform.position).normalized, out hit))
+        {
+            if (hit.transform.gameObject.transform.position == data.target)
+            {
+                if(range >= distance)
+                {
+                    return 1;
+                }
+            }
+        }
+        return 2;
+    }
+
+    int SimplyRayHit(float distance, float range)
+    {
+        RaycastHit hit;
+        if(Physics.Raycast(data.agent.transform.position,(data.target-data.agent.transform.position).normalized,out hit, distance))
+        {
+            if(hit.transform.gameObject.transform.position == data.target)
+            {
+                if(range >= distance)
+                {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
+    int CurveRayHit(float distance)
+    {
+        return 0;
     }
 
     public class Weapon
@@ -134,6 +258,7 @@ class IPS_DefaultAttack : IPlayerState
         /// </summary>
         public int isWeapon;
         public bool canUse;
+        public MissileFlight missileFlight;
 
         public Weapon(int index, Characters character)
         {
@@ -143,6 +268,7 @@ class IPS_DefaultAttack : IPlayerState
                     range = character.currentStats.Battle.range;
                     isWeapon = 1;
                     canUse = true;
+                    missileFlight = MissileFlight.none;
                     break;
                 case 1:
                     IWeapon w1 = null;
@@ -153,12 +279,14 @@ class IPS_DefaultAttack : IPlayerState
                         range = w1.Stats.Battle.range;
                         isWeapon = IPS_Functions.isDistanceWeapon(w1);
                         canUse = IPS_Functions.Weapon(w1);
+                        missileFlight = w1.MissileFlight;
                     }
                     else
                     {
                         range = 0;
                         isWeapon = 0;
                         canUse = false;
+                        missileFlight = MissileFlight.none;
                     }
                     break;
                 case 2:
@@ -170,6 +298,8 @@ class IPS_DefaultAttack : IPlayerState
                         range = w2.Stats.Battle.range;
                         isWeapon = IPS_Functions.isDistanceWeapon(w2);
                         canUse = IPS_Functions.Weapon(w2);
+                        missileFlight = w2.MissileFlight;
+                        missileFlight = MissileFlight.none;
                     }
                     else
                     {
@@ -183,9 +313,9 @@ class IPS_DefaultAttack : IPlayerState
     }
     public class Weapons
     {
-        Weapon fist;
-        Weapon w1;
-        Weapon w2;
+        public Weapon fist;
+        public Weapon w1;
+        public Weapon w2;
         public Weapons(Characters character)
         {
             fist = new Weapon(0, character);
@@ -196,9 +326,18 @@ class IPS_DefaultAttack : IPlayerState
         public float HighRange()
         {
             float max = 0;
-            if (w1.range > max && w1.canUse) max = w1.range;
-            if (w2.range > max && w2.canUse) max = w2.range;
-            if (fist.canUse) max = fist.range;
+            if (w1.range > max && w1.canUse) 
+            { 
+                max = w1.range;
+            }
+            if (w2.range > max && w2.canUse) 
+            { 
+                max = w2.range;
+            }
+            if (fist.canUse) 
+            { 
+                max = fist.range;
+            }
             return max;
         }
         public void InRange(PlayerMachine.Data data, float range)

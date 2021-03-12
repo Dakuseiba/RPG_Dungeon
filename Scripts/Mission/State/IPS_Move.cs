@@ -51,7 +51,7 @@ public class IPS_Move : IPlayerState
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                //Debug.Log(hit.transform.gameObject);
+                if (hit.transform.gameObject == data.agent.transform.gameObject) return new IPS_RangeView();
                 if(hit.transform.gameObject.tag == "Enemy")
                 {
                     data.target = hit.transform.gameObject.transform.position;
@@ -67,7 +67,7 @@ public class IPS_Move : IPlayerState
     {
         data.agent.SetDestination(data.target);
         IPS_Functions.MoveCost(data);
-        IPS_Functions.PathRender(data, IPS_Functions.TypeLineRender.Move);
+        IPS_Functions.PathRender(data);
         if (data.agent.remainingDistance == 0) data.agent.isStopped = true;
     }
 }

@@ -8,7 +8,7 @@ public class HolderDataCharacter : MonoBehaviour
     public Characters character;
     public Characters GetCharacter()
     {
-        //return character1.character;
+        return character1.character;
         return character;
     }
 }

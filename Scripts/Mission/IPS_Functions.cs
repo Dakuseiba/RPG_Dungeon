@@ -33,68 +33,30 @@ public class IPS_Functions
     }
 
 
-    public static void PathRender(PlayerMachine.Data data, IPS_Functions.TypeLineRender typeLine)
+    public static void PathRender(PlayerMachine.Data data)
     {
-        switch(typeLine)
+        if (data.agent.hasPath)
         {
-            case TypeLineRender.Move:
-                if (data.agent.hasPath)
+            if (data.agent.isStopped)
+            {
+                if (data.points >= data.cost)
                 {
-                    if (data.agent.isStopped)
-                    {
-                        if (data.points >= data.cost)
-                        {
-                            data.lineRender.startColor = Color.blue;
-                            data.lineRender.endColor = Color.blue;
-                        }
-                        else
-                        {
-                            data.lineRender.startColor = Color.red;
-                            data.lineRender.endColor = Color.red;
-                        }
-                    }
-                    data.lineRender.positionCount = data.agent.path.corners.Length;
-                    data.lineRender.SetPositions(data.agent.path.corners);
-                    data.lineRender.enabled = true;
+                    data.lineRender.startColor = Color.blue;
+                    data.lineRender.endColor = Color.blue;
                 }
                 else
                 {
-                    data.lineRender.enabled = false;
+                    data.lineRender.startColor = Color.red;
+                    data.lineRender.endColor = Color.red;
                 }
-                break;
-            case TypeLineRender.Attack_Melee:
-                if (data.agent.hasPath)
-                {
-                    if (data.agent.isStopped)
-                    {
-                        if (data.points >= data.cost)
-                        {
-                            data.lineRender.startColor = Color.yellow;
-                            data.lineRender.endColor = Color.yellow;
-                        }
-                        else
-                        {
-                            data.lineRender.startColor = Color.red;
-                            data.lineRender.endColor = Color.red;
-                        }
-                    }
-                    data.lineRender.positionCount = data.agent.path.corners.Length;
-                    data.lineRender.SetPositions(data.agent.path.corners);
-                    data.lineRender.enabled = true;
-                }
-                else
-                {
-                    data.lineRender.enabled = false;
-                }
-                break;
-            case TypeLineRender.Attack_Range:
-                data.lineRender.startColor = Color.white;
-                data.lineRender.endColor = Color.white;
-                data.lineRender.positionCount = 2;
-                data.lineRender.SetPosition(0,data.agent.transform.position);
-                data.lineRender.SetPosition(1,data.target);
-                data.lineRender.enabled = true;
-                break;
+            }
+            data.lineRender.positionCount = data.agent.path.corners.Length;
+            data.lineRender.SetPositions(data.agent.path.corners);
+            data.lineRender.enabled = true;
+        }
+        else
+        {
+            data.lineRender.enabled = false;
         }
     }
     public static IPlayerState GetDamage(int dmg, CharacterStats character)
@@ -179,4 +141,6 @@ public class IPS_Functions
         Attack_Melee,
         Attack_Range
     }
+
+
 }
