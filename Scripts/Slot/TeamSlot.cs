@@ -58,7 +58,7 @@ public class TeamSlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDrag
                 }
                 break;
             case PanelTeamType.Select_To_Mission:
-                if (GetComponentInParent<TeamPanel>().EquipmentCharacter.activeSelf) empty = true;
+                if (GetComponentInParent<TeamPanel>().CharCard.activeSelf) empty = true;
                 else
                 {
                     var group = GetComponentInParent<TravelSelect_Panel>().selectedGroup;

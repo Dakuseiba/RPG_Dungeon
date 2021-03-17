@@ -177,7 +177,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                                         select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
                                         break;
                                     case ForceTravel.TravelType.Village:
-                                        select = StaticValues.Cities[group.id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                        select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[group.id]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
                                         break;
                                 }
                                 break;
@@ -223,7 +223,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                                             select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
                                             break;
                                         case ForceTravel.TravelType.Village:
-                                            select = StaticValues.Cities[group.id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                            select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[group.id]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
                                             break;
                                     }
                                     break;
@@ -404,14 +404,14 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     case SlotType.Eq_RW2:
                     case SlotType.Item_Slot:
                         select.UpdateStats();
-                        GetComponentInParent<TeamPanel>().Load();
-                        GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
+                        GetComponentInParent<EquipmentPanel>().Load();
+                        //GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
                         break;
                     case SlotType.Magazine:
                         slot.GetComponentInParent<MagazinePanel>().UpdateSlot();
                         select.UpdateStats();
-                        GetComponentInParent<TeamPanel>().Load();
-                        GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
+                        GetComponentInParent<EquipmentPanel>().Load();
+                        //GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
                         break;
                 }
                 break;
@@ -428,8 +428,8 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     case SlotType.Eq_RW2:
                     case SlotType.Item_Slot:
                         select.UpdateStats();
-                        GetComponentInParent<TeamPanel>().Load();
-                        GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
+                        GetComponentInParent<EquipmentPanel>().Load();
+                        //GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
                         break;
                     case SlotType.Magazine:
                         break;
@@ -510,7 +510,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         }
         else
         {
-            if(destiny.item == null)
+            if(destiny.item == null || destiny.item.item == null)
             {
                 if (ItemIsCorrect(slot, destiny))
                 {
@@ -736,12 +736,12 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     }
     int GetIndexSlot(SlotType SType, Slot slot)
     {
-        List<GameObject> objList;
+        GameObject[] objList;
         switch (SType)
         {
             case SlotType.Backpack:
-                objList = slot.GetComponentInParent<TeamPanel>().EquipmentObjects.Backpack;
-                for (int i = 0; i < objList.Count; i++)
+                objList = slot.GetComponentInParent<EquipmentPanel>().Backpack;
+                for (int i = 0; i < objList.Length; i++)
                 {
                     if (objList[i].GetComponent<Slot>() == slot)
                     {
@@ -750,8 +750,8 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 }
                 break;
             case SlotType.Item_Slot:
-                objList = slot.GetComponentInParent<TeamPanel>().EquipmentObjects.PrivSlots;
-                for (int i = 0; i < objList.Count; i++)
+                objList = slot.GetComponentInParent<EquipmentPanel>().PrivSlots;
+                for (int i = 0; i < objList.Length; i++)
                 {
                     if (objList[i].GetComponent<Slot>() == slot)
                     {
@@ -762,24 +762,24 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             case SlotType.Magazine:
                 if(slot.GetComponentInParent<TeamPanel>() == null)
                 {
-                    objList = slot.GetComponentInParent<MagazinePanel>().Slot;
+                    objList = slot.GetComponentInParent<MagazinePanel>().Slot.ToArray();
                 }
-                else objList = slot.GetComponentInParent<TeamPanel>().Magazine.GetComponentInChildren<MagazinePanel>().Slot;
-                for(int i=0;i<objList.Count;i++)
+                else objList = slot.GetComponentInParent<TeamPanel>().Magazine.GetComponentInChildren<MagazinePanel>().Slot.ToArray();
+                for(int i=0;i<objList.Length;i++)
                 {
                     if (objList[i].GetComponent<Slot>() == slot) return i;
                 }
                 break;
             case SlotType.Shop_Sell:
-                objList = GetComponentInParent<MarketplacePanel>().Slots_SellList;
-                for(int i=0;i<objList.Count;i++)
+                objList = GetComponentInParent<MarketplacePanel>().Slots_SellList.ToArray();
+                for(int i=0;i<objList.Length;i++)
                 {
                     if (objList[i].GetComponent<Slot>() == slot) return i;
                 }
                 break;
             case SlotType.Shop_Buy:
-                objList = GetComponentInParent<MarketplacePanel>().Slots_BuyList;
-                for (int i = 0; i < objList.Count; i++)
+                objList = GetComponentInParent<MarketplacePanel>().Slots_BuyList.ToArray();
+                for (int i = 0; i < objList.Length; i++)
                 {
                     if (objList[i].GetComponent<Slot>() == slot) return i;
                 }

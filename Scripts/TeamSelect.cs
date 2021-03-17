@@ -19,7 +19,6 @@ public class TeamSelect : MonoBehaviour
     public bool SortDirection;
 
     public int Select = -1;
-    //public int city_index;
 
     private void OnEnable()
     {
