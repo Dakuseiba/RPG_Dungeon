@@ -11,6 +11,8 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     public SlotType Type;
     public SlotItem item = null;
     public GameObject amount;
+    bool mission;
+    int pa;
 
     private void Awake()
     {
@@ -101,32 +103,34 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
     bool empty;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
+        empty = true;
         if (icon.activeSelf && Type != SlotType.Workshop)
         {
-            switch(Type)
+            if (item.amount > 0)
             {
-                case SlotType.Workshop:
-                case SlotType.Rune_Slot:
-                case SlotType.None:
-                    empty = true;
-                    break;
-                default:
-                    empty = false;
-                    HoldItem = Instantiate(icon, GetComponentInParent<Canvas>().transform, true);
-                    HoldItem.transform.position = icon.transform.position;
-                    rectTransform = HoldItem.GetComponent<RectTransform>();
-                    canvasGroup = HoldItem.GetComponent<CanvasGroup>();
-                    canvasGroup.blocksRaycasts = false;
-                    icon.GetComponent<CanvasGroup>().alpha = 0.6f;
-                    break;
+                switch (Type)
+                {
+                    case SlotType.Workshop:
+                    case SlotType.Rune_Slot:
+                    case SlotType.None:
+                        empty = true;
+                        break;
+                    default:
+                        empty = false;
+                        HoldItem = Instantiate(icon, GetComponentInParent<Canvas>().transform, true);
+                        HoldItem.transform.position = icon.transform.position;
+                        rectTransform = HoldItem.GetComponent<RectTransform>();
+                        canvasGroup = HoldItem.GetComponent<CanvasGroup>();
+                        canvasGroup.blocksRaycasts = false;
+                        icon.GetComponent<CanvasGroup>().alpha = 0.6f;
+                        break;
+                }
             }
         }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
         if (!empty && eventData.pointerId == -1)
         {
             switch(Type)
@@ -153,6 +157,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             Slot slot = eventData.pointerDrag.GetComponent<Slot>();
             if(slot!=null)
             {
+                mission = false;
                 if (slot.HoldItem != null) Destroy(slot.HoldItem);
                 switch (slot.Type)
                 {
@@ -167,33 +172,45 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                         select = null; //brak konkretnej postaci
                         break;
                     default:
-                        switch (GetComponentInParent<TeamPanel>().TeamSelect.Type)
+                        switch(GetComponentInParent<EquipmentPanel>().type)
                         {
-                            case PanelTeamType.Select_To_Mission:
-                                var group = GetComponentInParent<TravelSelect_Panel>().selectedGroup;
-                                switch (group.type)
+                            case EquipmentPanel.EquipmentTypePanel.Hub:
+                            case EquipmentPanel.EquipmentTypePanel.Recruit:
+                                /*switch (GetComponentInParent<TeamPanel>().TeamSelect.Type)
                                 {
-                                    case ForceTravel.TravelType.Camp:
-                                        select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                    case PanelTeamType.Select_To_Mission:
+                                        var group = GetComponentInParent<TravelSelect_Panel>().selectedGroup;
+                                        switch (group.type)
+                                        {
+                                            case ForceTravel.TravelType.Camp:
+                                                select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                                break;
+                                            case ForceTravel.TravelType.Village:
+                                                select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[group.id]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                                break;
+                                        }
                                         break;
-                                    case ForceTravel.TravelType.Village:
-                                        select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[group.id]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                    case PanelTeamType.Team:
+                                        switch (StaticValues.currentLocate.GetTypeLocate())
+                                        {
+                                            case ForceTravel.TravelType.Camp:
+                                                select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                                break;
+                                            case ForceTravel.TravelType.Village:
+                                                select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                                                break;
+                                        }
                                         break;
-                                }
+                                    default:
+                                        select = null;
+                                        break;
+                                }*/
+                                select = GetComponentInParent<EquipmentPanel>().GetCharacter();
                                 break;
-                            case PanelTeamType.Team:
-                                switch (StaticValues.currentLocate.GetTypeLocate())
-                                {
-                                    case ForceTravel.TravelType.Camp:
-                                        select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                                        break;
-                                    case ForceTravel.TravelType.Village:
-                                        select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                                        break;
-                                }
-                                break;
-                            default:
-                                select = null;
+                            case EquipmentPanel.EquipmentTypePanel.Mission:
+                                mission = true;
+                                pa = GetComponentInParent<EquipmentPanel>().GetPoints();
+                                select = GetComponentInParent<EquipmentPanel>().GetCharacter();
                                 break;
                         }
                         break;
@@ -248,9 +265,94 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
                 if (slot.item != null)
                 {
-                    SelectMoveType(select, slot, this);
+                    if (mission) MissionSelectMoveType(select, slot, this);
+                    else SelectMoveType(select, slot, this);
                     UpdateSlots(select, slot, this);
                 }
+            }
+        }
+    }
+    void MissionSelectMoveType(Characters select, Slot slot, Slot destiny)
+    {
+        int index1 = GetIndexSlot(Type, this);
+        int index2 = GetIndexSlot(slot.Type, slot);
+        int needPa = 0;
+        bool canMove = false;
+        switch(destiny.Type)
+        {
+            case SlotType.Backpack:
+                switch (slot.Type)
+                {
+                    case SlotType.Backpack:
+                        canMove = true;
+                        break;
+                    case SlotType.Item_Slot:
+                        canMove = true;
+                        needPa = 1;
+                        break;
+                    case SlotType.Eq_Chest:
+                    case SlotType.Eq_Head:
+                    case SlotType.Eq_LW1:
+                    case SlotType.Eq_LW2:
+                    case SlotType.Eq_Pants:
+                    case SlotType.Eq_RW1:
+                    case SlotType.Eq_RW2:
+                        canMove = true;
+                        needPa = 2;
+                        break;
+                }
+                break;
+            case SlotType.Eq_Chest:
+            case SlotType.Eq_Head:
+            case SlotType.Eq_LW1:
+            case SlotType.Eq_LW2:
+            case SlotType.Eq_Pants:
+            case SlotType.Eq_RW1:
+            case SlotType.Eq_RW2:
+                switch (slot.Type)
+                {
+                    case SlotType.Backpack:
+                        canMove = true;
+                        needPa = 2;
+                        break;
+                    case SlotType.Eq_Chest:
+                    case SlotType.Eq_Head:
+                    case SlotType.Eq_LW1:
+                    case SlotType.Eq_LW2:
+                    case SlotType.Eq_Pants:
+                    case SlotType.Eq_RW1:
+                    case SlotType.Eq_RW2:
+                        canMove = true;
+                        break;
+                }
+                break;
+            case SlotType.Item_Slot:
+                switch(slot.Type)
+                {
+                    case SlotType.Backpack:
+                        canMove = true;
+                        needPa = 1;
+                        break;
+                    case SlotType.Item_Slot:
+                        canMove = true;
+                        break;
+                }
+                break;
+            case SlotType.Magazine:
+                switch (slot.Type)
+                {
+                    case SlotType.Backpack:
+                        canMove = true;
+                        break;
+                }
+                break;
+        }
+        if(needPa <= pa && canMove)
+        {
+            if(MoveItems(select, slot, index2, this, index1))
+            {
+                pa -= needPa;
+                GetComponentInParent<EquipmentPanel>().SetPoints(pa);
             }
         }
     }
@@ -280,10 +382,10 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     case SlotType.Eq_RW1:
                     case SlotType.Eq_RW2:
                     case SlotType.Item_Slot:
-                        MoveItems(select, slot, index2, this, index1, true);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                     case SlotType.Magazine:
-                        MoveItems(select, slot, index2, this, index1, true);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                 }
                 break;
@@ -299,13 +401,13 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     case SlotType.Eq_RW1:
                     case SlotType.Eq_RW2:
                     case SlotType.Item_Slot:
-                        MoveItems(select, slot, index2, this, index1, false);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                     case SlotType.Magazine:
-                        MoveItems(select, slot, index2, this, index1, false);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                     case SlotType.Shop_Sell:
-                        MoveItems(select, slot, index2, this, index1, false);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                     case SlotType.Shop:
                         ShopFunction(true, slot, destiny);
@@ -319,7 +421,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                         ShopFunction(false, slot, destiny);
                         break;
                     case SlotType.Shop_Buy:
-                        //MoveItems(select, slot, index2, this, index1, false);
                         SeconOption(select, slot, destiny, index1);
                         break;
                 }
@@ -328,11 +429,10 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 switch (slot.Type)
                 {
                     case SlotType.Shop:
-                        MoveItems(select, slot, index2, this, index1, false);
-                        //Destroy(slot.HoldItem);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                     case SlotType.Shop_Buy:
-                        MoveItems(select, slot, index2, this, index1, false);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                 }
                 break;
@@ -340,10 +440,10 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 switch (slot.Type)
                 {
                     case SlotType.Magazine:
-                        MoveItems(select, slot, index2, this, index1, false);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                     case SlotType.Shop_Sell:
-                        MoveItems(select, slot, index2, this, index1, false);
+                        MoveItems(select, slot, index2, this, index1);
                         break;
                 }
                 break;
@@ -405,13 +505,11 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     case SlotType.Item_Slot:
                         select.UpdateStats();
                         GetComponentInParent<EquipmentPanel>().Load();
-                        //GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
                         break;
                     case SlotType.Magazine:
                         slot.GetComponentInParent<MagazinePanel>().UpdateSlot();
                         select.UpdateStats();
                         GetComponentInParent<EquipmentPanel>().Load();
-                        //GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
                         break;
                 }
                 break;
@@ -429,7 +527,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     case SlotType.Item_Slot:
                         select.UpdateStats();
                         GetComponentInParent<EquipmentPanel>().Load();
-                        //GetComponentInParent<TeamPanel>().TeamSelect.ShowList();
                         break;
                     case SlotType.Magazine:
                         break;
@@ -488,7 +585,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         CheckAmount();
     }
 
-    void MoveItems(Characters select, Slot slot, int slot_index, Slot destiny, int destiny_index, bool canAmmoLoad)
+    bool MoveItems(Characters select, Slot slot, int slot_index, Slot destiny, int destiny_index)
     {
         if (destiny.item != null && destiny.item.item == slot.item.item)//czy przedmioty są takie same
         {
@@ -528,15 +625,11 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     {
                         SeconOption(select, slot, destiny, destiny_index);
                     }
-                }
+                } 
+                else return false;
             }
             else
             {
-                if (slot.item.item.Category == ItemCategory.Ammunition && destiny.item.item.Category == ItemCategory.Weapon && canAmmoLoad)
-                {
-                    AmmoItem(select, slot);
-                }
-                else
                 if (ItemIsCorrect(slot, destiny) && ItemIsCorrect(destiny, slot))
                 {
                     var temp1 = destiny.item;
@@ -546,8 +639,10 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                     AddItem(select, Type, temp2, destiny_index);
                     AddItem(select, slot.Type, temp1, slot_index);
                 }
+                else return false;
             }
         }
+        return true;
     }
 
     void ShopFunction(bool isBuy, Slot slot, Slot destiny)
@@ -660,7 +755,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 switch(slot.item.item.Category)
                 {
                     case ItemCategory.Accessories:
-                    case ItemCategory.Ammunition:
                     case ItemCategory.Consume:
                     case ItemCategory.Throw:
                         return true;
@@ -697,7 +791,8 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 if (slot.item.item.Category == ItemCategory.Weapon)
                 {
                     IWeapon weapon = (IWeapon)slot.item.item;
-                    if (weapon.WType == IWeaponType.Two_handed && StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select].Equipment.WeaponsSlot[0].Left.Length != 0)
+                    Characters select = GetComponentInParent<EquipmentPanel>().GetCharacter();
+                    if (weapon.WType == IWeaponType.Two_handed && select.Equipment.WeaponsSlot[0].Left.Length != 0)
                     {
                         return false;
                     }
@@ -708,7 +803,8 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 if (slot.item.item.Category == ItemCategory.Weapon)
                 {
                     IWeapon weapon = (IWeapon)slot.item.item;
-                    if (weapon.WType == IWeaponType.Two_handed && StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select].Equipment.WeaponsSlot[1].Left.Length != 0)
+                    Characters select = GetComponentInParent<EquipmentPanel>().GetCharacter();
+                    if (weapon.WType == IWeaponType.Two_handed && select.Equipment.WeaponsSlot[1].Left.Length != 0)
                     {
                         return false;
                     }
@@ -718,7 +814,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             case SlotType.Eq_LW1:
                 if (slot.item.item.Category == ItemCategory.Weapon && ((IWeapon)(slot.item.item)).WType == IWeaponType.One_handed)
                 {
-                    Characters select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                    Characters select = GetComponentInParent<EquipmentPanel>().GetCharacter();//StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
                     if (select.Equipment.WeaponsSlot[0].Right.Length > 0 && ((IWeapon)(select.Equipment.WeaponsSlot[0].Right[0].item)).WType == IWeaponType.Two_handed) return false;
                     return true;
                 }
@@ -726,7 +822,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
             case SlotType.Eq_LW2:
                 if (slot.item.item.Category == ItemCategory.Weapon && ((IWeapon)(slot.item.item)).WType == IWeaponType.One_handed)
                 {
-                    Characters select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
+                    Characters select = GetComponentInParent<EquipmentPanel>().GetCharacter();//StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
                     if (select.Equipment.WeaponsSlot[1].Right.Length > 0 && ((IWeapon)(select.Equipment.WeaponsSlot[0].Right[1].item)).WType == IWeaponType.Two_handed) return false;
                     return true;
                 }
@@ -933,29 +1029,9 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 break;
         }
     }
-    void AmmoItem(Characters select, Slot slot)
-    {
-        IAmmunition ammo = (IAmmunition)slot.item.item;
-        IWeapon weapon = (IWeapon)item.item;
-        switch(weapon.WCategory)
-        {
-            case IWeaponCategory.Bow:
-            case IWeaponCategory.Crossbow:
-            case IWeaponCategory.Pistol:
-            case IWeaponCategory.Rifle:
-            case IWeaponCategory.Shotgun:
-                if(weapon.Ammunition!=null && StaticValues.Items.Amunition[weapon.Ammunition.Type] == ammo && weapon.Ammunition.Count < ammo.Ammunition)
-                {
-                    weapon.Ammunition.Count = ammo.Ammunition;
-                    RemoveItem(select, slot.Type, slot.item, 1);
-                }
-                break;
-        }
-    }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
         if(!empty && eventData.pointerId==-1)
         {
             canvasGroup.blocksRaycasts = true;
@@ -966,7 +1042,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
         if(item!=null && item.item!=null)
         {
             GetComponentInParent<GUIControll>().ItemInfoWindow.ClearInfoList();
@@ -975,7 +1050,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
         if(item!=null && item.item!=null && Type!= SlotType.Workshop && Type!= SlotType.None)
         {
             GetComponentInParent<GUIControll>().ItemInfoWindow.CreateInfoWindow(item, this.gameObject);
@@ -984,7 +1058,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
         if(item!=null && item.item!=null)
         {
             GetComponentInParent<GUIControll>().ItemInfoWindow.ClearInfoList();

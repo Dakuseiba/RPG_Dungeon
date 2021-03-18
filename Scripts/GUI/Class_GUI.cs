@@ -6,10 +6,10 @@ public class Class_GUI
 {
     public GameObject gui_hub;
     public GameObject gui_mission;
-    public GameObject gui_battle;
     public GameObject gui_menu;
     public GameObject Split;
     public HUB Hub;
+    public Mission mission;
     public GUI_Type Type;
     [System.Serializable]
     public class HUB
@@ -24,9 +24,10 @@ public class Class_GUI
         [Space]
         public GameObject[] Panels;
     }
+    [System.Serializable]
     public class Mission
     {
-
+        public GameObject Equipment;
     }
     public class Battle
     {

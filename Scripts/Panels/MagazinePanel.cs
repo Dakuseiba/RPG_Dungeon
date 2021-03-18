@@ -107,12 +107,6 @@ public class MagazinePanel : MonoBehaviour
                             slot.icon.GetComponent<Image>().CrossFadeAlpha(0.6f, 0.2f, true);
                         }
                         break;
-                    case ItemCategory.Ammunition:
-                        if (slot.item.item.Category != ItemCategory.Ammunition)
-                        {
-                            slot.icon.GetComponent<Image>().CrossFadeAlpha(0.6f, 0.2f, true);
-                        }
-                        break;
                     case ItemCategory.Component:
                         if (slot.item.item.Category != ItemCategory.Component)
                         {

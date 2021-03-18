@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 [System.Serializable]
-public class IAmmunition : Item
+public class IIAmmunition : Item
 {
     public int Ammunition;
 }

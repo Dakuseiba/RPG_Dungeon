@@ -87,9 +87,6 @@ public class ItemEditorWindow : EditorWindow
             case ItemCategory.Component:
                 Icount = my.Components.Count;
                 break;
-            case ItemCategory.Ammunition:
-                Icount = my.Amunition.Count;
-                break;
             case ItemCategory.Recipe:
                 Icount = my.Recipes.Count;
                 break;
@@ -111,7 +108,6 @@ public class ItemEditorWindow : EditorWindow
         if (my.Consumes == null) my.Consumes = new List<IConsume>();
         if (my.Throws == null) my.Throws = new List<IThrow>();
         if (my.Components == null) my.Components = new List<IComponent>();
-        if (my.Amunition == null) my.Amunition = new List<IAmmunition>();
         if (my.Recipes == null) my.Recipes = new List<IRecipe>();
         if (my.KeyItems == null) my.KeyItems = new List<IKey>();
         if (my.Runes == null) my.Runes = new List<IRune>();
@@ -125,7 +121,6 @@ public class ItemEditorWindow : EditorWindow
         if (GUILayout.Button("Consume")) { ICategory = ItemCategory.Consume; selected = null; }
         if (GUILayout.Button("Throw")) { ICategory = ItemCategory.Throw; selected = null; }
         if (GUILayout.Button("Component")) { ICategory = ItemCategory.Component; selected = null; }
-        if (GUILayout.Button("Ammunition")) { ICategory = ItemCategory.Ammunition; selected = null; }
         if (GUILayout.Button("Recipe")) { ICategory = ItemCategory.Recipe; selected = null; }
         if (GUILayout.Button("KeyItem")) { ICategory = ItemCategory.KeyItem; selected = null; }
         if (GUILayout.Button("Rune")) { ICategory = ItemCategory.Rune; selected = null; }
@@ -167,11 +162,6 @@ public class ItemEditorWindow : EditorWindow
                     IComponent component = new IComponent();
                     component.Category = ItemCategory.Component;
                     my.Components.Add(component);
-                    break;
-                case ItemCategory.Ammunition:
-                    IAmmunition ammunition = new IAmmunition();
-                    ammunition.Category = ItemCategory.Ammunition;
-                    my.Amunition.Add(ammunition);
                     break;
                 case ItemCategory.Recipe:
                     IRecipe recipe = new IRecipe();
@@ -237,14 +227,6 @@ public class ItemEditorWindow : EditorWindow
                         selected = null;
                         index = 0;
                         my.Components.RemoveAt(my.Components.Count - 1);
-                    }
-                    break;
-                case ItemCategory.Ammunition:
-                    if (my.Amunition.Count > 0)
-                    {
-                        selected = null;
-                        index = 0;
-                        my.Amunition.RemoveAt(my.Amunition.Count - 1);
                     }
                     break;
                 case ItemCategory.Recipe:
@@ -360,17 +342,6 @@ public class ItemEditorWindow : EditorWindow
                     }
                 }
                 break;
-            case ItemCategory.Ammunition:
-                for (int i = 0; i < my.Amunition.Count; i++)
-                {
-                    if (GUILayout.Button(i + " : " + my.Amunition[i].Name))
-                    {
-                        index = i;
-                        selected = my.Amunition[i];
-                        GUI.FocusControl(null);
-                    }
-                }
-                break;
             case ItemCategory.Recipe:
                 for (int i = 0; i < my.Recipes.Count; i++)
                 {
@@ -459,11 +430,6 @@ public class ItemEditorWindow : EditorWindow
                         selected = null;
                         index = 0;
                         break;
-                    case ItemCategory.Ammunition:
-                        my.Amunition.RemoveAt(index);
-                        selected = null;
-                        index = 0;
-                        break;
                     case ItemCategory.Recipe:
                         my.Recipes.RemoveAt(index);
                         selected = null;
@@ -539,17 +505,6 @@ public class ItemEditorWindow : EditorWindow
                         {
                             BasePrefference(selected);
                             AccessoriesSwitch();
-                        }
-                    break;
-                case ItemCategory.Ammunition:
-                        if(selected.GetType()==typeof(IAmmunition))
-                        {
-                            BasePrefference(selected);
-                            IAmmunition ammo = (IAmmunition)selected;
-                            GUILayout.Space(20);
-                            GUILayout.Label("Max ammunition in magazine");
-                            ammo.Ammunition = EditorGUILayout.IntField(ammo.Ammunition);
-                            if (ammo.Ammunition < 1) ammo.Ammunition = 1;
                         }
                     break;
                 case ItemCategory.Component:
@@ -654,7 +609,6 @@ public class ItemEditorWindow : EditorWindow
             case IWeaponCategory.Pistol:
             case IWeaponCategory.Rifle:
             case IWeaponCategory.Shotgun:
-                if (weapon.Ammunition == null) weapon.Ammunition = new AmmunitionType();
                 if (GUILayout.Button("Ammunition")) typeEdit = 10;
                 break;
             default:
@@ -885,9 +839,6 @@ public class ItemEditorWindow : EditorWindow
             {
                 case ItemCategory.Accessories:
                     item = my.Accessories[recipe.Reward.ID];
-                    break;
-                case ItemCategory.Ammunition:
-                    item = my.Amunition[recipe.Reward.ID];
                     break;
                 case ItemCategory.Armor:
                     item = my.Armors[recipe.Reward.ID];
@@ -1206,49 +1157,17 @@ public class ItemEditorWindow : EditorWindow
             if (!isHas) if (GUILayout.Button("" + ElementArray[i])) currentList.Add(new AttackElementRate(i));
         }
     }
-    Vector2 ammoScrollA;
-    Vector2 ammoScrollR;
     void AmmunitionPanel(IWeapon weapon)
     {
         GUILayout.BeginVertical("box");
         GUILayout.Label("Ammunition", center);
+        if (weapon.Ammunition == null) weapon.Ammunition = new AmmunitionType(0,0);
+        GUILayout.Label("Pojemność magazynka");
+        weapon.Ammunition.Capacity = EditorGUILayout.IntField(weapon.Ammunition.Capacity);
+        GUILayout.Label("Koszt przeładowania (PA)");
+        weapon.Ammunition.ReloadPA = EditorGUILayout.IntField(weapon.Ammunition.ReloadPA);
+        weapon.Ammunition = new AmmunitionType(weapon.Ammunition.Capacity, weapon.Ammunition.ReloadPA);
         GUILayout.EndVertical();
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        ammoScrollA = GUILayout.BeginScrollView(ammoScrollA, GUILayout.Height(200), GUILayout.Width(230));
-        GUILayout.BeginVertical("box", GUILayout.Width(200));
-        GUILayout.Label("Add", center);
-        AmmunitionList(weapon);
-        GUILayout.EndVertical();
-        GUILayout.EndScrollView();
-        GUILayout.Space(20);
-        ammoScrollR = GUILayout.BeginScrollView(ammoScrollR, GUILayout.Height(200), GUILayout.Width(230));
-        GUILayout.BeginVertical("box", GUILayout.Width(200));
-        GUILayout.Label("Remove", center);
-        CheckAmmunition(weapon);
-        if (weapon.Ammunition.Type == -1) EditorGUILayout.HelpBox("Brak typu amunicji!", MessageType.Error);
-        else if (GUILayout.Button("" + my.Amunition[weapon.Ammunition.Type].Name)) weapon.Ammunition.Type = -1;
-        GUILayout.EndVertical();
-        GUILayout.EndScrollView();
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-    }
-    void AmmunitionList(IWeapon weapon)
-    {
-        if (my.Amunition.Count == 0) EditorGUILayout.HelpBox("Brak listy amunicji!", MessageType.Error);
-        for (int i = 0; i < my.Amunition.Count; i++)
-        {
-            if (i!= weapon.Ammunition.Type) if (GUILayout.Button("" + my.Amunition[i].Name)) weapon.Ammunition.Type = i;
-        }
-    }
-    void CheckAmmunition(IWeapon weapon)
-    {
-        bool isExist = false;
-        for (int i = 0; i < my.Amunition.Count; i++)
-        {
-            if (i == weapon.Ammunition.Type) isExist = true;
-        }
-        if (!isExist) weapon.Ammunition.Type = -1;
     }
 
     SortingItemList SortItem;
@@ -1264,12 +1183,6 @@ public class ItemEditorWindow : EditorWindow
                 for(int i=0;i<my.Accessories.Count;i++)
                 {
                     if (GUILayout.Button("" + my.Accessories[i].Name, GUILayout.Width(300))) recipe.Reward = new IComponent(i,ItemCategory.Accessories);
-                }
-                break;
-            case SortingItemList.Ammunition:
-                for (int i = 0; i < my.Amunition.Count; i++)
-                {
-                    if (GUILayout.Button("" + my.Amunition[i].Name, GUILayout.Width(300))) recipe.Reward = new IComponent(i, ItemCategory.Ammunition);
                 }
                 break;
             case SortingItemList.Armor:

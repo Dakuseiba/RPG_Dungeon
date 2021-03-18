@@ -72,7 +72,6 @@ public class Workshop_crafting : MonoBehaviour
                                 case ItemCategory.Weapon:
                                 case ItemCategory.Rune:
                                 case ItemCategory.Armor:
-                                case ItemCategory.Ammunition:
                                 case ItemCategory.Accessories:
                                 case ItemCategory.Component:
                                     canSpawn = true;
@@ -89,7 +88,6 @@ public class Workshop_crafting : MonoBehaviour
                                 case ItemCategory.Weapon:
                                 case ItemCategory.Rune:
                                 case ItemCategory.Armor:
-                                case ItemCategory.Ammunition:
                                 case ItemCategory.Accessories:
                                     canSpawn = true;
                                     break;
@@ -217,9 +215,6 @@ public class Workshop_crafting : MonoBehaviour
         {
             case ItemCategory.Accessories:
                 item = StaticValues.Items.Accessories[target.ID];
-                break;
-            case ItemCategory.Ammunition:
-                item = StaticValues.Items.Amunition[target.ID];
                 break;
             case ItemCategory.Armor:
                 item = StaticValues.Items.Armors[target.ID];

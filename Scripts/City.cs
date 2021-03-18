@@ -128,9 +128,6 @@ public class City
                 case ItemCategory.Accessories:
                     item = StaticValues.Items.Accessories[id.ID];
                     break;
-                case ItemCategory.Ammunition:
-                    item = StaticValues.Items.Amunition[id.ID];
-                    break;
                 case ItemCategory.Armor:
                     item = StaticValues.Items.Armors[id.ID];
                     break;

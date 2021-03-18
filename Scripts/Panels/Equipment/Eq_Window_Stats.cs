@@ -334,6 +334,7 @@ public class Eq_Window_Stats : MonoBehaviour, IEqWindowState
         }
         character.UpdateStats();
         Execute();
+        GetComponentInParent<EquipmentPanel>().Load();
     }
     void CreateLabel(GameObject label, List<GameObject> objList, string count, Sprite icon, string name)
     {

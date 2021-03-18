@@ -9,7 +9,6 @@ public class ItemDataBase : ScriptableObject
     public List<IConsume> Consumes = new List<IConsume>();
     public List<IThrow> Throws = new List<IThrow>();
     public List<IComponent> Components = new List<IComponent>();
-    public List<IAmmunition> Amunition = new List<IAmmunition>();
     public List<IRecipe> Recipes = new List<IRecipe>();
     public List<IKey> KeyItems = new List<IKey>();
     public List<IRune> Runes = new List<IRune>();

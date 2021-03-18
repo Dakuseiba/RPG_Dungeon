@@ -50,7 +50,6 @@ public enum ItemCategory
     Consume,    //IConsume
     Throw,      //IThrow
     Component,  //Item
-    Ammunition, //Item
     Recipe,     //IRecipe
     Money,      //Item
     Camp,       //Item

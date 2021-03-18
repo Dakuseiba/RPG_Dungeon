@@ -95,7 +95,7 @@ class IPS_DefaultAttack : IPlayerState
     void WeaponInRange()
     {
         float posDistance = Vector3.Distance(data.target, data.agent.transform.position);
-        IPS_Functions.Weapons weapons = new IPS_Functions.Weapons(data.character);
+        IPS_Functions.Weapons weapons = data.weapons;
         float maxRange = weapons.HighRange();
         canAttack = true;
 

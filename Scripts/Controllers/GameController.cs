@@ -87,7 +87,7 @@ public class GameController : MonoBehaviour
     void Update()
     {        
         FixItemInfo(currentCanvas.GetComponent<GUIControll>().ItemInfoWindow);
-
+        Debug.Log("Test "+StaticValues.Items.Weapons[3].Ammunition.Amount);
         switch (currentCanvas.GetComponent<GUIControll>().GUIEnabled.Type)
         {
             case Class_GUI.GUI_Type.HUB:
@@ -136,7 +136,7 @@ public class GameController : MonoBehaviour
                         StaticValues.InvMagazine.AddItem(item, 1);                   
                         item = new IWeapon(StaticValues.Items.Weapons[3]);
                         StaticValues.InvMagazine.AddItem(item, 1);
-                        StaticValues.InvMagazine.AddItem(StaticValues.Items.Amunition[0], 100);
+                        Debug.Log(item.Name + " " + item.Ammunition.Amount);
                     }
                 }
                 if (Input.GetKeyDown(KeyCode.Keypad1))
@@ -187,15 +187,6 @@ public class GameController : MonoBehaviour
         }
     }
 
-    [ContextMenu("Add Ammo")]
-    public void AddAmmo()
-    {
-        if (StaticValues.Team.Count > 0)
-        {
-            Item item = StaticValues.Items.Amunition[0];
-            StaticValues.Team[0].Equipment.Backpack.AddItem(item, 10);
-        }
-    }
     [ContextMenu("Add Bow")]
     public void AddBow()
     {

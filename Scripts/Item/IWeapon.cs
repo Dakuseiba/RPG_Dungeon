@@ -41,14 +41,13 @@ public class IWeapon : Item
         MissileFlight = item.MissileFlight;
         Weight = item.Weight;
         Runes = new List<int>(item.Runes);
-        
+        Ammunition = new AmmunitionType(item.Ammunition);
         Name = item.Name;
         Icon = item.Icon;
         Category = item.Category;
         Description = item.Description;
         Value = item.Value;
         Stack = item.Stack;
-        Ammunition = new AmmunitionType(item.Ammunition);
         Stage = item.Stage;
     }
 
@@ -87,15 +86,19 @@ public class IWeapon : Item
 [System.Serializable]
 public class AmmunitionType
 {
-    public int Type = -1;
-    public int Count = 0;
-    public AmmunitionType() { }
+    public int Amount;
+    public int Capacity;
+    public int ReloadPA;
+    public AmmunitionType(int capacity, int reload)
+    {
+        Capacity = capacity;
+        Amount = capacity;
+        ReloadPA = reload;
+    }
     public AmmunitionType(AmmunitionType ammo)
     {
-        if(ammo != null)
-        {
-            Type = ammo.Type;
-            Count = ammo.Count;
-        }
+        Amount = ammo.Capacity;
+        Capacity = ammo.Capacity;
+        ReloadPA = ammo.ReloadPA;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class PlayerMachine
 {
-    IPlayerState currentState;
+    public IPlayerState currentState;
     IPlayerState previousState;
     public Data playerData;
     public void ChangeState(IPlayerState state)
@@ -45,7 +45,7 @@ public class PlayerMachine
         public NavMeshAgent agent;
         public Vector3 target;
         public Characters character;
-
+        public IPS_Functions.Weapons weapons;
         public int points;
         public int cost;
         public float freeMove;
@@ -53,20 +53,15 @@ public class PlayerMachine
 
         public bool isEndTurn;
 
-        public Color colorPositive;
-        public Color colorNegative;
-
         public List<GameObject> targets;
 
         public int indexWeapon;
 
         public Data()
         {
-            colorPositive = new Color(0f, 0.15f, 1f);
-            colorNegative = new Color(1f, 0f, 0f);
             isEndTurn = false;
             target = new Vector3();
-            lineRender = GameObject.FindObjectOfType<LineRenderer>();
+            lineRender = Object.FindObjectOfType<LineRenderer>();
             agent = MissionController.Characters[MissionController.Index].GetComponent<NavMeshAgent>();
 
             character = agent.GetComponent<HolderDataCharacter>().GetCharacter();
@@ -76,6 +71,8 @@ public class PlayerMachine
 
             agent.enabled = true;
             agent.isStopped = true;
+
+            weapons = new IPS_Functions.Weapons(character);
 
             indexWeapon = 0;
         }

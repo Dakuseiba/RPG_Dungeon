@@ -67,6 +67,9 @@ public class EquipmentPanel : MonoBehaviour, IEqState
     public GameObject Button_Magazine;
     public static int window;
     Characters character;
+
+    int PA;//action points
+
     public void Exit()
     {
         WindowExit();
@@ -93,6 +96,7 @@ public class EquipmentPanel : MonoBehaviour, IEqState
             case EquipmentTypePanel.Mission:
                 ButtonModeEdit.SetActive(false);
                 Button_Magazine.SetActive(false);
+                OffUnitCost();
                 break;
             case EquipmentTypePanel.Recruit:
                 BlockForRecruit.SetActive(true);
@@ -362,6 +366,19 @@ public class EquipmentPanel : MonoBehaviour, IEqState
                 Window_Skills.Exit();
                 break;
         }
+    }
+
+    public Characters GetCharacter()
+    {
+        return character;
+    }
+    public void SetPoints(int actionPoints)
+    {
+        PA = actionPoints;
+    }
+    public int GetPoints()
+    {
+        return PA;
     }
     public enum EquipmentTypePanel
     {

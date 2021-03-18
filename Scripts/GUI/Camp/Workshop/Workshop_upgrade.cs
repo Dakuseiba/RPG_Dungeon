@@ -234,9 +234,6 @@ public class Workshop_upgrade : MonoBehaviour
             case ItemCategory.Accessories:
                 item = StaticValues.Items.Accessories[target.ID];
                 break;
-            case ItemCategory.Ammunition:
-                item = StaticValues.Items.Amunition[target.ID];
-                break;
             case ItemCategory.Armor:
                 item = StaticValues.Items.Armors[target.ID];
                 break;

@@ -28,7 +28,6 @@ public class IPS_Functions
         {
             suma += Vector3.Distance(data.agent.path.corners[i], data.agent.path.corners[i + 1]);
         }
-        suma *= 0.75f;
         return (float)Math.Round(suma, 1);
     }
 
@@ -248,7 +247,7 @@ public class IPS_Functions
             case IWeaponCategory.Crossbow:
             case IWeaponCategory.Bow:
                 Debug.Log("Range");
-                if (weapon.Ammunition.Count == 0) return false;
+                if (weapon.Ammunition.Amount == 0) return false;
                 return true;
         }
         Debug.Log("Fist");

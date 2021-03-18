@@ -129,9 +129,6 @@ public class ShopEditorWindow : EditorWindow
             case ItemCategory.Armor:
                 text += ItemData.Armors[id].Name;
                 break;
-            case ItemCategory.Ammunition:
-                text += ItemData.Amunition[id].Name;
-                break;
             case ItemCategory.Accessories:
                 text += ItemData.Accessories[id].Name;
                 break;
@@ -155,7 +152,6 @@ public class ShopEditorWindow : EditorWindow
         if(GUILayout.Button(""+ItemCategory.Armor)) ICategory = ItemCategory.Armor;
         if(GUILayout.Button(""+ItemCategory.Throw)) ICategory = ItemCategory.Throw;
         if(GUILayout.Button(""+ItemCategory.Component)) ICategory = ItemCategory.Component;
-        if(GUILayout.Button(""+ItemCategory.Ammunition)) ICategory = ItemCategory.Ammunition;
         if(GUILayout.Button(""+ItemCategory.Recipe)) ICategory = ItemCategory.Recipe;
         if(GUILayout.Button(""+ItemCategory.Rune)) ICategory = ItemCategory.Rune;
         if(GUILayout.Button(""+ItemCategory.Accessories)) ICategory = ItemCategory.Accessories;
@@ -176,21 +172,6 @@ public class ShopEditorWindow : EditorWindow
                             my.ID_Items.Add(new ItemID(ICategory, i));
                         }
                         Data_ShowItem(ItemData.Accessories[i]);
-                        GUILayout.EndHorizontal();
-                    }
-                }
-                break;
-            case ItemCategory.Ammunition:
-                for (int i = 0; i < ItemData.Amunition.Count; i++)
-                {
-                    if (!checkExist(i, ItemCategory.Ammunition))
-                    {
-                        GUILayout.BeginHorizontal("box");
-                        if (GUILayout.Button("Add", GUILayout.Width(100f)))
-                        {
-                            my.ID_Items.Add(new ItemID(ICategory, i));
-                        }
-                        Data_ShowItem(ItemData.Amunition[i]);
                         GUILayout.EndHorizontal();
                     }
                 }
@@ -326,17 +307,6 @@ public class ShopEditorWindow : EditorWindow
             {
                 case ItemCategory.Accessories:
                     for (int j = 0; j < ItemData.Accessories.Count; j++)
-                    {
-                        if (j == my.ID_Items[i].ID) isExist = true;
-                    }
-                    if (!isExist)
-                    {
-                        my.ID_Items.RemoveAt(i);
-                        i--;
-                    }
-                    break;
-                case ItemCategory.Ammunition:
-                    for (int j = 0; j < ItemData.Amunition.Count; j++)
                     {
                         if (j == my.ID_Items[i].ID) isExist = true;
                     }

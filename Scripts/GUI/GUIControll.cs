@@ -19,7 +19,6 @@ public class GUIControll : MonoBehaviour
         {
             case Class_GUI.GUI_Type.HUB:
                 GUIEnabled.gui_hub.SetActive(true);
-                GUIEnabled.gui_battle.SetActive(false);
                 GUIEnabled.gui_mission.SetActive(false);
                 GUIEnabled.gui_menu.SetActive(false);
                 switch (StaticValues.currentLocate.GetTypeLocate())
@@ -38,9 +37,10 @@ public class GUIControll : MonoBehaviour
                 break;
             case Class_GUI.GUI_Type.Mission:
                 GUIEnabled.gui_hub.SetActive(false);
-                GUIEnabled.gui_battle.SetActive(true);
                 GUIEnabled.gui_mission.SetActive(true);
                 GUIEnabled.gui_menu.SetActive(false);
+
+                GUIEnabled.mission.Equipment.SetActive(false);
                 break;
         }
     }

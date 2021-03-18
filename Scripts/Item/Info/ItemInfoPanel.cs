@@ -599,9 +599,7 @@ public class ItemInfoPanel : MonoBehaviour
                     var Des = Instantiate(PartsInfo.Label, obj.transform, true);
                     var Ammo = Instantiate(PartsInfo.PanelList, obj.transform, true);
                     Des.GetComponent<InfoText>().Text[0].text = "Amunicja:";
-                    Ammo.GetComponent<InfoList>().Text[0].text = "" + StaticValues.Items.Amunition[item.Ammunition.Type].Name;
-                    Ammo.GetComponent<InfoList>().Text[0].text += " " + item.Ammunition.Count +" / "+ StaticValues.Items.Amunition[item.Ammunition.Type].Ammunition;
-                    Ammo.GetComponent<InfoList>().Icon[0].sprite = StaticValues.Items.Amunition[item.Ammunition.Type].Icon;
+                    Ammo.GetComponent<InfoList>().Text[0].text = " " + item.Ammunition.Capacity;
                 }
                 break;
         }

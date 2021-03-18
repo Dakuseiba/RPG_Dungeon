@@ -71,7 +71,6 @@ public class MarketplacePanel : MonoBehaviour
                         case ItemCategory.Throw:
                         case ItemCategory.Rune:
                         case ItemCategory.Armor:
-                        case ItemCategory.Ammunition:
                         case ItemCategory.Accessories:
                             canSpawn = true;
                             break;
