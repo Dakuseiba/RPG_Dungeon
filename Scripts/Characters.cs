@@ -587,12 +587,14 @@ public class Characters
             case 0:
                 break;
             case 1:
-                if (((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Ammunition.Amount > 0)
-                    ((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Ammunition.Amount--;
+                IWeapon w1 = (IWeapon)Equipment.WeaponsSlot[0].Right[0].item;
+                if (w1.Ammunition.Amount > 0)
+                    w1.Ammunition.Amount--;
                 break;
             case 2:
-                if (((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Ammunition.Amount > 0)
-                    ((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Ammunition.Amount--;
+                IWeapon w2 = (IWeapon)Equipment.WeaponsSlot[0].Left[0].item;
+                if (w2.Ammunition.Amount > 0)
+                    w2.Ammunition.Amount--;
                 break;
         }
     }

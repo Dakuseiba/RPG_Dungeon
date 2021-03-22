@@ -9,6 +9,7 @@ public class MissionController : MonoBehaviour
     public static List<GameObject> SecondTurn;
     public static int Index;
     MissionMachine missionMachine;
+    public static float multiplyDistance=0.5f;
 
     private void Start()
     {

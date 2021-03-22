@@ -19,7 +19,6 @@ public class IPS_Move : IPlayerState
 
     public IPlayerState Execute()
     {
-
         result = Target();
         AgentMove();
         return result;

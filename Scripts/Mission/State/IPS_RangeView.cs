@@ -48,7 +48,7 @@ public class IPS_RangeView : IPlayerState
     {
         Vectors = new List<Vector3>();
         IPS_Functions.Weapons weapons = data.weapons;
-        float Range = weapons.HighRange();
+        float Range = weapons.HighRange()/MissionController.multiplyDistance;
         for (float i = 0; i < 2 * Mathf.PI; i += scale)
         {
             float x = Range * Mathf.Cos(i) + data.agent.transform.position.x;

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
-
 public class IPS_Functions
 {
     public static void MoveCost(PlayerMachine.Data data)
@@ -28,6 +27,7 @@ public class IPS_Functions
         {
             suma += Vector3.Distance(data.agent.path.corners[i], data.agent.path.corners[i + 1]);
         }
+        suma *= MissionController.multiplyDistance;
         return (float)Math.Round(suma, 1);
     }
 
@@ -193,7 +193,9 @@ public class IPS_Functions
     }
     public static float CalculateHeight(Vector3 center, float distance, float range)
     {
-        float result = (range/2) - (Mathf.Abs(range - distance) / 1.5f);
+        //distance - Mathf.Sqrt(Range) - Mathf.Sqrt(distance)
+        float result = distance - Mathf.Sqrt(range/MissionController.multiplyDistance) - Mathf.Sqrt(distance);
+        result *= MissionController.multiplyDistance;
         if (result > (range/2)) result = range/2;
         if (result < 0) result = 0;
         return result + center.y;
@@ -274,7 +276,7 @@ public class IPS_Functions
         }
         return 0;
     }
-
+    #region Weapon Class
     public class Weapon
     {
         public float range;
@@ -365,13 +367,6 @@ public class IPS_Functions
             }
             return max;
         }
-        public void InRange(PlayerMachine.Data data, float range)
-        {
-            data.indexWeapon = 0;
-            if (w1.canUse && w1.range >= range) data.indexWeapon += 1;
-            if (w2.canUse && w2.range >= range) data.indexWeapon += 2;
-            if (data.indexWeapon == 0 && (!fist.canUse || fist.range < range)) data.indexWeapon = -1;
-        }
         public bool DistanceAttack()
         {
             bool isDistance = false;
@@ -380,5 +375,5 @@ public class IPS_Functions
             return isDistance;
         }
     }
-
+    #endregion
 }

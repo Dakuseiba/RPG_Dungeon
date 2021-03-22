@@ -89,7 +89,56 @@ class IPS_DefaultAttack : IPlayerState
 
     void AttackCost()
     {
-        data.cost += 1;
+        switch(data.indexWeapon)
+        {
+            case 0:
+                data.cost += 1;
+                break;
+            case 1:
+                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
+                break;
+            case 2:
+                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
+                break;
+            case 3:
+                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
+                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
+                break;
+        }
+    }
+    int WeaponCost(IWeapon weapon)
+    {
+        int cost = 0;
+        switch(weapon.WType)
+        {
+            case IWeaponType.One_handed:
+                cost += 1;
+                break;
+            case IWeaponType.Two_handed:
+                cost += 2;
+                break;
+        }
+        switch(weapon.WCategory)
+        {
+            case IWeaponCategory.Axe:
+            case IWeaponCategory.Sword:
+            case IWeaponCategory.Hammer:
+            case IWeaponCategory.Katana:
+            case IWeaponCategory.Natural:
+            case IWeaponCategory.Shield:
+                break;
+            case IWeaponCategory.Bow:
+                cost = 1;
+                break;
+            case IWeaponCategory.Crossbow:
+            case IWeaponCategory.Pistol:
+            case IWeaponCategory.Rifle:
+            case IWeaponCategory.Shotgun:
+            case IWeaponCategory.Staff:
+            case IWeaponCategory.Wand:
+                break;
+        }
+        return cost;
     }
 
     void WeaponInRange()
@@ -205,7 +254,7 @@ class IPS_DefaultAttack : IPlayerState
         {
             if (hit.transform.gameObject.transform.position == data.target)
             {
-                if(range >= distance)
+                if(range / MissionController.multiplyDistance >= distance)
                 {
                     return 1;
                 }
@@ -221,7 +270,7 @@ class IPS_DefaultAttack : IPlayerState
         {
             if(hit.transform.gameObject.transform.position == data.target)
             {
-                if(range >= distance)
+                if(range / MissionController.multiplyDistance >= distance)
                 {
                     return 1;
                 }
@@ -232,12 +281,12 @@ class IPS_DefaultAttack : IPlayerState
 
     int CurveRayHit(float distance, float range)
     {
-        if (distance > range) return 0;
+        if (distance > range / MissionController.multiplyDistance) return 0;
         List<Vector3> Vectors = new List<Vector3>();
         List<Vector3> VectorsRay = new List<Vector3>();
         Vector3 center = (data.agent.transform.position + data.target) / 2;
 
-        center.y = CalculateHeight(center, distance, range);
+        center.y = CalculateHeight(center, distance * MissionController.multiplyDistance, range);
 
         for (float i = 0; i <= 1; i += 1f / 32)
         {

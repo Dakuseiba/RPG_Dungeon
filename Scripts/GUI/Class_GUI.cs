@@ -27,7 +27,19 @@ public class Class_GUI
     [System.Serializable]
     public class Mission
     {
+        public GameObject Player;
         public GameObject Equipment;
+        public GameObject Left_Info;
+        public GameObject AviablePA;
+        public GameObject CostPA;
+        public GameObject DistanceAction;
+
+        public GameObject Ammo1;
+        public GameObject Ammo1Name;
+        public GameObject Ammo1Amount;
+        public GameObject Ammo2;
+        public GameObject Ammo2Name;
+        public GameObject Ammo2Amount;
     }
     public class Battle
     {
