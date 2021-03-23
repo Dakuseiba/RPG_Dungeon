@@ -38,24 +38,14 @@ public class IMS_PlayerControll : IMissionState
         playerMachine.playerData.agent.enabled = false;
     }
 
+    #region Inputs
     void Inputs()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            playerMachine.playerData.isEndTurn = true;
-        }
-        if(Input.GetMouseButtonDown(1))
-        {
-            playerMachine.ExecuteAction();
-        }
+        Input_EndTurn();
+        Input_Action();
+        Input_Cancel();
         switch(playerMachine.currentState.ToString())
         {
-            case "IPS_Attack":
-                break;
-            case "IPS_Contrattack":
-                break;
-            case "IPS_OccasionalAttack":
-                break;
             case "IPS_Equipment":
                 Input_Eq();
                 break;
@@ -64,7 +54,25 @@ public class IMS_PlayerControll : IMissionState
             case "IPS_RangeView":
                 Input_Eq();
                 Input_Reload();
+                Input_Melee();
                 break;
+            case "IPS_AttackMelee":
+                Input_Melee();
+                break;
+        }
+    }
+    void Input_Action()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            playerMachine.ExecuteAction();
+        }
+    }
+    void Input_EndTurn()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            playerMachine.playerData.isEndTurn = true;
         }
     }
     void Input_Eq()
@@ -90,6 +98,45 @@ public class IMS_PlayerControll : IMissionState
             playerMachine.ChangeState(new IPS_Reload());
         }
     }
+    void Input_Melee()
+    {
+        if(playerMachine.playerData.weapons.w1.isWeapon == 1 || playerMachine.playerData.weapons.w2.isWeapon == 1 || (playerMachine.playerData.weapons.w1.isWeapon == 0 && playerMachine.playerData.weapons.w2.isWeapon == 0))
+        {
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if (playerMachine.currentState.ToString() == "IPS_AttackMelee") playerMachine.ChangeState(new IPS_Move());
+                else playerMachine.ChangeState(new IPS_AttackMelee());
+            }
+        }
+    }
+    void Input_Range()
+    {
+        if (playerMachine.playerData.weapons.w1.isWeapon == 2 || playerMachine.playerData.weapons.w2.isWeapon == 2)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+
+            }
+        }
+    }
+    void Input_Cancel()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            switch (playerMachine.currentState.ToString())
+            {
+                case "IPS_DefaultAttack":
+                case "IPS_Move":
+                case "IPS_RangeView":
+                    Debug.Log("Pause");
+                    break;
+                default:
+                    playerMachine.ChangeState(new IPS_Move());
+                    break;
+            }
+        }
+    }
+    #endregion
     bool NeedReload(IWeapon weapon)
     {
         switch(weapon.WCategory)
@@ -127,7 +174,11 @@ public class IMS_PlayerControll : IMissionState
         gui.GUIEnabled.mission.Left_Info.SetActive(true);
         gui.GUIEnabled.mission.AviablePA.GetComponent<TextMeshProUGUI>().text = playerMachine.playerData.points + " / " + playerMachine.playerData.character.currentStats.Battle.actionPoint;
         gui.GUIEnabled.mission.CostPA.GetComponent<TextMeshProUGUI>().text = "" + playerMachine.playerData.cost;
-        gui.GUIEnabled.mission.DistanceAction.GetComponent<TextMeshProUGUI>().text = "" + playerMachine.playerData.distance + "m";
+
+        if(gui.GUIEnabled.mission.Distance.activeSelf)
+        {
+            gui.GUIEnabled.mission.DistanceAction.GetComponent<TextMeshProUGUI>().text = "" + playerMachine.playerData.distance + "m";
+        }
 
         if (playerMachine.playerData.weapons.w1.isWeapon == 2)
         {

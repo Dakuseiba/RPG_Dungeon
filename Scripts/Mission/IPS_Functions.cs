@@ -31,7 +31,6 @@ public class IPS_Functions
         return (float)Math.Round(suma, 1);
     }
 
-
     public static void PathRender(PlayerMachine.Data data, PathRenderType type)
     {
         if (data.agent.hasPath)
@@ -43,28 +42,28 @@ public class IPS_Functions
                     switch(type)
                     {
                         case PathRenderType.Move:
-                            data.lineRender.startColor = Color.blue;
-                            data.lineRender.endColor = Color.blue;
+                            data.lineRender[0].startColor = Color.blue;
+                            data.lineRender[0].endColor = Color.blue;
                             break;
                         case PathRenderType.Move_Attack:
-                            data.lineRender.startColor = Color.yellow;
-                            data.lineRender.endColor = Color.yellow;
+                            data.lineRender[0].startColor = Color.yellow;
+                            data.lineRender[0].endColor = Color.yellow;
                             break;
                     }
                 }
                 else
                 {
-                    data.lineRender.startColor = Color.red;
-                    data.lineRender.endColor = Color.red;
+                    data.lineRender[0].startColor = Color.red;
+                    data.lineRender[0].endColor = Color.red;
                 }
             }
-            data.lineRender.positionCount = data.agent.path.corners.Length;
-            data.lineRender.SetPositions(data.agent.path.corners);
-            data.lineRender.enabled = true;
+            data.lineRender[0].positionCount = data.agent.path.corners.Length;
+            data.lineRender[0].SetPositions(data.agent.path.corners);
+            data.lineRender[0].enabled = true;
         }
         else
         {
-            data.lineRender.enabled = false;
+            data.lineRender[0].enabled = false;
         }
     }
     public enum PathRenderType
@@ -125,39 +124,39 @@ public class IPS_Functions
                 break;
         }
         if (data.points < data.cost)
-            data.lineRender.enabled = false;
+            data.lineRender[0].enabled = false;
         else
-            data.lineRender.enabled = true;
+            data.lineRender[0].enabled = true;
     }
     static void RenderNone(PlayerMachine.Data data)
     {
-        data.lineRender.positionCount = 2;
-        data.lineRender.startColor = Color.white;
-        data.lineRender.endColor = Color.white;
+        data.lineRender[0].positionCount = 2;
+        data.lineRender[0].startColor = Color.white;
+        data.lineRender[0].endColor = Color.white;
         Vector3 vec1 = data.agent.transform.position;
         Vector3 vec2 = data.target;
         vec1.y -= 1;
         vec2.y -= 1;
-        data.lineRender.SetPosition(0, vec1);
-        data.lineRender.SetPosition(1, vec2);
+        data.lineRender[0].SetPosition(0, vec1);
+        data.lineRender[0].SetPosition(1, vec2);
     }
     static void RenderSimple(PlayerMachine.Data data)
     {
-        data.lineRender.positionCount = 2;
-        data.lineRender.startColor = Color.white;
-        data.lineRender.endColor = Color.white;
+        data.lineRender[0].positionCount = 2;
+        data.lineRender[0].startColor = Color.white;
+        data.lineRender[0].endColor = Color.white;
         Vector3 vec1 = data.agent.transform.position;
         Vector3 vec2 = data.target;
-        data.lineRender.SetPosition(0, vec1);
-        data.lineRender.SetPosition(1, vec2);
+        data.lineRender[0].SetPosition(0, vec1);
+        data.lineRender[0].SetPosition(1, vec2);
     }
     static void RenderCurve(PlayerMachine.Data data, float range)
     {
-        data.lineRender.startColor = Color.white;
-        data.lineRender.endColor = Color.white;
+        data.lineRender[0].startColor = Color.white;
+        data.lineRender[0].endColor = Color.white;
         var vectors = CurveRayHit(data, Vector3.Distance(data.agent.transform.position, data.target), range);
-        data.lineRender.positionCount = vectors.Count;
-        data.lineRender.SetPositions(vectors.ToArray());
+        data.lineRender[0].positionCount = vectors.Count;
+        data.lineRender[0].SetPositions(vectors.ToArray());
     }
     public static List<Vector3> CurveRayHit(PlayerMachine.Data data, float distance, float range)
     {
@@ -275,6 +274,41 @@ public class IPS_Functions
                 return 2;
         }
         return 0;
+    }
+
+    public static int WeaponCost(IWeapon weapon)
+    {
+        int cost = 0;
+        switch (weapon.WType)
+        {
+            case IWeaponType.One_handed:
+                cost += 1;
+                break;
+            case IWeaponType.Two_handed:
+                cost += 2;
+                break;
+        }
+        switch (weapon.WCategory)
+        {
+            case IWeaponCategory.Axe:
+            case IWeaponCategory.Sword:
+            case IWeaponCategory.Hammer:
+            case IWeaponCategory.Katana:
+            case IWeaponCategory.Natural:
+            case IWeaponCategory.Shield:
+                break;
+            case IWeaponCategory.Bow:
+                cost = 1;
+                break;
+            case IWeaponCategory.Crossbow:
+            case IWeaponCategory.Pistol:
+            case IWeaponCategory.Rifle:
+            case IWeaponCategory.Shotgun:
+            case IWeaponCategory.Staff:
+            case IWeaponCategory.Wand:
+                break;
+        }
+        return cost;
     }
     #region Weapon Class
     public class Weapon

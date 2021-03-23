@@ -823,7 +823,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                 if (slot.item.item.Category == ItemCategory.Weapon && ((IWeapon)(slot.item.item)).WType == IWeaponType.One_handed)
                 {
                     Characters select = GetComponentInParent<EquipmentPanel>().GetCharacter();//StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                    if (select.Equipment.WeaponsSlot[1].Right.Length > 0 && ((IWeapon)(select.Equipment.WeaponsSlot[0].Right[1].item)).WType == IWeaponType.Two_handed) return false;
+                    if (select.Equipment.WeaponsSlot[1].Right.Length > 0 && ((IWeapon)(select.Equipment.WeaponsSlot[1].Right[0].item)).WType == IWeaponType.Two_handed) return false;
                     return true;
                 }
                 break;

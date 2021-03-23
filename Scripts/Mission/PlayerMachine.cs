@@ -41,7 +41,7 @@ public class PlayerMachine
 
     public class Data
     {
-        public LineRenderer lineRender;
+        public List<LineRenderer> lineRender;
         public NavMeshAgent agent;
         public Vector3 target;
         public Characters character;
@@ -61,7 +61,7 @@ public class PlayerMachine
         {
             isEndTurn = false;
             target = new Vector3();
-            lineRender = Object.FindObjectOfType<LineRenderer>();
+            lineRender = MissionController.Lines;
             agent = MissionController.Characters[MissionController.Index].GetComponent<NavMeshAgent>();
 
             character = agent.GetComponent<HolderDataCharacter>().GetCharacter();

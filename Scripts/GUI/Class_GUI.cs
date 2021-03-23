@@ -32,6 +32,8 @@ public class Class_GUI
         public GameObject Left_Info;
         public GameObject AviablePA;
         public GameObject CostPA;
+
+        public GameObject Distance;
         public GameObject DistanceAction;
 
         public GameObject Ammo1;

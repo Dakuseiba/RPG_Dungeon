@@ -11,10 +11,14 @@ public class MissionController : MonoBehaviour
     MissionMachine missionMachine;
     public static float multiplyDistance=0.5f;
 
+    public List<LineRenderer> LineRenders;
+    public static List<LineRenderer> Lines;
+
     private void Start()
     {
         missionMachine = new MissionMachine();
         missionMachine.ChangeState(new IMS_SetData());
+        Lines = LineRenders;
     }
 
     private void Update()

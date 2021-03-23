@@ -84,7 +84,7 @@ class IPS_DefaultAttack : IPlayerState
     {
         data.agent.ResetPath();
         data.agent.isStopped = true;
-        data.lineRender.enabled = false;
+        data.lineRender[0].enabled = false;
     }
 
     void AttackCost()
@@ -95,50 +95,16 @@ class IPS_DefaultAttack : IPlayerState
                 data.cost += 1;
                 break;
             case 1:
-                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
+                data.cost += IPS_Functions.WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
                 break;
             case 2:
-                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
+                data.cost += IPS_Functions.WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
                 break;
             case 3:
-                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
-                data.cost += WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
+                data.cost += IPS_Functions.WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item);
+                data.cost += IPS_Functions.WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
                 break;
         }
-    }
-    int WeaponCost(IWeapon weapon)
-    {
-        int cost = 0;
-        switch(weapon.WType)
-        {
-            case IWeaponType.One_handed:
-                cost += 1;
-                break;
-            case IWeaponType.Two_handed:
-                cost += 2;
-                break;
-        }
-        switch(weapon.WCategory)
-        {
-            case IWeaponCategory.Axe:
-            case IWeaponCategory.Sword:
-            case IWeaponCategory.Hammer:
-            case IWeaponCategory.Katana:
-            case IWeaponCategory.Natural:
-            case IWeaponCategory.Shield:
-                break;
-            case IWeaponCategory.Bow:
-                cost = 1;
-                break;
-            case IWeaponCategory.Crossbow:
-            case IWeaponCategory.Pistol:
-            case IWeaponCategory.Rifle:
-            case IWeaponCategory.Shotgun:
-            case IWeaponCategory.Staff:
-            case IWeaponCategory.Wand:
-                break;
-        }
-        return cost;
     }
 
     void WeaponInRange()

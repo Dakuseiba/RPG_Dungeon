@@ -14,8 +14,8 @@ public class IPS_RangeView : IPlayerState
     public void Enter(PlayerMachine.Data playerControll)
     {
         data = playerControll;
-        data.lineRender.gameObject.layer = 8;
-        data.lineRender.loop = true;
+        //data.lineRender[1].gameObject.layer = 8;
+        //data.lineRender[1].loop = true;
         DrawRange();
     }
 
@@ -26,8 +26,9 @@ public class IPS_RangeView : IPlayerState
 
     public void Exit()
     {
-        data.lineRender.gameObject.layer = 0;
-        data.lineRender.loop = false;
+        data.lineRender[1].enabled = false;
+        //data.lineRender[1].gameObject.layer = 0;
+        //data.lineRender[1].loop = false;
     }
 
     IPlayerState Target()
@@ -63,9 +64,9 @@ public class IPS_RangeView : IPlayerState
             }
             Vectors.Add(result);
         }
-        data.lineRender.positionCount = Vectors.Count;
-        data.lineRender.SetPositions(Vectors.ToArray());
-        data.lineRender.enabled = true;
+        data.lineRender[1].positionCount = Vectors.Count;
+        data.lineRender[1].SetPositions(Vectors.ToArray());
+        data.lineRender[1].enabled = true;
     }
 
 }

@@ -21,7 +21,7 @@ public class IPS_Equipment : IPlayerState
         gui.GUIEnabled.mission.Equipment.SetActive(true); 
         gui.GUIEnabled.mission.Equipment.GetComponent<EquipmentPanel>().Enter(data.character);
         gui.GUIEnabled.mission.Equipment.GetComponent<EquipmentPanel>().SetPoints(data.points);
-        data.lineRender.enabled = false;
+        data.lineRender[0].enabled = false;
     }
 
     public IPlayerState Execute()
