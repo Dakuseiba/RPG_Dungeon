@@ -588,12 +588,12 @@ public class Characters
                 break;
             case 1:
                 IWeapon w1 = (IWeapon)Equipment.WeaponsSlot[0].Right[0].item;
-                if (w1.Ammunition.Amount > 0)
+                if (w1.Ammunition.Amount > 0 && w1.WCategory != IWeaponCategory.Bow)
                     w1.Ammunition.Amount--;
                 break;
             case 2:
                 IWeapon w2 = (IWeapon)Equipment.WeaponsSlot[0].Left[0].item;
-                if (w2.Ammunition.Amount > 0)
+                if (w2.Ammunition.Amount > 0 && w2.WCategory != IWeaponCategory.Bow)
                     w2.Ammunition.Amount--;
                 break;
         }

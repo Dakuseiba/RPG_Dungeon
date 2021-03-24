@@ -68,7 +68,7 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
         {
             case SlotType.Shop:
             case SlotType.Workshop:
-                if (item != null)
+                if (item != null && item.item != null)
                 {
                     amount.SetActive(true);
                     if (item.amount > 1) GetComponent<slotList>().Amount.text = "x " + item.amount;

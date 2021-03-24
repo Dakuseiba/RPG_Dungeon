@@ -928,6 +928,7 @@ public class ItemEditorWindow : EditorWindow
         rune.Type = (IRune.TypeRune)EditorGUILayout.EnumPopup("Type", rune.Type);
         GUILayout.Space(20);
         GUILayout.BeginHorizontal();
+        rune.Category = ItemCategory.Rune;
         Buttons();
         switch(rune.Type)
         {

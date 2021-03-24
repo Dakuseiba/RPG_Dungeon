@@ -55,9 +55,13 @@ public class IMS_PlayerControll : IMissionState
                 Input_Eq();
                 Input_Reload();
                 Input_Melee();
+                Input_Range();
                 break;
             case "IPS_AttackMelee":
                 Input_Melee();
+                break;
+            case "IPS_AttackRange":
+                Input_Range();
                 break;
         }
     }
@@ -111,11 +115,18 @@ public class IMS_PlayerControll : IMissionState
     }
     void Input_Range()
     {
-        if (playerMachine.playerData.weapons.w1.isWeapon == 2 || playerMachine.playerData.weapons.w2.isWeapon == 2)
+        bool w1;
+        bool w2;
+        if (playerMachine.playerData.weapons.w1.isWeapon == 2 && playerMachine.playerData.weapons.w1.canUse) w1 = true;
+        else w1 = false;
+        if (playerMachine.playerData.weapons.w2.isWeapon == 2 && playerMachine.playerData.weapons.w2.canUse) w2 = true;
+        else w2 = false;
+        if (w1 || w2)
         {
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-
+                if (playerMachine.currentState.ToString() == "IPS_AttackRange") playerMachine.ChangeState(new IPS_Move());
+                else playerMachine.ChangeState(new IPS_AttackRange());
             }
         }
     }

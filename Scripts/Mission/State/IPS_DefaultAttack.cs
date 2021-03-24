@@ -249,7 +249,6 @@ class IPS_DefaultAttack : IPlayerState
     {
         if (distance > range / MissionController.multiplyDistance) return 0;
         List<Vector3> Vectors = new List<Vector3>();
-        List<Vector3> VectorsRay = new List<Vector3>();
         Vector3 center = (data.agent.transform.position + data.target) / 2;
 
         center.y = CalculateHeight(center, distance * MissionController.multiplyDistance, range);
@@ -262,8 +261,6 @@ class IPS_DefaultAttack : IPlayerState
                     Mathf.Pow(i, 3) * data.target;
             Vectors.Add(pos);
         }
-        if (Vectors.Count > 0)
-            VectorsRay.Add(Vectors[0]);
         for (int i = 0; i < Vectors.Count - 1; i++)
         {
             var vec1 = Vectors[i];
