@@ -56,6 +56,7 @@ public class IMS_PlayerControll : IMissionState
                 Input_Reload();
                 Input_Melee();
                 Input_Range();
+                Inputs_Items();
                 break;
             case "IPS_AttackMelee":
                 Input_Melee();
@@ -96,9 +97,9 @@ public class IMS_PlayerControll : IMissionState
         if (Input.GetKeyDown(KeyCode.R) && (w1 || w2) && pa <= playerMachine.playerData.points)
         {
             playerMachine.playerData.points -= pa;
-            playerMachine.playerData.indexWeapon = 0;
-            if (w1) playerMachine.playerData.indexWeapon += 1;
-            if (w2) playerMachine.playerData.indexWeapon += 2;
+            playerMachine.playerData.slotIndex = 0;
+            if (w1) playerMachine.playerData.slotIndex += 1;
+            if (w2) playerMachine.playerData.slotIndex += 2;
             playerMachine.ChangeState(new IPS_Reload());
         }
     }
@@ -147,7 +148,36 @@ public class IMS_PlayerControll : IMissionState
             }
         }
     }
+    void Inputs_Items()
+    {
+        KeyCode key1 = KeyCode.Keypad5;
+        KeyCode key2 = KeyCode.Keypad6;
+        KeyCode key3 = KeyCode.Keypad7;
+        KeyCode key4 = KeyCode.Keypad8;
+        KeyCode key5 = KeyCode.Keypad9;
+        if(Input.GetKeyDown(key1))
+        {
+            ItemSlot(0);
+        }
+        if (Input.GetKeyDown(key2))
+        {
+            ItemSlot(1);
+        }
+        if (Input.GetKeyDown(key3))
+        {
+            ItemSlot(2);
+        }
+        if (Input.GetKeyDown(key4))
+        {
+            ItemSlot(3);
+        }
+        if (Input.GetKeyDown(key5))
+        {
+            ItemSlot(4);
+        }
+    }
     #endregion
+    #region Inputs Functions
     bool NeedReload(IWeapon weapon)
     {
         switch(weapon.WCategory)
@@ -169,7 +199,26 @@ public class IMS_PlayerControll : IMissionState
         if (w2) pa += ((IWeapon)playerMachine.playerData.character.Equipment.WeaponsSlot[0].Left[0].item).Ammunition.ReloadPA;
         return pa;
     }
+    void ItemSlot(int index)
+    {
+        if(index < playerMachine.playerData.character.Equipment.ItemSlots.MaxCapacity && playerMachine.playerData.character.Equipment.ItemSlots.Items.Count > 0)
+        {
+            SlotItem item = playerMachine.playerData.character.Equipment.ItemSlots.Items.Find(x => x.indexSlot == index);
 
+            switch(item?.item.Category)
+            {
+                case ItemCategory.Consume:
+                    playerMachine.playerData.slotIndex = item.indexSlot;
+                    playerMachine.ChangeState(new IPS_ItemConsume());
+                    break;
+                case ItemCategory.Throw:
+                    playerMachine.playerData.slotIndex = item.indexSlot;
+                    break;
+            }
+        }
+    }
+    #endregion
+    #region GUI
     void GUI_Close()
     {
         var gui = UnityEngine.Object.FindObjectOfType<GUIControll>();
@@ -209,4 +258,5 @@ public class IMS_PlayerControll : IMissionState
         }
         else gui.GUIEnabled.mission.Ammo2.SetActive(false);
     }
+    #endregion
 }

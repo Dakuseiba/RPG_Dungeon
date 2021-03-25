@@ -28,4 +28,27 @@ public class LifeStats
             if ((float)Wound / (float)MaxHP > 0.85f) HealthStatus = HealthStatus.Critical;
         }
     }
+    public void RecoverHP(int amount)
+    {
+        HP += amount;
+        if (HP > MaxHP) HP = MaxHP;
+    }
+    public void RecoverHP_Precent(int amount)
+    {
+        float value = amount / 100f;
+        HP = HP + (int)(MaxHP * value);
+        if (HP > MaxHP) HP = MaxHP;
+    }
+
+    public void RecoverMP(int amount)
+    {
+        MP += amount;
+        if (MP > MaxMP) MP = MaxMP;
+    }
+    public void RecoverMP_Precent(int amount)
+    {
+        float value = amount / 100f;
+        MP = MP + (int)(MaxMP * value);
+        if (MP > MaxMP) MP = MaxMP;
+    }
 }

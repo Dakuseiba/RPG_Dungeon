@@ -55,7 +55,7 @@ public class PlayerMachine
 
         public List<GameObject> targets;
 
-        public int indexWeapon;
+        public int slotIndex;
 
         public Data()
         {
@@ -74,7 +74,7 @@ public class PlayerMachine
 
             weapons = new IPS_Functions.Weapons(character);
 
-            indexWeapon = 0;
+            slotIndex = 0;
         }
     }
 }

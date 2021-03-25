@@ -598,4 +598,32 @@ public class Characters
                 break;
         }
     }
+
+    public void ConsumeItem(IConsume item)
+    {
+        Stats.AddStats(item.Stats);
+        Effects.RemoveAll(x => StaticValues.States.States[x.State].TypeState == item.RemoveAllState && item.RemoveAllState != TypeState.None);
+        foreach(var state in item.AddState)
+        {
+            AddEffect(StaticValues.States.States[state]);
+        }
+        foreach(var state in item.RemoveState)
+        {
+            Effects.RemoveAll(x => x.State == state);
+        }
+        foreach(var trait in item.AddTrait)
+        {
+            AddTrait(trait);
+        }
+        foreach(var trait in item.RemoveTrait)
+        {
+            Traits.Remove(trait);
+        }
+
+        if (item.Recover.hp > 0) currentStats.lifeStats.RecoverHP(item.Recover.hp);
+        if (item.Recover.mp > 0) currentStats.lifeStats.RecoverMP(item.Recover.mp);
+        if (item.Recover.precent_hp > 0) currentStats.lifeStats.RecoverHP_Precent(item.Recover.precent_hp);
+        if (item.Recover.precent_mp > 0) currentStats.lifeStats.RecoverMP_Precent(item.Recover.precent_mp);
+        UpdateStats();
+    }
 }

@@ -89,7 +89,7 @@ class IPS_DefaultAttack : IPlayerState
 
     void AttackCost()
     {
-        switch(data.indexWeapon)
+        switch(data.slotIndex)
         {
             case 0:
                 data.cost += 1;
@@ -116,7 +116,7 @@ class IPS_DefaultAttack : IPlayerState
 
         // 0 - brak akcji, 1 - atak, 2 - podejście i atak
         int[] w = new int[3];
-        data.indexWeapon = 0;
+        data.slotIndex = 0;
         if(weapons.w1 != null && weapons.w1.canUse)
         {
             switch(weapons.w1.isWeapon)
@@ -167,11 +167,11 @@ class IPS_DefaultAttack : IPlayerState
             case 0:
                 break;
             case 1:
-                data.indexWeapon += 1;
+                data.slotIndex += 1;
                 break;
             case 2:
                 if(w[2] != 1)
-                    data.indexWeapon += 1;
+                    data.slotIndex += 1;
                 break;
         }
         switch(w[2])
@@ -179,14 +179,14 @@ class IPS_DefaultAttack : IPlayerState
             case 0:
                 break;
             case 1:
-                data.indexWeapon += 2;
+                data.slotIndex += 2;
                 break;
             case 2:
                 if (w[1] != 1) 
-                    data.indexWeapon += 2;
+                    data.slotIndex += 2;
                 break;
         }
-        if (w[0] == 0 && data.indexWeapon == 0) data.indexWeapon = -1;
+        if (w[0] == 0 && data.slotIndex == 0) data.slotIndex = -1;
 
         Debug.Log("w0: " + w[0] + " w1: " + w[1] + " w2: " + w[2]);
 

@@ -48,7 +48,7 @@ public class IPS_AttackRange : IPlayerState
 
     void SetWeapons()
     {
-        data.indexWeapon = MinRange();
+        data.slotIndex = MinRange();
     }
     int MinRange()
     {
@@ -73,7 +73,7 @@ public class IPS_AttackRange : IPlayerState
     float GetMinRange()
     {
         float weaponRange = 0;
-        switch (data.indexWeapon)
+        switch (data.slotIndex)
         {
             case 0:
                 weaponRange = data.character.currentStats.Battle.range;
@@ -135,7 +135,7 @@ public class IPS_AttackRange : IPlayerState
     }
     void PointRender()
     {
-        switch(data.indexWeapon)
+        switch(data.slotIndex)
         {
             case 1:
                 if (data.weapons.w1.missileFlight == MissileFlight.curve) PointCurve();
@@ -225,7 +225,7 @@ public class IPS_AttackRange : IPlayerState
     void AttackCost()
     {
         data.cost = 0;
-        switch (data.indexWeapon)
+        switch (data.slotIndex)
         {
             case 0:
                 data.cost += 1;

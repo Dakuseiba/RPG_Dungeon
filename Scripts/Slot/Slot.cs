@@ -176,35 +176,6 @@ public class Slot : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndD
                         {
                             case EquipmentPanel.EquipmentTypePanel.Hub:
                             case EquipmentPanel.EquipmentTypePanel.Recruit:
-                                /*switch (GetComponentInParent<TeamPanel>().TeamSelect.Type)
-                                {
-                                    case PanelTeamType.Select_To_Mission:
-                                        var group = GetComponentInParent<TravelSelect_Panel>().selectedGroup;
-                                        switch (group.type)
-                                        {
-                                            case ForceTravel.TravelType.Camp:
-                                                select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                                                break;
-                                            case ForceTravel.TravelType.Village:
-                                                select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[group.id]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                                                break;
-                                        }
-                                        break;
-                                    case PanelTeamType.Team:
-                                        switch (StaticValues.currentLocate.GetTypeLocate())
-                                        {
-                                            case ForceTravel.TravelType.Camp:
-                                                select = StaticValues.Team[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                                                break;
-                                            case ForceTravel.TravelType.Village:
-                                                select = StaticValues.Cities[((VillageMapPointController)StaticValues.points[StaticValues.currentLocate.GetIDViillage()]).id].Team_in_city[GetComponentInParent<TeamPanel>().TeamSelect.Select];
-                                                break;
-                                        }
-                                        break;
-                                    default:
-                                        select = null;
-                                        break;
-                                }*/
                                 select = GetComponentInParent<EquipmentPanel>().GetCharacter();
                                 break;
                             case EquipmentPanel.EquipmentTypePanel.Mission:

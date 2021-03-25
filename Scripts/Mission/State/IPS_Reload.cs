@@ -14,7 +14,7 @@ public class IPS_Reload : IPlayerState
     {
         data = playerControll;
         Debug.Log("Reload");
-        switch(data.indexWeapon)
+        switch(data.slotIndex)
         {
             case 1:
                 ((IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item).Ammunition.Amount =

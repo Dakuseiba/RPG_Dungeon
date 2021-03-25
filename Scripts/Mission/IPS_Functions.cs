@@ -75,7 +75,7 @@ public class IPS_Functions
 
     public static void PathRenderAttack(PlayerMachine.Data data, Weapons weapons)
     {
-        switch(data.indexWeapon)
+        switch(data.slotIndex)
         {
             case 0:
                 RenderNone(data);

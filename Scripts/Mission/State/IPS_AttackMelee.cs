@@ -48,7 +48,7 @@ public class IPS_AttackMelee : IPlayerState
 
     void SetWeapons()
     {
-        data.indexWeapon = MinRange();
+        data.slotIndex = MinRange();
     }
 
     int MinRange()
@@ -74,7 +74,7 @@ public class IPS_AttackMelee : IPlayerState
     float GetMinRange()
     {
         float weaponRange = 0;
-        switch (data.indexWeapon)
+        switch (data.slotIndex)
         {
             case 0:
                 weaponRange = data.character.currentStats.Battle.range;
@@ -160,7 +160,7 @@ public class IPS_AttackMelee : IPlayerState
     void AttackCost()
     {
         data.cost = 0;
-        switch (data.indexWeapon)
+        switch (data.slotIndex)
         {
             case 0:
                 data.cost += 1;

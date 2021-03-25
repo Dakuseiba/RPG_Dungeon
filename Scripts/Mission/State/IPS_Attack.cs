@@ -49,9 +49,8 @@ public class IPS_Attack : IPlayerState
         public List<Attack> attacks;
         public Attacks(PlayerMachine.Data data)
         {
-            Debug.Log("Index: "+data.indexWeapon);
             attacks = new List<Attack>();
-            switch(data.indexWeapon)
+            switch(data.slotIndex)
             {
                 case 0:
                     attacks.Add(new Attack(data, 0));
