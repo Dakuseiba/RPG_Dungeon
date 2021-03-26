@@ -19,6 +19,7 @@ public class MissionController : MonoBehaviour
         missionMachine = new MissionMachine();
         missionMachine.ChangeState(new IMS_SetData());
         Lines = LineRenders;
+        foreach (var line in Lines) line.enabled = false;
     }
 
     private void Update()

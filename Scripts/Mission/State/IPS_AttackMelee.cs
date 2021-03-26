@@ -26,7 +26,7 @@ public class IPS_AttackMelee : IPlayerState
         gui.GUIEnabled.mission.Distance.SetActive(false);
         
         SetWeapons();
-        DrawRange();
+        IPS_RangeFunction.DrawRange(data, GetMinRange(), data.agent.transform.position);
         AttackCost();
         result = null;
     }
@@ -34,7 +34,7 @@ public class IPS_AttackMelee : IPlayerState
     public IPlayerState Execute()
     {
         Target();
-        PointRender();
+        IPS_RangeFunction.PointRender(data, GetMinRange(), MissileFlight.none);
         return result;
     }
 
@@ -92,31 +92,6 @@ public class IPS_AttackMelee : IPlayerState
         return weaponRange;
     }
 
-    void DrawRange()
-    {
-        List<Vector3> Vectors = new List<Vector3>();
-        float scale = 0.02f;
-        float weaponRange = GetMinRange();
-        float Range = weaponRange / MissionController.multiplyDistance;
-        for (float i = 0; i < 2 * Mathf.PI; i += scale)
-        {
-            float x = Range * Mathf.Cos(i) + data.agent.transform.position.x;
-            float z = Range * Mathf.Sin(i) + data.agent.transform.position.z;
-            Vector3 pos = new Vector3(x, data.agent.transform.position.y - 1f, z);
-            Vector3 result = pos;
-            RaycastHit hit;
-            if (Physics.Raycast(result, (-1) * data.agent.transform.up, out hit, 1000f, 0))
-            {
-                result = hit.point;
-                result.y += 0.01f;
-            }
-            Vectors.Add(result);
-        }
-        data.lineRender[1].positionCount = Vectors.Count;
-        data.lineRender[1].SetPositions(Vectors.ToArray());
-        data.lineRender[1].enabled = true;
-    }
-
     void Target()
     {
         RaycastHit hit;
@@ -136,21 +111,7 @@ public class IPS_AttackMelee : IPlayerState
                 data.targets = new List<GameObject>();
             }
         }
-    }
-    void PointRender()
-    {
-        float weaponRange = GetMinRange();
-        if (Vector3.Distance(data.target,data.agent.transform.position)*MissionController.multiplyDistance <= weaponRange)
-        {
-            data.lineRender[0].enabled = true;
-            data.lineRender[0].positionCount = 2;
-            data.lineRender[0].SetPosition(0, data.agent.transform.position);
-            data.lineRender[0].SetPosition(1, data.target);
-        }
-        else
-        {
-            data.lineRender[0].enabled = false;
-        }
+        RotateCharacter();
     }
     void ColorLine(Color color)
     {
@@ -176,5 +137,10 @@ public class IPS_AttackMelee : IPlayerState
                 data.cost += IPS_Functions.WeaponCost((IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item);
                 break;
         }
+    }
+    void RotateCharacter()
+    {
+        Vector3 rot = new Vector3(data.target.x, data.agent.transform.position.y, data.target.z);
+        data.agent.transform.LookAt(rot);
     }
 }

@@ -109,11 +109,10 @@ public class GameController : MonoBehaviour
                 }
                 if (Input.GetKeyDown(KeyCode.I))
                 {
-                    if (StaticValues.Team.Count > 0)
-                    {
-                        Item item = StaticValues.Items.Consumes[0];
-                        StaticValues.Team[0].Equipment.Backpack.AddItem(item, 1);
-                    }
+                    Item item = StaticValues.Items.Consumes[0];
+                    StaticValues.InvMagazine.AddItem(item, 1);
+                    item = StaticValues.Items.Throws[0];
+                    StaticValues.InvMagazine.AddItem(item, 1);
                 }
                 if (Input.GetKeyDown(KeyCode.DownArrow))
                 {

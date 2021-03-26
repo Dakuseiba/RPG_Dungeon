@@ -213,6 +213,7 @@ public class IMS_PlayerControll : IMissionState
                     break;
                 case ItemCategory.Throw:
                     playerMachine.playerData.slotIndex = item.indexSlot;
+                    playerMachine.ChangeState(new IPS_ItemThrow());
                     break;
             }
         }

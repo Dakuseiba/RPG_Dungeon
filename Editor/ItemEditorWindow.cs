@@ -791,14 +791,6 @@ public class ItemEditorWindow : EditorWindow
     {
         IThrow item = (IThrow)selected;
         GUILayout.BeginVertical("box");
-        GUILayout.Label("Target", center);
-        item.Target.Type = (TargetType)EditorGUILayout.EnumPopup("Type", item.Target.Type);
-        item.Target.Count = (TargetCount)EditorGUILayout.EnumPopup("Count", item.Target.Count);
-        if (item.Target.Count == TargetCount.Number) item.Target.tCount = EditorGUILayout.IntField("Value", item.Target.tCount);
-        else item.Target.tCount = 0;
-        GUILayout.EndVertical();
-        GUILayout.Space(20);
-        GUILayout.BeginVertical("box");
         GUILayout.Label("Attack", center);
         item.AttackElement = (Elements)EditorGUILayout.EnumPopup("Attack Element", item.AttackElement);
         item.MissileFlight = (MissileFlight)EditorGUILayout.EnumPopup("Missile Flight", item.MissileFlight);
@@ -811,6 +803,12 @@ public class ItemEditorWindow : EditorWindow
         GUILayout.Label(item.Battle.dmg + " - " + (item.Battle.dmg + item.Battle.dmg_dice));
         item.Battle.crit_multiply = EditorGUILayout.FloatField("Crit multiply", item.Battle.crit_multiply);
         item.Battle.range = EditorGUILayout.FloatField("Range", item.Battle.range);
+        item.AreaAttack = EditorGUILayout.Toggle("Area Attack", item.AreaAttack);
+        if (item.AreaAttack)
+        {
+            item.AreaRange = EditorGUILayout.FloatField("Range", item.AreaRange);
+        }
+        else item.AreaRange = 0;
         GUILayout.EndVertical();
         GUILayout.Space(20);
         GUILayout.BeginVertical("box");

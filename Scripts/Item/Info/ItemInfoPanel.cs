@@ -142,7 +142,7 @@ public class ItemInfoPanel : MonoBehaviour
                 break;
             case ItemCategory.Throw:
                 obj.GetComponent<InfoText>().Text[0].text = "" + item.Category;
-                obj.GetComponent<InfoText>().Text[1].text = "" + ((IThrow)item).Target.Type;
+                obj.GetComponent<InfoText>().Text[1].text = "";
                 break;
             default:
                 obj.GetComponent<InfoText>().Text[0].text = "" + item.Category;

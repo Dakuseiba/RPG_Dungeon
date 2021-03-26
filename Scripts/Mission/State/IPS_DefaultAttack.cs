@@ -274,8 +274,8 @@ class IPS_DefaultAttack : IPlayerState
     }
     float CalculateHeight(Vector3 center, float distance, float range)
     {
-        float result = 10 - (Mathf.Abs(range - distance) / 2);
-        if (result > 10) result = 10;
+        float result = (range/2) - (Mathf.Abs(range - distance) / 2);
+        if (result > range/2) result = range/2;
         return result + center.y;
     }
 }

@@ -17,8 +17,8 @@ public class IThrow : Item
 
     public MissileFlight MissileFlight;
 
-    public Target Target = new Target();
-
+    public bool AreaAttack;
+    public float AreaRange;
     public IThrow() { }
     public IThrow(IThrow item)
     {
@@ -30,7 +30,8 @@ public class IThrow : Item
         RemoveState = item.RemoveState;
         RemoveAllState = item.RemoveAllState;
         MissileFlight = item.MissileFlight;
-        Target = item.Target;
+        AreaRange = item.AreaRange;
+        AreaAttack = item.AreaAttack;
 
         Name = item.Name;
         Icon = item.Icon;
