@@ -14,8 +14,18 @@ public class MissionController : MonoBehaviour
     public List<LineRenderer> LineRenders;
     public static List<LineRenderer> Lines;
 
+    public GameObject ColliderSphere;
+    public static GameObject SphereCollider;
+    public GameObject ColliderBox;
+    public static GameObject BoxCollider;
+
     private void Start()
     {
+        SphereCollider = ColliderSphere;
+        SphereCollider.SetActive(false);
+        BoxCollider = ColliderBox;
+        BoxCollider.SetActive(false);
+
         missionMachine = new MissionMachine();
         missionMachine.ChangeState(new IMS_SetData());
         Lines = LineRenders;

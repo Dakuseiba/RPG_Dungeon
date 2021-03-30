@@ -9,9 +9,31 @@ public class IPS_ItemThrow : IPlayerState
     PlayerMachine.Data data;
     IThrow item;
     IPlayerState result;
+    RaycastHit hit;
 
     public void Action()
     {
+        data.targets = new List<GameObject>(); 
+        if (!item.AreaAttack)
+        {
+            var obj = hit.transform.gameObject;
+            if (obj.tag == "Enemy" || obj.tag == "Player" || obj.tag == "Ally")
+            {
+                data.targets.Add(obj);
+            }
+        }
+        else
+        {
+            var targets = MissionController.SphereCollider.GetComponent<ColliderTargets>().Targets;
+            foreach(var target in targets)
+            {
+                if (target.tag == "Enemy" || target.tag == "Player" || target.tag == "Ally")
+                {
+                    data.targets.Add(target);
+                }
+            }
+        }
+        GetDamage();
         result = new IPS_Move();
     }
 
@@ -43,12 +65,12 @@ public class IPS_ItemThrow : IPlayerState
         data.lineRender[0].enabled = false;
         data.lineRender[1].enabled = false;
         data.lineRender[2].enabled = false;
+        MissionController.SphereCollider.SetActive(false);
         var gui = Object.FindObjectOfType<GUIControll>();
         gui.GUIEnabled.mission.Distance.SetActive(true);
     }
     void Target()
     {
-        RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out hit);
         data.target = hit.point;
@@ -104,5 +126,33 @@ public class IPS_ItemThrow : IPlayerState
         data.lineRender[2].positionCount = Vectors.Count;
         data.lineRender[2].SetPositions(Vectors.ToArray());
         data.lineRender[2].enabled = true;
+        ActiveCollider();
+    }
+    void ActiveCollider()
+    {
+        var collider = MissionController.SphereCollider;
+        collider.GetComponent<SphereCollider>().center = data.lineRender[0].GetPosition(data.lineRender[0].positionCount - 1);
+        collider.GetComponent<SphereCollider>().radius = item.AreaRange / MissionController.multiplyDistance;
+        collider.SetActive(true);
+    }
+    void GetDamage()
+    {
+        foreach(var target in data.targets)
+        {
+            int damage = Random.Range(item.Battle.dmg, (item.Battle.dmg + item.Battle.dmg_dice + 1));
+            CharacterStats stats = null;
+            switch(target.tag)
+            {
+                case "Enemy":
+                    if (target.TryGetComponent(out HolderDataEnemy enemy)) stats = enemy.stats;
+                    break;
+                case "Player":
+                    if (target.TryGetComponent(out HolderDataCharacter character)) stats = character.character.currentStats;
+                    break;
+                case "Ally":
+                    break;
+            }
+                IPS_Functions.GetDamage(damage, stats);
+        }
     }
 }
