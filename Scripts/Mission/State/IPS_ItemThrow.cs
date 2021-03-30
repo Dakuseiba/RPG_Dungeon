@@ -13,28 +13,33 @@ public class IPS_ItemThrow : IPlayerState
 
     public void Action()
     {
-        data.targets = new List<GameObject>(); 
-        if (!item.AreaAttack)
+        if (data.points >= data.cost)
         {
-            var obj = hit.transform.gameObject;
-            if (obj.tag == "Enemy" || obj.tag == "Player" || obj.tag == "Ally")
+            data.points -= data.cost;
+            data.character.Equipment.ItemSlots.RemoveItem(item, 1);
+            data.targets = new List<GameObject>();
+            if (!item.AreaAttack)
             {
-                data.targets.Add(obj);
-            }
-        }
-        else
-        {
-            var targets = MissionController.SphereCollider.GetComponent<ColliderTargets>().Targets;
-            foreach(var target in targets)
-            {
-                if (target.tag == "Enemy" || target.tag == "Player" || target.tag == "Ally")
+                var obj = hit.transform.gameObject;
+                if (obj.tag == "Enemy" || obj.tag == "Player" || obj.tag == "Ally")
                 {
-                    data.targets.Add(target);
+                    data.targets.Add(obj);
                 }
             }
+            else
+            {
+                var targets = MissionController.SphereCollider.GetComponent<ColliderTargets>().Targets;
+                foreach (var target in targets)
+                {
+                    if (target.tag == "Enemy" || target.tag == "Player" || target.tag == "Ally")
+                    {
+                        data.targets.Add(target);
+                    }
+                }
+            }
+            GetDamage();
+            result = new IPS_Move();
         }
-        GetDamage();
-        result = new IPS_Move();
     }
 
     public void Enter(PlayerMachine.Data playerControll)
