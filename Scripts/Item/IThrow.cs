@@ -19,6 +19,7 @@ public class IThrow : Item
 
     public bool AreaAttack;
     public float AreaRange;
+    public bool IgnoreObstacle;
     public IThrow() { }
     public IThrow(IThrow item)
     {
@@ -32,6 +33,7 @@ public class IThrow : Item
         MissileFlight = item.MissileFlight;
         AreaRange = item.AreaRange;
         AreaAttack = item.AreaAttack;
+        IgnoreObstacle = item.IgnoreObstacle;
 
         Name = item.Name;
         Icon = item.Icon;

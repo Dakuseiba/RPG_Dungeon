@@ -33,7 +33,11 @@ public class IPS_ItemThrow : IPlayerState
                 {
                     if (target.tag == "Enemy" || target.tag == "Player" || target.tag == "Ally")
                     {
-                        data.targets.Add(target);
+                        if(!item.IgnoreObstacle)
+                        {
+                            if (!HasObstacle(data.lineRender[0].GetPosition(data.lineRender[0].positionCount - 1), target.transform.position)) data.targets.Add(target);
+                        }
+                        else data.targets.Add(target);
                     }
                 }
             }
@@ -144,6 +148,7 @@ public class IPS_ItemThrow : IPlayerState
     {
         foreach(var target in data.targets)
         {
+            //List<DamageClass> damages = new List<DamageClass>();
             int damage = Random.Range(item.Battle.dmg, (item.Battle.dmg + item.Battle.dmg_dice + 1));
             CharacterStats stats = null;
             switch(target.tag)
@@ -159,5 +164,14 @@ public class IPS_ItemThrow : IPlayerState
             }
                 IPS_Functions.GetDamage(damage, stats);
         }
+    }
+
+    bool HasObstacle(Vector3 center, Vector3 character)
+    {
+        if(Physics.Raycast(center,(character-center).normalized,Vector3.Distance(center,character),9))
+        {
+            return true;
+        }
+        return false;
     }
 }

@@ -159,7 +159,7 @@ public class ItemInfoPanel : MonoBehaviour
         for(int i=0;i<elements.Count;i++)
         {
             var Element = Instantiate(PartsInfo.PanelList, obj.transform, true);
-            Element.GetComponent<InfoList>().Text[0].text = "" + (s_weapon.Battle.dmg * elements[i].rate) + " - " + ((s_weapon.Battle.dmg * elements[i].rate) + s_weapon.Battle.dmg_dice);
+            Element.GetComponent<InfoList>().Text[0].text = "" + (int)(s_weapon.Battle.dmg * elements[i].rate/100f) + " - " + (int)((s_weapon.Battle.dmg * elements[i].rate/100f) + s_weapon.Battle.dmg_dice);
             Element.GetComponent<InfoList>().Text[0].text += " " + elements[i].AttackElement;
             Element.GetComponent<InfoList>().Icon[0].sprite = ElementalIcon(elements[i].AttackElement);
         }

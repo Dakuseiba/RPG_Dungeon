@@ -807,8 +807,13 @@ public class ItemEditorWindow : EditorWindow
         if (item.AreaAttack)
         {
             item.AreaRange = EditorGUILayout.FloatField("Range", item.AreaRange);
+            item.IgnoreObstacle = EditorGUILayout.Toggle("Ignore Obstacle", item.IgnoreObstacle);
         }
-        else item.AreaRange = 0;
+        else
+        {
+            item.AreaRange = 0;
+            item.IgnoreObstacle = false;
+        }
         GUILayout.EndVertical();
         GUILayout.Space(20);
         GUILayout.BeginVertical("box");

@@ -23,7 +23,7 @@ public class IWeapon : Item
     public Weight Weight;
 
     public List<int> Runes = new List<int>();
-    public AmmunitionType Ammunition;
+    public AmmunitionType Ammunition = new AmmunitionType();
 
     public int Stage = 0;
 
@@ -97,8 +97,12 @@ public class AmmunitionType
     }
     public AmmunitionType(AmmunitionType ammo)
     {
-        Amount = ammo.Capacity;
-        Capacity = ammo.Capacity;
-        ReloadPA = ammo.ReloadPA;
+        if(ammo!=null)
+        {
+            Capacity = ammo.Capacity;
+            Amount = ammo.Capacity;
+            ReloadPA = ammo.ReloadPA;
+        }
     }
+    public AmmunitionType() { }
 }
