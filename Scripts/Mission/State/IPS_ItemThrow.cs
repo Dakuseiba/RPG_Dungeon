@@ -162,7 +162,9 @@ public class IPS_ItemThrow : IPlayerState
                 case "Ally":
                     break;
             }
-                IPS_Functions.GetDamage(damage, stats);
+            List<DamageClass> damages = new List<DamageClass>();
+            damages.Add(new DamageClass(damage, item.AttackElement));
+            IPS_Functions.GetDamage(damages, stats);
         }
     }
 

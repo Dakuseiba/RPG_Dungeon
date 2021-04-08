@@ -78,12 +78,12 @@ public class Characters
         if (Equipment.Pants.Length > 0) CalculateItem(Equipment.Pants[0]);
         if (Equipment.WeaponsSlot[0].Right.Length > 0)
         {
-            currentStats.dmgWeapons[0].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Right[0].item).Stats.Battle);
+            currentStats.dmgWeapons[0].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Right[0].item));
             CalculateItem(Equipment.WeaponsSlot[0].Right[0]);
         }
         if (Equipment.WeaponsSlot[0].Left.Length > 0)
         {
-            currentStats.dmgWeapons[1].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Left[0].item).Stats.Battle);
+            currentStats.dmgWeapons[1].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Left[0].item));
             CalculateItem(Equipment.WeaponsSlot[0].Left[0]);
         }
 

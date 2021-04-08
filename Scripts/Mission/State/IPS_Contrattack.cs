@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -53,7 +54,7 @@ class IPS_Contrattack : IPlayerState
             }
         }
     }
-    int Attack(CharacterStats character, int dmg)
+    int Attack(CharacterStats character, List<DamageClass> dmg)
     {
         result = new IPS_Move();
         if (data.character.currentStats.HitChance())

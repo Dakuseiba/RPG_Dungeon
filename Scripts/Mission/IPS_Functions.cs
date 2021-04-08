@@ -201,11 +201,15 @@ public class IPS_Functions
     }
 
 
-    public static IPlayerState GetDamage(int dmg, CharacterStats character)
+    public static IPlayerState GetDamage(List<DamageClass> damages, CharacterStats character)
     {
         Debug.Log("Battle: HIT!");
-        dmg = character.ReduceDmg(dmg, Elements.Physical);
-        character.lifeStats.TakeDmg(dmg);
+        foreach(var damage in damages)
+        {
+            damage.Damage = character.ReduceDmg(damage.Damage, damage.Element);
+            character.lifeStats.TakeDmg(damage.Damage);
+            Debug.Log("Damage: " + damage.Damage + " " + damage.Element);
+        }
         return new IPS_Move();
     }
     public static IPlayerState GetMiss()

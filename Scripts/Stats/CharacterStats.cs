@@ -105,7 +105,7 @@ public class CharacterStats : Stats
         return false;
     }
 
-    public int GetDmg(int index)
+    /*public int GetDmg(int index)
     {
         int dmg = 0;
         float critMultiply = 0;
@@ -117,15 +117,61 @@ public class CharacterStats : Stats
                 break;
             case 1:
                 dmg = Random.Range(dmgWeapons[0].minDmg, dmgWeapons[0].maxDmg + 1);
-                critMultiply = dmgWeapons[0].critMultiply;
+                critMultiply = dmgWeapons[0].weapon.Stats.Battle.crit_multiply;
                 break;
             case 2:
                 dmg = Random.Range(dmgWeapons[1].minDmg, dmgWeapons[1].maxDmg + 1);
-                critMultiply = dmgWeapons[1].critMultiply;
+                critMultiply = dmgWeapons[1].weapon.Stats.Battle.crit_multiply;
                 break;
         }
         if (CritChance()) dmg = (int)(dmg*critMultiply);
         return dmg;
+    }*/
+
+
+    public List<DamageClass> GetDmg(int index)
+    {
+        List<DamageClass> damages = new List<DamageClass>();
+        int dmg;
+        float critMultiply = 0;
+        switch(index)
+        {
+            case 0:
+                dmg = Random.Range(Battle.dmg, Battle.dmg + Battle.dmg_dice + 1);
+                critMultiply = Battle.crit_multiply;
+                damages.Add(new DamageClass(dmg, Elements.Physical));
+                break;
+            case 1:
+                dmg = Random.Range(dmgWeapons[0].minDmg, dmgWeapons[0].maxDmg + 1);
+                critMultiply = dmgWeapons[0].weapon.Stats.Battle.crit_multiply;
+                damages.Add(new DamageClass(dmg, Elements.Physical));
+                foreach (var element in dmgWeapons[0].weapon.OtherAttackElement)
+                {
+                    dmg = Random.Range(dmgWeapons[0].minDmg, dmgWeapons[0].maxDmg + 1);
+                    dmg = (int)(dmg * (float)(element.rate/100f));
+                    damages.Add(new DamageClass(dmg, element.AttackElement));
+                }
+                break;
+            case 2:
+                dmg = Random.Range(dmgWeapons[1].minDmg, dmgWeapons[1].maxDmg + 1);
+                critMultiply = dmgWeapons[1].weapon.Stats.Battle.crit_multiply;
+                damages.Add(new DamageClass(dmg, Elements.Physical));
+                foreach (var element in dmgWeapons[1].weapon.OtherAttackElement)
+                {
+                    dmg = Random.Range(dmgWeapons[1].minDmg, dmgWeapons[1].maxDmg + 1);
+                    dmg = (int)(dmg * (float)(element.rate / 100f));
+                    damages.Add(new DamageClass(dmg, element.AttackElement));
+                }
+                break;
+        }
+        if (CritChance())
+        {
+            foreach(var damage in damages)
+            {
+                damage.Damage = (int)(damage.Damage * critMultiply);
+            }
+        }
+        return damages;
     }
 
     public bool CritChance()
@@ -144,17 +190,17 @@ public class CharacterStats : Stats
     {
         public int minDmg;
         public int maxDmg;
-        int dice;
-        public float critMultiply;
-        public void SetValues(Battle_Stats stats)
+        public IWeapon weapon;
+        public void SetValues(IWeapon item)
         {
-            dice = stats.dmg_dice;
-            critMultiply = stats.crit_multiply;
+            weapon = item;
         }
         public void IncreaseDmg(int dmg)
         {
             minDmg += dmg;
-            maxDmg = minDmg + dice;
+            if (weapon != null)
+                maxDmg = minDmg + weapon.Stats.Battle.dmg_dice;
+            else maxDmg = minDmg;
         }
     }
 }
