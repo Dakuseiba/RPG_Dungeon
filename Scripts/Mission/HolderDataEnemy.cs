@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class HolderDataEnemy : MonoBehaviour
 {
+    public int IndexEnemy;
     public CharacterStats stats;
 }

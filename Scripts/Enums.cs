@@ -178,7 +178,8 @@ public enum CharType
 {
     Mercenary,
     Role,
-    Player
+    Player,
+    Ai
 }
 
 public enum TeamSortType

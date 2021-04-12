@@ -105,30 +105,6 @@ public class CharacterStats : Stats
         return false;
     }
 
-    /*public int GetDmg(int index)
-    {
-        int dmg = 0;
-        float critMultiply = 0;
-        switch(index)
-        {
-            case 0:
-                dmg = Random.Range(Battle.dmg, Battle.dmg + Battle.dmg_dice + 1);
-                critMultiply = Battle.crit_multiply;
-                break;
-            case 1:
-                dmg = Random.Range(dmgWeapons[0].minDmg, dmgWeapons[0].maxDmg + 1);
-                critMultiply = dmgWeapons[0].weapon.Stats.Battle.crit_multiply;
-                break;
-            case 2:
-                dmg = Random.Range(dmgWeapons[1].minDmg, dmgWeapons[1].maxDmg + 1);
-                critMultiply = dmgWeapons[1].weapon.Stats.Battle.crit_multiply;
-                break;
-        }
-        if (CritChance()) dmg = (int)(dmg*critMultiply);
-        return dmg;
-    }*/
-
-
     public List<DamageClass> GetDmg(int index)
     {
         List<DamageClass> damages = new List<DamageClass>();
