@@ -348,4 +348,70 @@ public static class CharacterFunctions
         }
         return current;
     }
+    public static CharacterStats CalculateItem(CharacterStats current, SlotItem item)
+    {
+        if (item != null)
+            switch (item.item.Category)
+            {
+                case ItemCategory.Armor:
+                    IArmor aItem = (IArmor)item.item;
+                    current = CalculateBase(current, aItem.Stats.Base);
+                    current = CalculateAbility(current, aItem.Stats.Ability);
+                    current = CalculateResistance(current, aItem.Stats.Resistance);
+                    current = CalculateOther(current, aItem.Stats.Other);
+                    current = CalculateBattle(current, aItem.Stats.Battle);
+                    break;
+                case ItemCategory.Weapon:
+                    IWeapon wItem = (IWeapon)item.item;
+                    current = CalculateBase(current, wItem.Stats.Base);
+                    current = CalculateAbility(current, wItem.Stats.Ability);
+                    current = CalculateResistance(current, wItem.Stats.Resistance);
+                    current = CalculateOther(current, wItem.Stats.Other);
+                    current = CalculateBattle(current, wItem.Stats.Battle);
+                    break;
+                case ItemCategory.Accessories:
+                    IAccessories acItem = (IAccessories)item.item;
+                    current = CalculateBase(current, acItem.Stats.Base);
+                    current = CalculateAbility(current, acItem.Stats.Ability);
+                    current = CalculateResistance(current, acItem.Stats.Resistance);
+                    current = CalculateOther(current, acItem.Stats.Other);
+                    current = CalculateBattle(current, acItem.Stats.Battle);
+                    break;
+            }
+        return current;
+    }
+
+    public static CharacterStats CalculateEquipment(CharacterStats current, CharEquip equip)
+    {
+        if (equip.Head.Length > 0) current = CalculateItem(current, equip.Head[0]);
+        if (equip.Chest.Length > 0) current = CalculateItem(current, equip.Chest[0]);
+        if (equip.Pants.Length > 0) current = CalculateItem(current, equip.Pants[0]);
+        if (equip.WeaponsSlot[0].Right.Length > 0)
+        {
+            current.dmgWeapons[0].SetValues(((IWeapon)equip.WeaponsSlot[0].Right[0].item));
+            current = CalculateItem(current, equip.WeaponsSlot[0].Right[0]);
+        }
+        if (equip.WeaponsSlot[0].Left.Length > 0)
+        {
+            current.dmgWeapons[1].SetValues(((IWeapon)equip.WeaponsSlot[0].Left[0].item));
+            current = CalculateItem(current, equip.WeaponsSlot[0].Left[0]);
+        }
+
+        for (int i = 0; i < equip.ItemSlots.Items.Count; i++)
+        {
+            current = CalculateItem(current, equip.ItemSlots.Items[i]);
+        }
+        return current;
+    }
+
+    public static CharacterStats Calculate_HpMp(CharacterStats current)
+    {
+        int differenceHP = current.Other.hp - current.lifeStats.MaxHP;
+        current.lifeStats.MaxHP += differenceHP;
+        current.lifeStats.HP += differenceHP;
+        int differenceMP = current.Other.mp - current.lifeStats.MaxMP;
+        current.lifeStats.MaxMP += differenceMP;
+        current.lifeStats.MP += differenceMP;
+        return current;
+    }
 }

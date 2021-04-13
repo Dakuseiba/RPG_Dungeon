@@ -72,18 +72,31 @@ public class IPS_Attack : IPlayerState
     {
         PlayerMachine.Data data;
         CharacterStats target;
+        HolderDataEnemy targetAi;
+        HolderDataCharacter targetPlayer;
         int index;
         bool isHit;
         bool isParry;
         bool isContrattack;
         bool isEvade;
+        List<int> AtkState = new List<int>();
 
         public Attack(PlayerMachine.Data _data, int _index)
         {
             index = _index;
             data = _data;
-            if (data.targets[0].TryGetComponent(out HolderDataEnemy enemy)) target = enemy.stats;
+            targetAi = null;
+            targetPlayer = null;
+            if (data.targets[0].TryGetComponent(out HolderDataEnemy enemy)) targetAi = enemy;
+            if (data.targets[0].TryGetComponent(out HolderDataCharacter character)) targetPlayer = character;
+            SetTarget();
             SetBools();
+        }
+
+        void SetTarget()
+        {
+            if (targetAi != null) target = targetAi.Ai.currentStats;
+            else target = targetPlayer.character.currentStats;
         }
 
         void SetBools()
@@ -92,6 +105,29 @@ public class IPS_Attack : IPlayerState
             isParry = target.ParryChance();
             isContrattack = target.ContrattackChance();
             isEvade = target.EvadeChance();
+        }
+
+        void SetStates(int index)
+        {
+            IWeapon weapon=null;
+            switch (index)
+            {
+                case 1:
+                    weapon = (IWeapon)data.character.Equipment.WeaponsSlot[0].Right[0].item;
+                    break;
+                case 2:
+                    weapon = (IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item;
+                    break;
+            }
+
+            foreach(var state in weapon.Stats.AtkState)
+            {
+                int rand = Random.Range(0, 100);
+                if(rand <= state.rate)
+                {
+                    AtkState.Add(state.IDState);
+                }
+            }
         }
 
         public int Logic()
@@ -133,7 +169,10 @@ public class IPS_Attack : IPlayerState
                     IPS_Functions.GetEvade();
                     return 0;
                 }
+                SetStates(index);
                 IPS_Functions.GetDamage(data.character.currentStats.GetDmg(index), target);
+                if (targetAi != null) IPS_Functions.GetEffects(AtkState, targetAi);
+                else IPS_Functions.GetEffects(AtkState, targetPlayer);
                 return 0;
             }
             IPS_Functions.GetMiss();

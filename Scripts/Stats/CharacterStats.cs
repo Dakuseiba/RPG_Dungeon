@@ -6,6 +6,7 @@ public class CharacterStats : Stats
 {
     public LifeStats lifeStats;
     public DmgWeapon[] dmgWeapons;
+
     public CharacterStats() : base()
     {
         lifeStats = new LifeStats();

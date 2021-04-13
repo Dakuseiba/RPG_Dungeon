@@ -90,7 +90,7 @@ public class MissionController : MonoBehaviour
         }
         if (obj.GetComponent<HolderDataEnemy>())
         {
-            return obj.GetComponent<HolderDataEnemy>().stats.Battle.iniciative;
+            return obj.GetComponent<HolderDataEnemy>().Ai.currentStats.Battle.iniciative;
         }
         return 0;
     }

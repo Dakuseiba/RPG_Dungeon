@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
     public CollectorDatabase HerbalistData;
     public CollectorDatabase LumberjackData;
     public CityDataBase CitiesData;
+    public EnemyDataBase EnemiesData;
 
     GameObject currentCanvas;
     void Start()
@@ -63,6 +64,9 @@ public class GameController : MonoBehaviour
 
         if (StaticValues.LumberjackData == null)
             StaticValues.LumberjackData = LumberjackData;
+
+        if (StaticValues.EnemiesData == null)
+            StaticValues.EnemiesData = EnemiesData;
 
         StaticValues.InvMagazine.Capacity();
         CitiesController.SetUpgrades();

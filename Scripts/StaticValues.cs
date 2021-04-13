@@ -26,6 +26,7 @@ public class StaticValues
     public static HunterDataBase HunterData;
     public static CollectorDatabase HerbalistData;
     public static CollectorDatabase LumberjackData;
+    public static EnemyDataBase EnemiesData;
     #endregion
     public static int Items_in_Shop = 15;
     public static int Max_Units_in_Mission = 4;

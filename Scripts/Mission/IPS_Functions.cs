@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 public class IPS_Functions
@@ -232,7 +229,20 @@ public class IPS_Functions
         Debug.Log("Battle: EVADE!");
         return new IPS_Move();
     }
-
+    public static void GetEffects(List<int> States, HolderDataCharacter player)
+    {
+        foreach (var state in States)
+        {
+            player.character.AddEffect(StaticValues.States.States[state]);
+        }
+    }
+    public static void GetEffects(List<int> States, HolderDataEnemy enemy)
+    {
+        foreach(var state in States)
+        {
+            enemy.Ai.AddEffect(StaticValues.States.States[state]);
+        }
+    }
     public static bool WeaponCanUse(IWeapon weapon)
     {
         switch (weapon.WCategory)

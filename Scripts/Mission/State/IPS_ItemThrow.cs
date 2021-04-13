@@ -154,7 +154,7 @@ public class IPS_ItemThrow : IPlayerState
             switch(target.tag)
             {
                 case "Enemy":
-                    if (target.TryGetComponent(out HolderDataEnemy enemy)) stats = enemy.stats;
+                    if (target.TryGetComponent(out HolderDataEnemy enemy)) stats = enemy.Ai.currentStats;
                     break;
                 case "Player":
                     if (target.TryGetComponent(out HolderDataCharacter character)) stats = character.character.currentStats;

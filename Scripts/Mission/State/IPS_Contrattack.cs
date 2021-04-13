@@ -39,17 +39,17 @@ class IPS_Contrattack : IPlayerState
             switch (WeaponInRange(enemy))
             {
                 case 0:
-                    Attack(data.character.currentStats, enemy.stats.GetDmg(0));
+                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(0));
                     break;
                 case 1:
-                    Attack(data.character.currentStats, enemy.stats.GetDmg(1));
+                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(1));
                     break;
                 case 2:
-                    Attack(data.character.currentStats, enemy.stats.GetDmg(2));
+                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(2));
                     break;
                 case 3:
-                    Attack(data.character.currentStats, enemy.stats.GetDmg(1));
-                    Attack(data.character.currentStats, enemy.stats.GetDmg(2));
+                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(1));
+                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(2));
                     break;
             }
         }
@@ -81,7 +81,7 @@ class IPS_Contrattack : IPlayerState
     {
         int indexWeapon = 0;
         float range = Vector3.Distance(data.agent.transform.position, target.transform.position);
-        if (target.stats.Battle.range > range) indexWeapon = -1; 
+        if (target.Ai.currentStats.Battle.range > range) indexWeapon = -1; 
         return indexWeapon;
     }
 }

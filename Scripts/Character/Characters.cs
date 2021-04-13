@@ -70,24 +70,7 @@ public class Characters
 
         HpMpIncreaseByLvl();
 
-        if (Equipment.Head.Length> 0) CalculateItem(Equipment.Head[0]);
-        if (Equipment.Chest.Length > 0) CalculateItem(Equipment.Chest[0]);
-        if (Equipment.Pants.Length > 0) CalculateItem(Equipment.Pants[0]);
-        if (Equipment.WeaponsSlot[0].Right.Length > 0)
-        {
-            currentStats.dmgWeapons[0].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Right[0].item));
-            CalculateItem(Equipment.WeaponsSlot[0].Right[0]);
-        }
-        if (Equipment.WeaponsSlot[0].Left.Length > 0)
-        {
-            currentStats.dmgWeapons[1].SetValues(((IWeapon)Equipment.WeaponsSlot[0].Left[0].item));
-            CalculateItem(Equipment.WeaponsSlot[0].Left[0]);
-        }
-
-        for(int i=0;i<Equipment.ItemSlots.Items.Count;i++)
-        {
-            CalculateItem(Equipment.ItemSlots.Items[i]);
-        }
+        currentStats = CharacterFunctions.CalculateEquipment(currentStats, Equipment);
 
         currentStats = CharacterFunctions.CalculateTraits(currentStats, Traits);
         currentStats = CharacterFunctions.CalculateStates(currentStats, Effects);
@@ -99,56 +82,13 @@ public class Characters
 
         currentStats = CharacterFunctions.Precent(currentStats, Precent_Stats);
 
-        Calculate_HpMp();//Finish Function
+        currentStats = CharacterFunctions.Calculate_HpMp(currentStats);//Finish Function
     }
     #region Calculate Stats
-
-    void CalculateItem(SlotItem item)
-    {
-        if(item != null)
-            switch(item.item.Category)
-            {
-                case ItemCategory.Armor:
-                    IArmor aItem = (IArmor)item.item;
-                    currentStats = CharacterFunctions.CalculateBase(currentStats, aItem.Stats.Base);
-                    currentStats = CharacterFunctions.CalculateAbility(currentStats, aItem.Stats.Ability);
-                    currentStats = CharacterFunctions.CalculateResistance(currentStats, aItem.Stats.Resistance);
-                    currentStats = CharacterFunctions.CalculateOther(currentStats, aItem.Stats.Other);
-                    currentStats = CharacterFunctions.CalculateBattle(currentStats, aItem.Stats.Battle);
-                    break;
-                case ItemCategory.Weapon:
-                    IWeapon wItem = (IWeapon)item.item;
-                    currentStats = CharacterFunctions.CalculateBase(currentStats, wItem.Stats.Base);
-                    currentStats = CharacterFunctions.CalculateAbility(currentStats, wItem.Stats.Ability);
-                    currentStats = CharacterFunctions.CalculateResistance(currentStats, wItem.Stats.Resistance);
-                    currentStats = CharacterFunctions.CalculateOther(currentStats, wItem.Stats.Other);
-                    currentStats = CharacterFunctions.CalculateBattle(currentStats, wItem.Stats.Battle);
-                    break;
-                case ItemCategory.Accessories:
-                    IAccessories acItem = (IAccessories)item.item;
-                    currentStats = CharacterFunctions.CalculateBase(currentStats, acItem.Stats.Base);
-                    currentStats = CharacterFunctions.CalculateAbility(currentStats, acItem.Stats.Ability);
-                    currentStats = CharacterFunctions.CalculateResistance(currentStats, acItem.Stats.Resistance);
-                    currentStats = CharacterFunctions.CalculateOther(currentStats, acItem.Stats.Other);
-                    currentStats = CharacterFunctions.CalculateBattle(currentStats, acItem.Stats.Battle);
-                    break;
-            }
-    }
-
     void HpMpIncreaseByLvl()
     {
         currentStats.Other.hp += (int)(currentStats.Other.hp * (0.5f * Level));
         currentStats.Other.mp += (int)(currentStats.Other.mp * (0.3f * Level));
-    }
-
-    void Calculate_HpMp()
-    {
-        int differenceHP = currentStats.Other.hp - currentStats.lifeStats.MaxHP;
-        currentStats.lifeStats.MaxHP += differenceHP;
-        currentStats.lifeStats.HP += differenceHP;
-        int differenceMP = currentStats.Other.mp - currentStats.lifeStats.MaxMP;
-        currentStats.lifeStats.MaxMP += differenceMP;
-        currentStats.lifeStats.MP += differenceMP;
     }
     #endregion
     public void SwapWeapon()
