@@ -20,6 +20,10 @@ class IMS_CharControll : IMissionState
             case "Player":
                 return new IMS_PlayerControll();
             case "Enemy":
+                //tymczasowo--------------------------------------------
+                var ai = MissionController.Characters[MissionController.Index].GetComponent<NavMeshAgent>();
+                ai.GetComponent<HolderDataEnemy>().Ai.ControllEffects();
+                //------------------------------------------------------
                 return new IMS_NextCharacter();
         }
         return null;

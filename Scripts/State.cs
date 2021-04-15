@@ -10,8 +10,6 @@ public class State
     public Restriction Restriction;
     public TypeState TypeState;
 
-    public bool Remove_battle_end;
-
     public StateRemoveByTime Remove_by_time;
     public int Min;
     public int Max;
@@ -23,6 +21,7 @@ public class State
 
     public Stats Stats = new Stats();
     public Precent_Stats Precent_Stats = new Precent_Stats();
+    public Recover_Bar recover = new Recover_Bar();
 }
 [System.Serializable]
 public class Effect
@@ -31,6 +30,7 @@ public class Effect
     public int Count;
     public Stats Stats = new Stats();
     public Precent_Stats Precent_Stats = new Precent_Stats();
+    public Recover_Bar Recover_Stats = new Recover_Bar();
 
     public Effect(State _State)
     {
@@ -66,6 +66,7 @@ public class Effect
         CalculateAbility(stat.Stats.Ability);
         CalculateResistance(stat.Stats.Resistance);
         CalculateOther(stat.Stats.Other);
+        CalculateRecover(stat.recover);
         PrecentSummary(stat.Precent_Stats);
     }
 
@@ -134,5 +135,12 @@ public class Effect
 
         Precent_Stats.Other.hp += stat.Other.hp;
         Precent_Stats.Other.mp += stat.Other.mp;
+    }
+    void CalculateRecover(Recover_Bar recover)
+    {
+        Recover_Stats.hp += recover.hp;
+        Recover_Stats.mp += recover.mp;
+        Recover_Stats.precent_hp += recover.precent_hp;
+        Recover_Stats.precent_mp += recover.precent_mp;
     }
 }

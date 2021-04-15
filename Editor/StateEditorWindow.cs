@@ -144,7 +144,6 @@ public class StateEditorWindow : EditorWindow
                     selected.Min = 0;
                     selected.Max = 0;
                     break;
-                case StateRemoveByTime.Time:
                 case StateRemoveByTime.Turn:
                     GUILayout.BeginHorizontal();
                     selected.Min = EditorGUILayout.IntField("Min", selected.Min);
@@ -162,7 +161,13 @@ public class StateEditorWindow : EditorWindow
                 GUILayout.EndHorizontal();
             }
             else selected.chance_Remove = 0;
-            selected.Remove_battle_end = EditorGUILayout.Toggle("Remove when end battle", selected.Remove_battle_end);
+            
+            GUILayout.Space(20f);
+            selected.recover.hp = EditorGUILayout.IntField("Recover HP", selected.recover.hp);
+            selected.recover.mp = EditorGUILayout.IntField("Recover MP", selected.recover.mp);
+            selected.recover.precent_hp = EditorGUILayout.IntSlider("Recover HP %", selected.recover.precent_hp,0,100);
+            selected.recover.precent_mp = EditorGUILayout.IntSlider("Recover MP %", selected.recover.precent_mp,0,100);
+
             GUILayout.EndVertical();
             GUILayout.Label("");
             selected.Icon = (Sprite)EditorGUILayout.ObjectField("Icon", selected.Icon, typeof(Sprite), true);

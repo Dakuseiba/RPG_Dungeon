@@ -16,6 +16,7 @@ public class IMS_PlayerControll : IMissionState
     {
         playerMachine = new PlayerMachine();
         playerMachine.playerData = new PlayerMachine.Data();
+        playerMachine.playerData.character.ControllEffects();
         playerMachine.ChangeState(new IPS_Move());
         var gui = UnityEngine.Object.FindObjectOfType<GUIControll>();
         gui.GUIEnabled.mission.Player.SetActive(true);

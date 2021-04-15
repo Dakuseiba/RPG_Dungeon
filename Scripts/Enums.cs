@@ -206,8 +206,7 @@ public enum PanelTeamType
 public enum StateRemoveByTime
 {
     None,
-    Turn,
-    Time
+    Turn
 }
 
 public enum StateDoubleEffect

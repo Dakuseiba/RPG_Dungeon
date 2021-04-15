@@ -183,6 +183,29 @@ public class Characters
         UpdateStats();
     }
 
+    public void ControllEffects()
+    {
+        for (int i = 0; i < Effects.Count; i++)
+        {
+            var effect = Effects[i];
+
+            if (effect.Recover_Stats.hp != 0) currentStats.lifeStats.RecoverHP(effect.Recover_Stats.hp);
+            if (effect.Recover_Stats.mp != 0) currentStats.lifeStats.RecoverMP(effect.Recover_Stats.mp);
+            if (effect.Recover_Stats.precent_hp != 0) currentStats.lifeStats.RecoverHP_Precent(effect.Recover_Stats.precent_hp);
+            if (effect.Recover_Stats.precent_mp != 0) currentStats.lifeStats.RecoverMP_Precent(effect.Recover_Stats.precent_mp);
+
+            if (StaticValues.States.States[effect.State].Remove_by_time == StateRemoveByTime.Turn)
+            {
+                effect.Count--;
+                if (effect.Count <= 0)
+                {
+                    Effects.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+    }
+
     public string CalculateHealing()
     {
         string result;
