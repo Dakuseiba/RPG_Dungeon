@@ -172,6 +172,10 @@ public class GameController : MonoBehaviour
                 }
                 if(Input.GetKeyDown(KeyCode.Keypad9))
                 {
+                    ForceTravel ft = new ForceTravel();
+                    ft.characters = StaticValues.Team;
+                    Mission mis = new Mission(ft, ForceTravel.TravelEvent.Ambush);
+                    StaticValues.mission = mis;
                     StaticValues.headSceneManager.ChangeScene("Mission");
                 }
                 #endregion

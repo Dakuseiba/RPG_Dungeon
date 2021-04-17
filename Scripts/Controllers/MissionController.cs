@@ -19,6 +19,8 @@ public class MissionController : MonoBehaviour
     public GameObject ColliderBox;
     public static GameObject BoxCollider;
 
+    public static List<Objective> Objectives;
+
     private void Start()
     {
         SphereCollider = ColliderSphere;
@@ -35,6 +37,7 @@ public class MissionController : MonoBehaviour
     private void Update()
     {
         missionMachine.ExecuteStateLogic();
+        CheckObjectives();
     }
 
     public static List<GameObject> FindCharacters()
@@ -82,6 +85,20 @@ public class MissionController : MonoBehaviour
         return characters;
     }
 
+    public static void SetObjectives()
+    {
+        ObjectiveControllInterface controller;
+        switch(StaticValues.mission.travelEvent)
+        {
+            case ForceTravel.TravelEvent.Ambush:
+                controller = new IObjControll_Ambush();
+                Objectives = controller.SetObjectives();
+                break;
+            case ForceTravel.TravelEvent.Mission:
+                break;
+        }
+    }
+
     static int GetIniciative(GameObject obj)
     {
         if (obj.GetComponent<HolderDataCharacter>())
@@ -106,5 +123,13 @@ public class MissionController : MonoBehaviour
         Characters.Remove(chara);
         SecondTurn.Remove(chara);
         Destroy(chara);
+    }
+
+    public static void CheckObjectives()
+    {
+        foreach(var objective in Objectives)
+        {
+            objective.CheckObjective();
+        }
     }
 }

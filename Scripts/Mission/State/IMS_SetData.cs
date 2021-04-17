@@ -13,6 +13,7 @@ class IMS_SetData : IMissionState
         List<GameObject> characters = MissionController.FindCharacters();
         MissionController.Characters = characters;
         MissionController.SecondTurn = new List<GameObject>(MissionController.Characters);
+        MissionController.SetObjectives();
     }
 
     public IMissionState Execute()
