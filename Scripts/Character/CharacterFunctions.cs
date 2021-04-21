@@ -414,4 +414,10 @@ public static class CharacterFunctions
         current.lifeStats.MP += differenceMP;
         return current;
     }
+
+    static bool DeathCheck(CharacterStats stats)
+    {
+        if (stats.lifeStats.HP <= 0) return true;
+        return false;
+    }
 }
