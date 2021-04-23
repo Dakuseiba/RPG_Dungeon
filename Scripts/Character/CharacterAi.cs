@@ -136,11 +136,4 @@ public class CharacterAi
             }
         }
     }
-    public void CheckIsDead()
-    {
-        if(currentStats.lifeStats.HealthStatus == HealthStatus.Dead)
-        {
-            Effects = new List<Effect>();
-        }
-    }
 }

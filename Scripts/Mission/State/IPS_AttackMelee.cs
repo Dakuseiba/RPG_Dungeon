@@ -103,7 +103,9 @@ public class IPS_AttackMelee : IPlayerState
             {
                 ColorLine(Color.yellow);
                 if (!data.targets.Contains(hit.transform.gameObject))
+                {
                     data.targets.Add(hit.transform.gameObject);
+                }
             }
             else
             {

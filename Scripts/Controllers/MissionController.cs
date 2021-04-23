@@ -7,6 +7,7 @@ public class MissionController : MonoBehaviour
 {
     public static List<GameObject> Characters;
     public static List<GameObject> SecondTurn;
+    public static GameObject currentCharacter;
     public static int Index;
     MissionMachine missionMachine;
     public static float multiplyDistance=0.5f;
@@ -123,6 +124,14 @@ public class MissionController : MonoBehaviour
         Characters.Remove(chara);
         SecondTurn.Remove(chara);
         Destroy(chara);
+    }
+    public static void DeadChara(GameObject chara)
+    {
+        chara.tag = "Dead";
+        chara.GetComponent<NavMeshObstacle>().enabled = false;
+        chara.GetComponent<NavMeshAgent>().enabled = false;
+        Characters.Remove(chara);
+        SecondTurn.Remove(chara);
     }
 
     public static void CheckObjectives()

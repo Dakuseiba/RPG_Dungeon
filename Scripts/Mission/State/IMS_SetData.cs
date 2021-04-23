@@ -14,6 +14,7 @@ class IMS_SetData : IMissionState
         MissionController.Characters = characters;
         MissionController.SecondTurn = new List<GameObject>(MissionController.Characters);
         MissionController.SetObjectives();
+        MissionController.currentCharacter = MissionController.Characters[MissionController.Index];
     }
 
     public IMissionState Execute()

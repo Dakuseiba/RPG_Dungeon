@@ -100,7 +100,9 @@ public class IPS_AttackRange : IPlayerState
             if (hit.transform.tag == "Enemy")
             {
                 if (!data.targets.Contains(hit.transform.gameObject))
-                    data.targets.Add(hit.transform.gameObject);
+                {
+                     data.targets.Add(hit.transform.gameObject);
+                }
             }
             else
             {

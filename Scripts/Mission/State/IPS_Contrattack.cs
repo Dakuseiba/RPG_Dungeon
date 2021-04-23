@@ -39,37 +39,38 @@ class IPS_Contrattack : IPlayerState
             switch (WeaponInRange(enemy))
             {
                 case 0:
-                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(0));
+                    Attack(data.agent.GetComponent<HolderDataCharacter>(), enemy.Ai.currentStats.GetDmg(0));
                     break;
                 case 1:
-                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(1));
+                    Attack(data.agent.GetComponent<HolderDataCharacter>(), enemy.Ai.currentStats.GetDmg(1));
                     break;
                 case 2:
-                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(2));
+                    Attack(data.agent.GetComponent<HolderDataCharacter>(), enemy.Ai.currentStats.GetDmg(2));
                     break;
                 case 3:
-                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(1));
-                    Attack(data.character.currentStats, enemy.Ai.currentStats.GetDmg(2));
+                    Attack(data.agent.GetComponent<HolderDataCharacter>(), enemy.Ai.currentStats.GetDmg(1));
+                    Attack(data.agent.GetComponent<HolderDataCharacter>(), enemy.Ai.currentStats.GetDmg(2));
                     break;
             }
         }
     }
-    int Attack(CharacterStats character, List<DamageClass> dmg)
+    int Attack(HolderDataCharacter character, List<DamageClass> dmg)
     {
+        var stats = character.character.currentStats;
         result = new IPS_Move();
         if (data.character.currentStats.HitChance())
         {
-            if (character.ParryChance())
+            if (stats.ParryChance())
             {
                 //IPS_Functions.GetParry(character);
                 return 0;
             }
-            else if (character.EvadeChance())
+            else if (stats.EvadeChance())
             {
                 IPS_Functions.GetEvade();
                 return 0;
             }
-            IPS_Functions.GetDamage(dmg, character);
+            IPS_Functions.GetDamage(dmg, character.gameObject);
         }
         else
         {

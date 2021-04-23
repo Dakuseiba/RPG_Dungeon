@@ -10,13 +10,13 @@ class IMS_NextCharacter : IMissionState
 {
     public void Enter()
     {
-        MissionController.Characters[MissionController.Index].GetComponent<NavMeshObstacle>().enabled = true;
-        MissionController.Index++;
+        CheckCharacterStatus(MissionController.currentCharacter);
         if (MissionController.Index >= MissionController.Characters.Count)
         {
             MissionController.Characters = new List<GameObject>(MissionController.SecondTurn);
             MissionController.Index = 0;
         }
+        MissionController.currentCharacter = MissionController.Characters[MissionController.Index];
     }
 
     public IMissionState Execute()
@@ -26,5 +26,34 @@ class IMS_NextCharacter : IMissionState
 
     public void Exit()
     {
+    }
+
+    void CheckCharacterStatus(GameObject obj)
+    {
+        if(CheckDead(obj))
+        {
+            MissionController.Index = MissionController.Characters.FindIndex(x => x == MissionController.currentCharacter);
+            MissionController.DeadChara(obj);
+        }
+        else
+        {
+            obj.GetComponent<NavMeshObstacle>().enabled = true;
+            MissionController.Index = MissionController.Characters.FindIndex(x => x == MissionController.currentCharacter);
+            MissionController.Index++;
+        }
+    }
+    bool CheckDead(GameObject obj)
+    {
+        if(obj.GetComponent<HolderDataCharacter>())
+        {
+            var holdChar = obj.GetComponent<HolderDataCharacter>().character;
+            if (holdChar.currentStats.lifeStats.HealthStatus == HealthStatus.Dead) return true;
+        }
+        if (obj.GetComponent<HolderDataEnemy>())
+        {
+            var holdEnemy= obj.GetComponent<HolderDataEnemy>().Ai;
+            if (holdEnemy.currentStats.lifeStats.HealthStatus == HealthStatus.Dead) return true;
+        }
+        return false;
     }
 }

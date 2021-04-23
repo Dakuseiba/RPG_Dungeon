@@ -22,10 +22,8 @@ public enum Gender
 public enum Restriction
 {
     None,
-    Attack_an_enemy,
     Attack_anyone,
     Attack_ally,
-    Cannot_move,
     Cannot_all
 }
 

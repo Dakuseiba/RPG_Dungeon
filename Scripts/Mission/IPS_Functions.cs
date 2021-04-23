@@ -198,8 +198,13 @@ public class IPS_Functions
     }
 
 
-    public static IPlayerState GetDamage(List<DamageClass> damages, CharacterStats character)
+    public static IPlayerState GetDamage(List<DamageClass> damages, GameObject objCharacter)
     {
+        CharacterStats character = null;
+
+        if (objCharacter.GetComponent<HolderDataEnemy>()) character = objCharacter.GetComponent<HolderDataEnemy>().Ai.currentStats;
+        if (objCharacter.GetComponent<HolderDataCharacter>()) character = objCharacter.GetComponent<HolderDataCharacter>().character.currentStats;
+
         Debug.Log("Battle: HIT!");
         foreach(var damage in damages)
         {
@@ -207,6 +212,7 @@ public class IPS_Functions
             character.lifeStats.TakeDmg(damage.Damage);
             Debug.Log("Damage: " + damage.Damage + " " + damage.Element);
         }
+        if (character.lifeStats.HealthStatus == HealthStatus.Dead) MissionController.DeadChara(objCharacter);
         return new IPS_Move();
     }
     public static IPlayerState GetMiss()

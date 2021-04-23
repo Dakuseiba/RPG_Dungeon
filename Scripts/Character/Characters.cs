@@ -183,8 +183,9 @@ public class Characters
         UpdateStats();
     }
 
-    public void ControllEffects()
+    public Restriction ControllEffects()
     {
+        Restriction restriction = Restriction.None;
         for (int i = 0; i < Effects.Count; i++)
         {
             var effect = Effects[i];
@@ -193,6 +194,20 @@ public class Characters
             if (effect.Recover_Stats.mp != 0) currentStats.lifeStats.RecoverMP(effect.Recover_Stats.mp);
             if (effect.Recover_Stats.precent_hp != 0) currentStats.lifeStats.RecoverHP_Precent(effect.Recover_Stats.precent_hp);
             if (effect.Recover_Stats.precent_mp != 0) currentStats.lifeStats.RecoverMP_Precent(effect.Recover_Stats.precent_mp);
+
+            var state = StaticValues.States.States[effect.State];
+            switch(state.Restriction)
+            {
+                case Restriction.Attack_ally:
+                    if (restriction == Restriction.Attack_anyone || restriction == Restriction.None) restriction = Restriction.Attack_ally;
+                    break;
+                case Restriction.Attack_anyone:
+                    if (restriction == Restriction.None) restriction = Restriction.Attack_anyone;
+                    break;
+                case Restriction.Cannot_all:
+                    restriction = Restriction.Cannot_all;
+                    break;
+            }
 
             if (StaticValues.States.States[effect.State].Remove_by_time == StateRemoveByTime.Turn)
             {
@@ -204,6 +219,28 @@ public class Characters
                 }
             }
         }
+        return restriction;
+    }
+    public Restriction ControllRestrictionEffects()
+    {
+        Restriction restriction = Restriction.None; for (int i = 0; i < Effects.Count; i++)
+        {
+            var effect = Effects[i];
+            var state = StaticValues.States.States[effect.State];
+            switch (state.Restriction)
+            {
+                case Restriction.Attack_ally:
+                    if (restriction == Restriction.Attack_anyone || restriction == Restriction.None) restriction = Restriction.Attack_ally;
+                    break;
+                case Restriction.Attack_anyone:
+                    if (restriction == Restriction.None) restriction = Restriction.Attack_anyone;
+                    break;
+                case Restriction.Cannot_all:
+                    restriction = Restriction.Cannot_all;
+                    break;
+            }
+        }
+        return restriction;
     }
 
     public string CalculateHealing()

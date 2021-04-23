@@ -11,12 +11,14 @@ using TMPro;
 public class IMS_PlayerControll : IMissionState
 {
     public PlayerMachine playerMachine;
+    IMissionState result;
 
     public void Enter()
     {
+        result = null;
         playerMachine = new PlayerMachine();
         playerMachine.playerData = new PlayerMachine.Data();
-        playerMachine.playerData.character.ControllEffects();
+
         playerMachine.ChangeState(new IPS_Move());
         var gui = UnityEngine.Object.FindObjectOfType<GUIControll>();
         gui.GUIEnabled.mission.Player.SetActive(true);
@@ -24,6 +26,8 @@ public class IMS_PlayerControll : IMissionState
 
     public IMissionState Execute()
     {
+        ControllRestrictions();
+        if (result != null) return result;
         Debug.Log("PA: " + playerMachine.playerData.points);
         playerMachine.ExecuteStateLogic();
         playerMachine.playerData.weapons = new IPS_Functions.Weapons(playerMachine.playerData.character);
@@ -37,6 +41,25 @@ public class IMS_PlayerControll : IMissionState
     {
         GUI_Close();
         playerMachine.playerData.agent.enabled = false;
+    }
+
+    void ControllRestrictions()
+    {
+        var restriction = playerMachine.playerData.character.ControllEffects();
+        switch (restriction)
+        {
+            case Restriction.Cannot_all:
+                result = new IMS_NextCharacter();
+                break;
+            case Restriction.Attack_anyone:
+                //result = przechodzi na kontrole ai
+                break;
+            case Restriction.Attack_ally:
+                //result = przechodzi na kontrole ai
+                break;
+        }
+        if (playerMachine.playerData.character.currentStats.lifeStats.HealthStatus == HealthStatus.Dead)
+            result = new IMS_NextCharacter();
     }
 
     #region Inputs

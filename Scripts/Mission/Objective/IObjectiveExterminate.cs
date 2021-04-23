@@ -7,13 +7,14 @@ public class IObjectiveExterminate : Objective
     public EnumObjective CheckObjective()
     {
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        int count = 0;
-        foreach(var enemyObj in enemies)
+        //int count = 0;
+        /*foreach(var enemyObj in enemies)
         {
             var enemy = enemyObj.GetComponent<HolderDataEnemy>().Ai;
             if (enemy.currentStats.lifeStats.HealthStatus == HealthStatus.Dead) count++;
-        }
-        if (count == enemies.Length)
+        }*/
+        //if (count == enemies.Length)
+        if(enemies.Length == 0)
         {
             Debug.Log("Success");
             return EnumObjective.success; 

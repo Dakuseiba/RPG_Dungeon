@@ -71,7 +71,8 @@ public class IPS_Attack : IPlayerState
     public class Attack
     {
         PlayerMachine.Data data;
-        CharacterStats target;
+        GameObject target;
+        CharacterStats statsTarget;
         HolderDataEnemy targetAi;
         HolderDataCharacter targetPlayer;
         int index;
@@ -95,16 +96,24 @@ public class IPS_Attack : IPlayerState
 
         void SetTarget()
         {
-            if (targetAi != null) target = targetAi.Ai.currentStats;
-            else target = targetPlayer.character.currentStats;
+            if (targetAi != null)
+            { 
+                target = targetAi.gameObject;
+                statsTarget = targetAi.Ai.currentStats;
+            }
+            else 
+            {
+                target = targetPlayer.gameObject;
+                statsTarget = targetPlayer.character.currentStats;
+            }
         }
 
         void SetBools()
         {
             isHit = data.character.currentStats.HitChance();
-            isParry = target.ParryChance();
-            isContrattack = target.ContrattackChance();
-            isEvade = target.EvadeChance();
+            isParry = statsTarget.ParryChance();
+            isContrattack = statsTarget.ContrattackChance();
+            isEvade = statsTarget.EvadeChance();
         }
 
         void SetStates(int index)
@@ -119,13 +128,15 @@ public class IPS_Attack : IPlayerState
                     weapon = (IWeapon)data.character.Equipment.WeaponsSlot[0].Left[0].item;
                     break;
             }
-
-            foreach(var state in weapon.Stats.AtkState)
+            if(weapon!=null)
             {
-                int rand = Random.Range(0, 100);
-                if(rand <= state.rate)
+                foreach (var state in weapon.Stats.AtkState)
                 {
-                    AtkState.Add(state.IDState);
+                    int rand = Random.Range(0, 100);
+                    if (rand <= state.rate)
+                    {
+                        AtkState.Add(state.IDState);
+                    }
                 }
             }
         }

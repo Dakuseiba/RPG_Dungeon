@@ -150,21 +150,21 @@ public class IPS_ItemThrow : IPlayerState
         {
             //List<DamageClass> damages = new List<DamageClass>();
             int damage = Random.Range(item.Battle.dmg, (item.Battle.dmg + item.Battle.dmg_dice + 1));
-            CharacterStats stats = null;
+            GameObject myTarget = null;
             switch(target.tag)
             {
                 case "Enemy":
-                    if (target.TryGetComponent(out HolderDataEnemy enemy)) stats = enemy.Ai.currentStats;
+                    if (target.TryGetComponent(out HolderDataEnemy enemy)) myTarget = enemy.gameObject;
                     break;
                 case "Player":
-                    if (target.TryGetComponent(out HolderDataCharacter character)) stats = character.character.currentStats;
+                    if (target.TryGetComponent(out HolderDataCharacter character)) myTarget = character.gameObject;
                     break;
                 case "Ally":
                     break;
             }
             List<DamageClass> damages = new List<DamageClass>();
             damages.Add(new DamageClass(damage, item.AttackElement));
-            IPS_Functions.GetDamage(damages, stats);
+            IPS_Functions.GetDamage(damages, myTarget);
         }
     }
 
