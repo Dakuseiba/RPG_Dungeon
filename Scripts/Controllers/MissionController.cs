@@ -138,7 +138,45 @@ public class MissionController : MonoBehaviour
     {
         foreach(var objective in Objectives)
         {
-            objective.CheckObjective();
+            if(objective.CheckObjective() == EnumObjective.success)
+            {
+                ExitFromMission();
+                break;
+            }
         }
     }
+    static void ExitFromMission()
+    {
+        CheckForceTravel();
+        StaticValues.headSceneManager.ChangeScene("HUB");
+    }
+
+    static void CheckForceTravel()
+    {
+        var travel = StaticValues.mission.travel.characters; 
+        var objPlayers = GameObject.FindGameObjectsWithTag("Player");
+        List<Characters> players = new List<Characters>();
+
+        foreach(var player in objPlayers)
+        {
+            players.Add(player.GetComponent<HolderDataCharacter>().character);
+        }
+
+
+        for (int i=0;i<travel.Count;i++)
+        {
+            if(!players.Contains(travel[i]))
+            {
+                travel.RemoveAt(i);
+                i--;
+            }
+        }
+
+        if(travel.Count == 0)
+        {
+            StaticValues.TeamTravels.Remove(StaticValues.mission.travel);
+        }
+        StaticValues.mission = null;
+    }
+
 }
